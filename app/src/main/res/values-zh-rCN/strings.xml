@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Engine</string>
+    <string name="link">连接</string>
+    <string name="config">配置文件</string>
+    <string name="settings">设置</string>
+
+    <string name="no_config_file">你还没有配置文件</string>
+    <string name="add_new_config">添加新的配置文件</string>
+    <string name="config_name">新的配置文件名</string>
+    <string name="cancel">取消</string>
+    <string name="add">添加</string>
+
+</resources>

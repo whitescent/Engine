@@ -3,14 +3,15 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("dagger.hilt.android.plugin")
     id("kotlin-kapt")
+    id("kotlin-parcelize")
 }
 
 android {
-    namespace = "com.example.project.template"
+    namespace = "com.github.nthily.engine"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.example.project.template"
+        applicationId = "com.github.nthily.engine"
         minSdk = 21
         targetSdk = 33
         versionCode = 1
@@ -51,6 +52,7 @@ dependencies {
 
     // core
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.startup.runtime)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
@@ -63,6 +65,16 @@ dependencies {
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.compose.material3)
+
+    // accompanist
+    implementation(libs.accompanist.systemUiController)
+    implementation(libs.accompanist.pager)
+
+    // mmkv
+    implementation(libs.mmkv)
+
+    // navigation
+    implementation(libs.androidx.navigation.compose)
 
     // hilt
     implementation(libs.com.google.dagger.hilt.android)

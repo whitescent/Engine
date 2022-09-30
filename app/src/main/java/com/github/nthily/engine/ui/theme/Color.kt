@@ -1,4 +1,4 @@
-package com.example.project.template.ui.theme
+package com.github.nthily.engine.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

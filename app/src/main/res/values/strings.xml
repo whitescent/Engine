@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">template</string>
+    <string name="app_name">Engine</string>
+    <string name="link">Connect</string>
+    <string name="config">config</string>
+    <string name="settings">settings</string>
+
+    <string name="no_config_file">You don\'t have any configuration files</string>
+    <string name="add_new_config">New configuration</string>
+    <string name="config_name">Configuration name</string>
+    <string name="cancel">Cancel</string>
+    <string name="add">Add</string>
+
 </resources>
