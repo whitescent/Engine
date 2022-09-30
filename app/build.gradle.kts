@@ -69,9 +69,13 @@ dependencies {
     // accompanist
     implementation(libs.accompanist.systemUiController)
     implementation(libs.accompanist.pager)
+    implementation(libs.accompanist.flowlayout)
 
     // mmkv
     implementation(libs.mmkv)
+
+    // kotlinx datetime
+    implementation(libs.kotlinx.datetime)
 
     // navigation
     implementation(libs.androidx.navigation.compose)

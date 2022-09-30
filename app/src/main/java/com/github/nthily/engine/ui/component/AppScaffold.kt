@@ -12,7 +12,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import com.github.nthily.engine.screen.config.ConfigRoot
+import com.github.nthily.engine.screen.presets.PresetsRoot
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -45,7 +45,7 @@ fun AppScaffold() {
     ) { page ->
       when(BottomBarItem.values()[page]) {
         BottomBarItem.Connect -> Unit
-        BottomBarItem.Config -> ConfigRoot()
+        BottomBarItem.Config -> PresetsRoot()
         BottomBarItem.Settings -> Unit
       }
     }

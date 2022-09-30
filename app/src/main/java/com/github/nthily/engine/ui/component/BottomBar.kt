@@ -52,6 +52,6 @@ enum class BottomBarItem(
   @StringRes val label: Int
 ) {
   Connect(Icons.Rounded.Link, Icons.Outlined.Link, R.string.link),
-  Config(Icons.Rounded.Folder, Icons.Outlined.Folder, R.string.config),
+  Config(Icons.Rounded.Folder, Icons.Outlined.Folder, R.string.presets),
   Settings(Icons.Rounded.Settings, Icons.Outlined.Settings, R.string.settings)
 }

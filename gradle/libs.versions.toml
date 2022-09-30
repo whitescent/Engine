@@ -19,6 +19,7 @@ composeCompiler = "1.3.1"
 mmkv = "1.2.14"
 
 kotlin = "1.7.10"
+kotlinxDatetime = "0.4.0"
 
 agp = "7.3.0"
 hilt = "2.44"
@@ -58,9 +59,13 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 # accompanist
 accompanist-systemUiController = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
+accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist" }
 
 # mmkv
 mmkv = { module = "com.tencent:mmkv", version.ref = "mmkv" }
+
+# kotlinx datatime
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 
 ## hilt
 com-google-dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
