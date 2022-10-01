@@ -19,9 +19,9 @@ composeDestinations = "1.7.21-beta"
 
 mmkv = "1.2.14"
 
-kotlin = "1.7.10"
+kotlin = "1.7.20"
 kotlinxDatetime = "0.4.0"
-ksp = "1.7.10-1.0.6"
+ksp = "1.7.20-1.0.6"
 
 agp = "7.3.0"
 hilt = "2.44"
