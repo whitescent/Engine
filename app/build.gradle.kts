@@ -4,6 +4,7 @@ plugins {
     id("dagger.hilt.android.plugin")
     id("kotlin-kapt")
     id("kotlin-parcelize")
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -46,6 +47,13 @@ android {
             excludes.add("/META-INF/{AL2.0,LGPL2.1}")
         }
     }
+    applicationVariants.all {
+        kotlin.sourceSets {
+            getByName(name) {
+                kotlin.srcDir("build/generated/ksp/$name/kotlin")
+            }
+        }
+    }
 }
 
 dependencies {
@@ -70,6 +78,10 @@ dependencies {
     implementation(libs.accompanist.systemUiController)
     implementation(libs.accompanist.pager)
     implementation(libs.accompanist.flowlayout)
+
+    // compose destinations
+    implementation(libs.compose.destinations.core)
+    ksp(libs.compose.destinations.ksp)
 
     // mmkv
     implementation(libs.mmkv)

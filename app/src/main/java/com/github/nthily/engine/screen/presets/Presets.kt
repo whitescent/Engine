@@ -1,5 +1,6 @@
 package com.github.nthily.engine.screen.presets
 
+import android.content.pm.ActivityInfo
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
@@ -44,10 +45,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.nthily.engine.AppTheme
 import com.github.nthily.engine.R
 import com.github.nthily.engine.data.model.PresetsModel
+import com.github.nthily.engine.destinations.PresetsEditorDestination
 import com.github.nthily.engine.ui.component.CenterRow
 import com.github.nthily.engine.ui.component.HeightSpacer
 import com.github.nthily.engine.ui.component.WidthSpacer
 import com.google.accompanist.flowlayout.FlowRow
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.delay
 import kotlinx.datetime.Instant
@@ -56,7 +59,8 @@ import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun PresetsRoot(
-  viewModel: PresetsViewModel = hiltViewModel()
+  viewModel: PresetsViewModel = hiltViewModel(),
+  navigator: DestinationsNavigator
 ) {
   val dialogState by viewModel.dialogState.collectAsState()
   val mmkv by viewModel.mmkv.collectAsState()
@@ -64,7 +68,14 @@ fun PresetsRoot(
     modifier = Modifier.fillMaxSize()
   ) {
     PresetsTopBar()
-    PresetsList(mmkv)
+    PresetsList(mmkv) {
+      navigator.navigate(
+        PresetsEditorDestination(
+          orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE,
+          presetsModel = it
+        )
+      )
+    }
   }
   Box(
     modifier = Modifier.fillMaxSize(),
@@ -90,7 +101,8 @@ fun PresetsRoot(
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun PresetsList(
-  mmkv: MMKV
+  mmkv: MMKV,
+  onClickEditor: (PresetsModel) -> Unit
 ) {
   AnimatedContent(mmkv.allKeys()!!.size) {
     when(it) {
@@ -120,7 +132,7 @@ fun PresetsList(
           items(presetsList) { name ->
             val presets = mmkv.decodeParcelable(name, PresetsModel::class.java)
             key(presets!!.createdAt) {
-              PresetsListItem(presets)
+              PresetsListItem(presets, onClickEditor)
             }
           }
         }
@@ -132,7 +144,8 @@ fun PresetsList(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PresetsListItem(
-  presetsModel: PresetsModel
+  presetsModel: PresetsModel,
+  onClickEditor: (PresetsModel) -> Unit
 ) {
   val time = Instant.fromEpochMilliseconds(presetsModel.createdAt).toLocalDateTime(TimeZone.UTC)
   val name = presetsModel.presetsName
@@ -157,11 +170,11 @@ fun PresetsListItem(
       )
     },
     leadingContent = {
-        Image(painterResource(id = gameType.painter), null, modifier = Modifier.size(30.dp))
+        Image(painterResource(id = gameType.painter), null, modifier = Modifier.size(30.dp).clip(CircleShape))
     },
     trailingContent = {
       IconButton(
-        onClick = { /*TODO*/ }
+        onClick = { onClickEditor(presetsModel) }
       ) {
         Icon(Icons.Rounded.Edit, null)
       }

@@ -5,15 +5,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.github.nthily.engine.ui.component.AppScaffold
 import com.github.nthily.engine.ui.theme.EngineTheme
+import com.github.nthily.engine.utils.LocalSystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.ramcosta.composedestinations.DestinationsNavHost
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -31,11 +30,8 @@ class MainActivity : ComponentActivity() {
             darkIcons = useDarkIcons
           )
         }
-        val navController = rememberNavController()
-        NavHost(navController = navController, startDestination = "app") {
-          composable("app") {
-            AppScaffold()
-          }
+        CompositionLocalProvider(LocalSystemUiController provides systemUiController) {
+          DestinationsNavHost(navGraph = AppNavGraphs.root)
         }
       }
     }

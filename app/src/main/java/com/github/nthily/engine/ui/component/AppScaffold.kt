@@ -16,11 +16,18 @@ import com.github.nthily.engine.screen.presets.PresetsRoot
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
+@RootNavGraph(start = true)
+@Destination
 @Composable
-fun AppScaffold() {
+fun AppScaffold(
+  navigator: DestinationsNavigator
+) {
   val pagerState = rememberPagerState()
   val scope = rememberCoroutineScope()
   var selectedScreen by remember { mutableStateOf(0) }
@@ -45,7 +52,7 @@ fun AppScaffold() {
     ) { page ->
       when(BottomBarItem.values()[page]) {
         BottomBarItem.Connect -> Unit
-        BottomBarItem.Config -> PresetsRoot()
+        BottomBarItem.Config -> PresetsRoot(navigator = navigator)
         BottomBarItem.Settings -> Unit
       }
     }

@@ -4,7 +4,7 @@
     <string name="presets">Presets</string>
     <string name="settings">Settings</string>
 
-    <string name="no_presets_file">You don\'t have any presets files</string>
+    <string name="no_presets_file">You don\'t have any presets</string>
     <string name="add_new_presets">New presets</string>
     <string name="presets_name">presets name</string>
     <string name="game_type">Game Type</string>
