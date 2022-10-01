@@ -110,17 +110,17 @@ fun PresetsList(
         }
       }
       else -> {
-        val configList = mmkv.allKeys()!!.sortedByDescending { configName ->
+        val presetsList = mmkv.allKeys()!!.sortedByDescending { configName ->
           mmkv.decodeParcelable(configName, PresetsModel::class.java)!!.createdAt
         }
         LazyColumn(
           modifier = Modifier
             .fillMaxSize()
         ) {
-          items(configList) { name ->
-            val config = mmkv.decodeParcelable(name, PresetsModel::class.java)
-            key(config!!.createdAt) {
-              PresetsListItem(name = config.presetsName, createdAt = config.createdAt)
+          items(presetsList) { name ->
+            val presets = mmkv.decodeParcelable(name, PresetsModel::class.java)
+            key(presets!!.createdAt) {
+              PresetsListItem(presets)
             }
           }
         }
@@ -132,10 +132,11 @@ fun PresetsList(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PresetsListItem(
-  name: String,
-  createdAt: Long
+  presetsModel: PresetsModel
 ) {
-  val time = Instant.fromEpochMilliseconds(createdAt).toLocalDateTime(TimeZone.UTC)
+  val time = Instant.fromEpochMilliseconds(presetsModel.createdAt).toLocalDateTime(TimeZone.UTC)
+  val name = presetsModel.presetsName
+  val gameType = presetsModel.gameType
   ListItem(
     headlineText = {
      Column {
@@ -156,8 +157,7 @@ fun PresetsListItem(
       )
     },
     leadingContent = {
-//      Icon(Icons.Rounded.Description, null, modifier = Modifier.size(30.dp))
-        Image(painterResource(id = R.drawable.assetto_corsa), null, modifier = Modifier.size(30.dp))
+        Image(painterResource(id = gameType.painter), null, modifier = Modifier.size(30.dp))
     },
     trailingContent = {
       IconButton(
@@ -175,10 +175,11 @@ fun PresetsListItem(
 fun PresetsDialog(
   state: PresetsDialogUiState,
   onDismissRequest: () -> Unit,
-  onConfirmed: () -> Unit,
+  onConfirmed: (GameItem) -> Unit,
   onValueChange: (String) -> Unit
 ) {
   if (state.display) {
+    var selectedGameItem by remember { mutableStateOf(GameItem.Undefined) }
     AlertDialog(
       onDismissRequest = onDismissRequest,
       title = {
@@ -194,7 +195,6 @@ fun PresetsDialog(
       text = {
         val focusRequester = remember(state) { FocusRequester() }
         val keyboard = LocalSoftwareKeyboardController.current
-        var selectedPainter by remember { mutableStateOf(R.drawable.other_presets) }
         Column {
           OutlinedTextField(
             value = state.text,
@@ -221,7 +221,7 @@ fun PresetsDialog(
             crossAxisSpacing = 6.dp
           ) {
             GameItem.values().forEach { game ->
-              PresetsTypeIcon(game, selectedPainter) { selectedPainter = game.painter }
+              GameTypeItem(game, selectedGameItem) { selectedGameItem = game }
             }
           }
         }
@@ -240,7 +240,7 @@ fun PresetsDialog(
       },
       confirmButton = {
         TextButton(
-          onClick = onConfirmed,
+          onClick = { onConfirmed(selectedGameItem) },
           enabled = state.text != ""
         ) {
           Text(stringResource(id = R.string.add))
@@ -252,10 +252,10 @@ fun PresetsDialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PresetsTypeIcon(
+fun GameTypeItem(
   gameItem: GameItem,
-  selectedGameItem: Int,
-  onSelected: (Int) -> Unit,
+  selectedGameItem: GameItem,
+  onSelected: (GameItem) -> Unit,
 ) {
   ListItem(
     leadingContent = {
@@ -274,13 +274,13 @@ fun PresetsTypeIcon(
     },
     trailingContent = {
       RadioButton(
-        selected = (selectedGameItem == gameItem.painter),
-        onClick = { onSelected(gameItem.painter) }
+        selected = (selectedGameItem == gameItem),
+        onClick = { onSelected(gameItem) }
       )
     },
     modifier = Modifier.selectable(
-      selected = selectedGameItem == gameItem.painter,
-      onClick = { onSelected(gameItem.painter) },
+      selected = selectedGameItem == gameItem,
+      onClick = { onSelected(gameItem) },
       role = Role.Tab
     )
   )

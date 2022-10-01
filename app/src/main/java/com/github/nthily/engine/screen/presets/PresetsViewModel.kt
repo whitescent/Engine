@@ -32,11 +32,11 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
     _dialogState.value = PresetsDialogUiState(true, text)
   }
 
-  fun onConfirmed() {
+  fun onConfirmed(gameItem: GameItem) {
     try {
       val currentMoment = Clock.System.now().toEpochMilliseconds()
       val configName = _dialogState.value.text
-      _mmkv.value.encode(configName, PresetsModel(configName, currentMoment))
+      _mmkv.value.encode(configName, PresetsModel(configName, gameItem, currentMoment))
       _mmkv.value = MMKV.defaultMMKV()
       _dialogState.value = PresetsDialogUiState(false, "")
     } catch (e: Exception) {
