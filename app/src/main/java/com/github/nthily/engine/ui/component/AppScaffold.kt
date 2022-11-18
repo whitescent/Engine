@@ -13,6 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import com.github.nthily.engine.screen.presets.PresetsRoot
+import com.github.nthily.engine.screen.settings.SettingsRoot
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -53,7 +54,7 @@ fun AppScaffold(
       when(BottomBarItem.values()[page]) {
         BottomBarItem.Connect -> Unit
         BottomBarItem.Config -> PresetsRoot(navigator = navigator)
-        BottomBarItem.Settings -> Unit
+        BottomBarItem.Settings -> SettingsRoot()
       }
     }
   }

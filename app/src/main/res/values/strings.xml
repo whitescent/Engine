@@ -17,4 +17,6 @@
     <string name="dirt_series">Dirt Series</string>
     <string name="forza_series">Forza Series</string>
 
+    <string name="choose_controller">Choose a Controller</string>
+
 </resources>

@@ -13,7 +13,7 @@ androidxStartup = "1.1.1"
 
 accompanist = "0.26.4-beta"
 
-compose = "1.3.0-beta03"
+compose = "1.3.0"
 composeCompiler = "1.3.1"
 composeDestinations = "1.7.21-beta"
 
