@@ -4,10 +4,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,7 +19,6 @@ import androidx.compose.material.icons.rounded.Construction
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -35,9 +37,12 @@ import com.github.nthily.engine.AppTheme
 import com.github.nthily.engine.MainActivity
 import com.github.nthily.engine.R
 import com.github.nthily.engine.data.model.PresetsModel
+import com.github.nthily.engine.screen.presets.controller.EngineButton
+import com.github.nthily.engine.screen.presets.controller.EngineAxis
+import com.github.nthily.engine.screen.presets.controller.AxisOrientation
 import com.github.nthily.engine.ui.component.CenterRow
 import com.github.nthily.engine.ui.component.EditorDrawer
-import com.github.nthily.engine.ui.component.HeightSpacer
+import com.github.nthily.engine.ui.component.EditorDrawerState
 import com.github.nthily.engine.ui.component.WidthSpacer
 import com.github.nthily.engine.ui.component.rememberEditorDrawerState
 import com.github.nthily.engine.utils.LocalSystemUiController
@@ -54,8 +59,9 @@ fun PresetsEditor(
 ) {
   val activity = LocalContext.current as MainActivity
   val systemUiController = LocalSystemUiController.current
-  val dialogState by viewModel.dialogState.collectAsState()
   val steeringValue by viewModel.sensorFlow.collectAsStateWithLifecycle()
+  val drawerState = rememberEditorDrawerState()
+  val scope = rememberCoroutineScope()
 
   systemUiController.systemBarsBehavior =
     WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
@@ -74,39 +80,37 @@ fun PresetsEditor(
   }
 
   EditorContent(
-    presetsModel,
-    dialogState,
-    viewModel::onClickLabel,
-    viewModel::onDismissRequest
+    presetsModel = presetsModel,
+    drawerState = drawerState,
+    onClickLabel = {
+      scope.launch {
+        drawerState.open()
+      }
+    }
   )
 }
 
 @Composable
 fun EditorContent(
   presetsModel: PresetsModel,
-  dialogState: Boolean,
+  drawerState: EditorDrawerState,
   onClickLabel: () -> Unit,
-  onDismissRequest: () -> Unit
 ) {
-  val scope = rememberCoroutineScope()
-  val drawerState = rememberEditorDrawerState()
-  
   EditorDrawer(
     drawerContent = {
       Box(
         modifier = Modifier
-          .fillMaxHeight()
+          .width(250.dp)
           .background(
             AppTheme.colorScheme.secondaryContainer,
             RoundedCornerShape(topStart = 15.dp, bottomStart = 15.dp)
           )
       ) {
         LazyColumn(
-          modifier = Modifier
-            .padding(12.dp)
+          modifier = Modifier.fillMaxSize(),
         ) {
           item {
-            CenterRow {
+            CenterRow(modifier = Modifier.padding(18.dp)) {
               Icon(
                 imageVector = Icons.Rounded.Construction,
                 contentDescription = null,
@@ -119,6 +123,52 @@ fun EditorContent(
                 style = AppTheme.typography.headlineMedium,
                 color = AppTheme.colorScheme.onSecondaryContainer
               )
+            }
+          }
+          item {
+            Box(
+              modifier = Modifier
+                .fillMaxWidth()
+                .clickable { }
+            ) {
+              CenterRow(Modifier.padding(14.dp)) {
+                EngineButton(
+                  modifier = Modifier.size(65.dp)
+                )
+                Spacer(Modifier.weight(1f))
+                Text(
+                  text = "按钮",
+                  style = AppTheme.typography.titleLarge,
+                  color = AppTheme.colorScheme.onSecondaryContainer
+                )
+              }
+            }
+          }
+          item {
+            Box(
+              modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp)
+                .clickable { },
+              contentAlignment = Alignment.Center
+            ) {
+              CenterRow(Modifier.padding(horizontal = 14.dp)) {
+                EngineAxis(
+                  onValueChanged = {
+      
+                  },
+                  modifier = Modifier
+                    .width(50.dp)
+                    .height(150.dp),
+                  orientation = AxisOrientation.Horizontal
+                )
+                Spacer(Modifier.weight(1f))
+                Text(
+                  text = "轴",
+                  style = AppTheme.typography.titleLarge,
+                  color = AppTheme.colorScheme.onSecondaryContainer
+                )
+              }
             }
           }
         }
@@ -136,11 +186,7 @@ fun EditorContent(
           .align(Alignment.TopStart)
           .padding(10.dp),
         presetsModel = presetsModel,
-        onClickLabel = {
-          scope.launch {
-            drawerState.open()
-          }
-        }
+        onClickLabel = onClickLabel
       )
     }
   }

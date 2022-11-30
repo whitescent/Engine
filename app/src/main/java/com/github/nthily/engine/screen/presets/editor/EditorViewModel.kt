@@ -11,10 +11,7 @@ import javax.inject.Inject
 class EditorViewModel @Inject constructor(
   private val sensor: AbstractSensor
 ) : ViewModel(){
-
-  private val _dialogState = MutableStateFlow(false)
-  val dialogState = _dialogState.asStateFlow()
-
+  
   private val _sensorFlow = MutableStateFlow(0f)
   val sensorFlow = _sensorFlow.asStateFlow()
 
@@ -26,13 +23,5 @@ class EditorViewModel @Inject constructor(
   }
 
   fun stopListeningSensor() = sensor.stopListening()
-
-  fun onClickLabel() {
-    _dialogState.value = true
-  }
-
-  fun onDismissRequest() {
-    _dialogState.value = false
-  }
-
+  
 }
