@@ -1,7 +1,9 @@
 package com.github.nthily.engine.screen.presets.controller
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -20,7 +22,8 @@ import com.github.nthily.engine.AppTheme
 @Composable
 fun EngineButton(
   modifier: Modifier = Modifier,
-  shape: Shape = CircleShape
+  shape: Shape = CircleShape,
+  onClick: () -> Unit = {  }
 ) {
   var flag by remember { mutableStateOf(false) }
   
@@ -30,15 +33,20 @@ fun EngineButton(
     modifier = modifier
       .then(otherModifier)
       .background(AppTheme.colorScheme.primary, shape = shape)
-      .pointerInput(Unit) {
-        detectTapGestures(
-          onTap = {
-            flag = false
-          },
-          onPress = {
-            flag = true
-          }
-        )
-      }
+      .clickable (
+        onClick = onClick,
+        indication = null,
+        interactionSource = MutableInteractionSource()
+      )
+//      .pointerInput(Unit) {
+//        detectTapGestures(
+//          onTap = {
+//            flag = false
+//          },
+//          onPress = {
+//            flag = true
+//          }
+//        )
+//      }
   )
 }
