@@ -12,12 +12,12 @@
         android:name=".EngineApp"
         tools:targetApi="31">
         <provider
-            android:authorities="com.github.nthily.engine.androidx-startup"
+            android:authorities="com.github.whitescent.engine.androidx-startup"
             android:name="androidx.startup.InitializationProvider"
             tools:node="merge"
             android:exported="false">
             <meta-data
-                android:name="com.github.nthily.engine.EngineInitializer"
+                android:name="com.github.whitescent.engine.EngineInitializer"
                 android:value="androidx.startup"/>
         </provider>
         <activity

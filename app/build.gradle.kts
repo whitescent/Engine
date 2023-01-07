@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.github.nthily.engine"
+    namespace = "com.github.whitescent.engine"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.github.nthily.engine"
+        applicationId = "com.github.whitescent.engine"
         minSdk = 21
         targetSdk = 33
         versionCode = 1
