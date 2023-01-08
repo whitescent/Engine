@@ -9,6 +9,7 @@
     <string name="no_presets_file">你还没有预设文件</string>
     <string name="add_new_presets">添加新的预设</string>
     <string name="presets_name">预设名字</string>
+    <string name="presets_name_exists">此预设名已存在</string>
     <string name="game_type">游戏类别</string>
     <string name="cancel">取消</string>
     <string name="add">添加</string>

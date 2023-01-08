@@ -2,6 +2,7 @@ package com.github.whitescent.engine.screen.presets
 
 import android.content.pm.ActivityInfo
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -173,7 +174,9 @@ fun PresetsListItem(
         Image(
           painter = painterResource(id = gameType.painter),
           contentDescription = null,
-          modifier = Modifier.size(30.dp).clip(CircleShape)
+          modifier = Modifier
+            .size(30.dp)
+            .clip(CircleShape)
         )
     },
     trailingContent = {
@@ -222,7 +225,18 @@ fun PresetsDialog(
             ),
             modifier = Modifier.focusRequester(focusRequester),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            isError = state.isTextError
           )
+          AnimatedVisibility(state.isTextError) {
+            Column {
+              HeightSpacer(value = 10.dp)
+              Text(
+                text = stringResource(id = R.string.presets_name_exists),
+                style = AppTheme.typography.labelMedium,
+                color = AppTheme.colorScheme.error
+              )
+            }
+          }
           HeightSpacer(value = 12.dp)
           CenterRow {
             Icon(Icons.Rounded.SportsEsports, null, modifier = Modifier.alpha(0.5f))
@@ -258,7 +272,7 @@ fun PresetsDialog(
       confirmButton = {
         TextButton(
           onClick = { onConfirmed(selectedGameItem) },
-          enabled = state.text != ""
+          enabled = !state.isTextError
         ) {
           Text(stringResource(id = R.string.add))
         }

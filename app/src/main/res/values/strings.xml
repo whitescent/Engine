@@ -7,6 +7,7 @@
     <string name="no_presets_file">You don\'t have any presets</string>
     <string name="add_new_presets">New presets</string>
     <string name="presets_name">presets name</string>
+    <string name="presets_name_exists">This presets name already exists</string>
     <string name="game_type">Game Type</string>
     <string name="cancel">Cancel</string>
     <string name="add">Add</string>
