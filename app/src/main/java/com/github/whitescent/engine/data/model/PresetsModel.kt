@@ -8,5 +8,6 @@ import kotlinx.parcelize.Parcelize
 data class PresetsModel(
   val presetsName: String,
   val gameType: GameItem,
-  val createdAt: Long
+  val createdAt: Long,
+  val widgetList: List<WidgetModel> = listOf()
 ) : Parcelable

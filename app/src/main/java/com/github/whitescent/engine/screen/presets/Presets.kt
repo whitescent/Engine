@@ -175,8 +175,8 @@ fun PresetsListItem(
           painter = painterResource(id = gameType.painter),
           contentDescription = null,
           modifier = Modifier
-            .size(30.dp)
-            .clip(CircleShape)
+          .size(30.dp)
+          .clip(CircleShape)
         )
     },
     trailingContent = {

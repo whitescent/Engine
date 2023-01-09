@@ -37,7 +37,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.whitescent.engine.AppTheme
 import com.github.whitescent.engine.MainActivity
 import com.github.whitescent.engine.R
+import com.github.whitescent.engine.data.model.Position
 import com.github.whitescent.engine.data.model.PresetsModel
+import com.github.whitescent.engine.data.model.WidgetModel
+import com.github.whitescent.engine.data.model.WidgetType
 import com.github.whitescent.engine.screen.presets.widget.EngineButton
 import com.github.whitescent.engine.screen.presets.widget.EngineAxis
 import com.github.whitescent.engine.screen.presets.widget.AxisOrientation
@@ -49,7 +52,6 @@ import com.github.whitescent.engine.ui.component.rememberEditorDrawerState
 import com.github.whitescent.engine.utils.LocalSystemUiController
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Destination
@@ -67,17 +69,19 @@ fun PresetsEditor(
 
   systemUiController.systemBarsBehavior =
     WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-  DisposableEffect(Unit) {
 
+  DisposableEffect(Unit) {
     // Force this @Composable to be landscape and hide the statusBar.
     val originalOrientation = activity.requestedOrientation
     activity.requestedOrientation = orientation
     systemUiController.isSystemBarsVisible = false
     viewModel.startListeningSensor()
+    viewModel.readWidgetList(presetsModel.presetsName)
     onDispose {
       activity.requestedOrientation = originalOrientation
       systemUiController.isSystemBarsVisible = true
       viewModel.stopListeningSensor() // stop listening sensor.
+      viewModel.saveWidgetList(presetsModel.presetsName)
     }
   }
 
@@ -97,7 +101,7 @@ fun PresetsEditor(
       }
     },
     updateWidgetPos = { index, position ->
-      viewModel.updateControllerPos(index, position)
+      viewModel.updateWidgetPos(index, position)
     }
   )
 }
@@ -106,7 +110,7 @@ fun PresetsEditor(
 fun EditorContent(
   presetsModel: PresetsModel,
   drawerState: EditorDrawerState,
-  widgetList: List<WidgetUiModel>,
+  widgetList: List<WidgetModel>,
   onClickLabel: () -> Unit,
   onSelectWidget: (WidgetType) -> Unit,
   updateWidgetPos: (Int, Position) -> Unit
@@ -115,7 +119,7 @@ fun EditorContent(
     drawerContent = { EditorDrawerContent(onSelectWidget) },
     drawerState = drawerState
   ) {
-    var selected by remember { mutableStateOf(UUID.randomUUID()) }
+    var selected by remember { mutableStateOf(0) }
     Box(
       modifier = Modifier
         .fillMaxSize()
@@ -128,100 +132,107 @@ fun EditorContent(
         presetsModel = presetsModel,
         onClickLabel = onClickLabel
       )
-      widgetList.forEachIndexed { index, it ->
-        var scale by remember { mutableStateOf(1f) }
-        var offsetX by remember { mutableStateOf(0f) }
-        var offsetY by remember { mutableStateOf(0f) }
-        val selectedModifier = Modifier
-          .graphicsLayer(
-            scaleX = it.position.scale,
-            scaleY = it.position.scale,
-            translationX = it.position.offsetX * it.position.scale,
-            translationY = it.position.offsetY * it.position.scale
-          )
-          .pointerInput(Unit) {
-            detectTransformGestures(
-              onGesture = { _, pan, zoom, _ ->
-                offsetX += pan.x
-                offsetY += pan.y
-                scale *= zoom
-                updateWidgetPos(
-                  index,
-                  it.position.copy(
-                    offsetX = offsetX,
-                    offsetY = offsetY,
-                    scale = scale
-                  )
-                )
-              }
+      if (widgetList.isNotEmpty()) {
+        widgetList.forEachIndexed { index, it ->
+          var scale by remember { mutableStateOf(it.position.scale) }
+          var offsetX by remember { mutableStateOf(it.position.offsetX) }
+          var offsetY by remember { mutableStateOf(it.position.offsetY) }
+          val selectedModifier = Modifier
+            .graphicsLayer(
+              scaleX = it.position.scale,
+              scaleY = it.position.scale,
+              translationX = it.position.offsetX * it.position.scale,
+              translationY = it.position.offsetY * it.position.scale
             )
-          }
-        when (it.widgetType) {
-          WidgetType.Axis -> {
-            when (selected) {
-              it.uuid -> {
-                EngineAxis(
-                  onValueChanged = { },
-                  modifier = Modifier
-                    .size(60.dp, 120.dp)
-                    .align(Alignment.Center)
-                    .then(selectedModifier)
-                    .onEditingBorder(),
-                  enabledScroll = false
-                )
-              }
-              else -> {
-                EngineAxis(
-                  onValueChanged = { },
-                  modifier = Modifier
-                    .size(60.dp, 120.dp)
-                    .align(Alignment.Center)
-                    .graphicsLayer(
-                      scaleX = it.position.scale,
-                      scaleY = it.position.scale,
-                      translationX = it.position.offsetX * it.position.scale,
-                      translationY = it.position.offsetY * it.position.scale
-                    ),
-                  onPress = { selected = it.uuid }
-                )
+            .pointerInput(Unit) {
+              detectTransformGestures(
+                onGesture = { _, pan, zoom, _ ->
+                  offsetX += pan.x
+                  offsetY += pan.y
+                  scale *= zoom
+                  updateWidgetPos(
+                    index,
+                    it.position.copy(
+                      offsetX = offsetX,
+                      offsetY = offsetY,
+                      scale = scale
+                    )
+                  )
+                }
+              )
+            }
+          when (it.widgetType) {
+            WidgetType.Axis -> {
+              when (selected) {
+                index -> {
+                  EngineAxis(
+                    onValueChanged = { },
+                    modifier = Modifier
+                      .size(60.dp, 120.dp)
+                      .align(Alignment.Center)
+                      .then(selectedModifier)
+                      .onEditingBorder(),
+                    enabledScroll = false
+                  )
+                }
+                else -> {
+                  EngineAxis(
+                    onValueChanged = { },
+                    modifier = Modifier
+                      .size(60.dp, 120.dp)
+                      .align(Alignment.Center)
+                      .graphicsLayer(
+                        scaleX = it.position.scale,
+                        scaleY = it.position.scale,
+                        translationX = it.position.offsetX * it.position.scale,
+                        translationY = it.position.offsetY * it.position.scale
+                      ),
+                    onPress = { selected = index }
+                  )
+                }
               }
             }
-          }
-          else -> {
-            val shape = when(it.widgetType) {
-              WidgetType.RectangularButton -> RectangleShape
-              else -> CircleShape
-            }
-            when (selected) {
-              it.uuid -> {
-                EngineButton(
-                  modifier = Modifier
-                    .size(160.dp)
-                    .align(Alignment.Center)
-                    .then(selectedModifier)
-                    .onEditingBorder(),
-                  shape = shape
-                )
+            else -> {
+              val shape = when(it.widgetType) {
+                WidgetType.RectangularButton -> RectangleShape
+                else -> CircleShape
               }
-              else -> {
-                EngineButton(
-                  modifier = Modifier
-                    .size(160.dp)
-                    .align(Alignment.Center)
-                    .graphicsLayer(
-                      scaleX = it.position.scale,
-                      scaleY = it.position.scale,
-                      translationX = it.position.offsetX * it.position.scale,
-                      translationY = it.position.offsetY * it.position.scale
-                    ),
-                  shape = shape
-                ) {
-                  selected = it.uuid
+              when (selected) {
+                index -> {
+                  EngineButton(
+                    modifier = Modifier
+                      .size(160.dp)
+                      .align(Alignment.Center)
+                      .then(selectedModifier)
+                      .onEditingBorder(),
+                    shape = shape
+                  )
+                }
+                else -> {
+                  EngineButton(
+                    modifier = Modifier
+                      .size(160.dp)
+                      .align(Alignment.Center)
+                      .graphicsLayer(
+                        scaleX = it.position.scale,
+                        scaleY = it.position.scale,
+                        translationX = it.position.offsetX * it.position.scale,
+                        translationY = it.position.offsetY * it.position.scale
+                      ),
+                    shape = shape
+                  ) {
+                    selected = index
+                  }
                 }
               }
             }
           }
         }
+      } else {
+        Text(
+          text = "预设中没有组件，点击左上角的按钮添加新组件吧！",
+          modifier = Modifier.align(Alignment.Center).alpha(0.5f),
+        )
       }
     }
   }
