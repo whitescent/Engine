@@ -20,45 +20,43 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
   private val _mmkv = MutableStateFlow(MMKV.defaultMMKV())
   val mmkv = _mmkv.asStateFlow()
 
-  private val _dialogState = MutableStateFlow(
-    PresetsDialogUiState(false, "", false)
-  )
-  val dialogState = _dialogState.asStateFlow()
+  private val dialogUi = MutableStateFlow(PresetsDialogUiState())
+  private val inputText = MutableStateFlow("")
+  val dialogUiState = dialogUi.asStateFlow()
 
   init {
     viewModelScope.launch {
-      _dialogState
+      inputText
         .debounce(500)
-        .filter {
-          it.text.isNotEmpty()
-        }
-        .collect {
-          if (_mmkv.value.containsKey(it.text)) {
-            _dialogState.value = _dialogState.value.copy(isTextError = true)
+        .filterNot(String::isEmpty)
+        .collectLatest {
+          if (_mmkv.value.containsKey(it)) {
+            dialogUi.value = dialogUi.value.copy(isTextError = true)
           }
         }
     }
   }
 
   fun onClickFab() {
-    _dialogState.value = PresetsDialogUiState(true, "", false)
+    dialogUi.value = PresetsDialogUiState(display = true)
   }
 
   fun onDismissRequest() {
-    _dialogState.value = PresetsDialogUiState(false, "", false)
+    dialogUi.value = PresetsDialogUiState()
   }
 
   fun onValueChange(text: String) {
-    _dialogState.value = PresetsDialogUiState(true, text, false)
+    inputText.update { text }
+    dialogUi.value = PresetsDialogUiState(true, text, false)
   }
 
   fun onConfirmed(gameItem: GameItem) {
     try {
       val currentMoment = Clock.System.now().toEpochMilliseconds()
-      val presetsName = _dialogState.value.text
+      val presetsName = dialogUi.value.text
       _mmkv.value.encode(presetsName, PresetsModel(presetsName, gameItem, currentMoment))
       _mmkv.value = MMKV.defaultMMKV()
-      _dialogState.value = PresetsDialogUiState(false, "", false)
+      dialogUi.value = PresetsDialogUiState()
     } catch (e: Exception) {
       e.printStackTrace()
     }
@@ -78,7 +76,7 @@ enum class GameItem(
 }
 
 data class PresetsDialogUiState(
-  val display: Boolean,
-  val text: String,
-  val isTextError: Boolean
+  val display: Boolean = false,
+  val text: String = "",
+  val isTextError: Boolean = false
 )

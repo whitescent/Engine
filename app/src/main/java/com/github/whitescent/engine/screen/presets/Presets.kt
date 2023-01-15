@@ -63,7 +63,7 @@ fun PresetsRoot(
   viewModel: PresetsViewModel = hiltViewModel(),
   navigator: DestinationsNavigator
 ) {
-  val dialogState by viewModel.dialogState.collectAsState()
+  val dialogState by viewModel.dialogUiState.collectAsState()
   val mmkv by viewModel.mmkv.collectAsState()
   Column(
     modifier = Modifier.fillMaxSize()
@@ -123,12 +123,11 @@ fun PresetsList(
         }
       }
       else -> {
-        val presetsList = mmkv.allKeys()!!.sortedByDescending { configName ->
-          mmkv.decodeParcelable(configName, PresetsModel::class.java)!!.createdAt
+        val presetsList = mmkv.allKeys()!!.sortedByDescending { presetsName ->
+          mmkv.decodeParcelable(presetsName, PresetsModel::class.java)!!.createdAt
         }
         LazyColumn(
-          modifier = Modifier
-            .fillMaxSize()
+          modifier = Modifier.fillMaxSize()
         ) {
           items(presetsList) { name ->
             val presets = mmkv.decodeParcelable(name, PresetsModel::class.java)
@@ -164,7 +163,7 @@ fun PresetsListItem(
     },
     supportingText = {
       Text(
-        text = "创建于 ${time.date}",
+        text = "创建于 ${time.date}", // TODO 本地化
         style = AppTheme.typography.labelLarge,
         color = AppTheme.colorScheme.onSecondaryContainer,
         modifier = Modifier.alpha(0.5f)
@@ -272,7 +271,7 @@ fun PresetsDialog(
       confirmButton = {
         TextButton(
           onClick = { onConfirmed(selectedGameItem) },
-          enabled = !state.isTextError
+          enabled = !state.isTextError && state.text.isNotEmpty()
         ) {
           Text(stringResource(id = R.string.add))
         }
