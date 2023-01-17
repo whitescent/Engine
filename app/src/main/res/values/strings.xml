@@ -11,6 +11,7 @@
     <string name="game_type">Game Type</string>
     <string name="cancel">Cancel</string>
     <string name="add">Add</string>
+    <string name="ascending">Ascending</string>
 
     <string name="undefined_game">Undefined Game</string>
     <string name="assetto_corsa">Assetto Corsa</string>

@@ -13,6 +13,7 @@
     <string name="game_type">游戏类别</string>
     <string name="cancel">取消</string>
     <string name="add">添加</string>
+    <string name="ascending">升序</string>
 
     <string name="undefined_game">未分类的游戏</string>
     <string name="assetto_corsa">神力科莎</string>

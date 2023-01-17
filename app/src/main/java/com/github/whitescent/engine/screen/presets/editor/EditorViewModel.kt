@@ -2,10 +2,7 @@ package com.github.whitescent.engine.screen.presets.editor
 
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
-import com.github.whitescent.engine.data.model.Position
-import com.github.whitescent.engine.data.model.PresetsModel
-import com.github.whitescent.engine.data.model.WidgetModel
-import com.github.whitescent.engine.data.model.WidgetType
+import com.github.whitescent.engine.data.model.*
 import com.github.whitescent.engine.sensor.AbstractSensor
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +18,7 @@ class EditorViewModel @Inject constructor(
   private val _sensorFlow = MutableStateFlow(0f)
   val sensorFlow = _sensorFlow.asStateFlow()
 
-  private val _mmkv = MMKV.defaultMMKV()
+  private val mmkv = MMKV.defaultMMKV()
 
   var widgetList by mutableStateOf<List<WidgetModel>>(listOf())
 
@@ -34,15 +31,28 @@ class EditorViewModel @Inject constructor(
   fun stopListeningSensor() = sensor.stopListening()
 
   fun readWidgetList(presetsName: String) {
-    val presets = _mmkv.decodeParcelable(presetsName, PresetsModel::class.java)!!
+    val presets = mmkv
+      .decodeParcelable("presets_list", PresetsListModel::class.java)!!.value
+      .first {
+        it.presetsName == presetsName
+      }
     widgetList = presets.widgetList.toMutableList()
   }
 
   fun saveWidgetList(presetsName: String) {
-    val presets = _mmkv.decodeParcelable(presetsName, PresetsModel::class.java)
-    _mmkv.encode(presetsName, presets!!.copy(
-      widgetList = widgetList
-    ))
+    val newPresets = mmkv
+      .decodeParcelable("presets_list", PresetsListModel::class.java)!!.value
+      .first {
+        it.presetsName == presetsName
+      }
+      .copy(widgetList = widgetList)
+    val newPresetsList = mmkv
+      .decodeParcelable("presets_list", PresetsListModel::class.java)!!.value
+      .map {
+        if (it.presetsName == presetsName) newPresets
+        else it
+      }
+    mmkv.encode("presets_list", PresetsListModel(newPresetsList))
   }
 
   fun addNewWidget(widgetType: WidgetType) {

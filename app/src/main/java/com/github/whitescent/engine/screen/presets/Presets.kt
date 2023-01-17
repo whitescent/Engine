@@ -52,7 +52,6 @@ import com.github.whitescent.engine.ui.component.HeightSpacer
 import com.github.whitescent.engine.ui.component.WidthSpacer
 import com.google.accompanist.flowlayout.FlowRow
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.delay
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
@@ -64,12 +63,17 @@ fun PresetsRoot(
   navigator: DestinationsNavigator
 ) {
   val dialogState by viewModel.dialogUiState.collectAsState()
-  val mmkv by viewModel.mmkv.collectAsState()
+  val sortPreference by viewModel.sortPreference.collectAsState()
+
   Column(
     modifier = Modifier.fillMaxSize()
   ) {
-    PresetsTopBar()
-    PresetsList(mmkv) {
+    PresetsTopBar(
+      preference = sortPreference,
+      onClickSortCategory = viewModel::onClickSortCategory,
+      onSortingChanged = viewModel::onSortingChanged
+    )
+    PresetsList(viewModel.presetsList) {
       navigator.navigate(
         PresetsEditorDestination(
           orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE,
@@ -97,15 +101,18 @@ fun PresetsRoot(
     onConfirmed = viewModel::onConfirmed,
     onValueChange = viewModel::onValueChange
   )
+  LaunchedEffect(sortPreference) {
+    viewModel.updateSorting()
+  }
 }
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun PresetsList(
-  mmkv: MMKV,
+  presetsList: List<PresetsModel>,
   onClickEditor: (PresetsModel) -> Unit
 ) {
-  AnimatedContent(mmkv.allKeys()!!.size) {
+  AnimatedContent(presetsList.size) {
     when(it) {
       0 -> {
         Box(Modifier.fillMaxSize(), Alignment.Center) {
@@ -123,15 +130,11 @@ fun PresetsList(
         }
       }
       else -> {
-        val presetsList = mmkv.allKeys()!!.sortedByDescending { presetsName ->
-          mmkv.decodeParcelable(presetsName, PresetsModel::class.java)!!.createdAt
-        }
         LazyColumn(
           modifier = Modifier.fillMaxSize()
         ) {
-          items(presetsList) { name ->
-            val presets = mmkv.decodeParcelable(name, PresetsModel::class.java)
-            key(presets!!.createdAt) {
+          items(presetsList) { presets ->
+            key(presets.createdAt) {
               PresetsListItem(presets, onClickEditor)
             }
           }
@@ -174,8 +177,8 @@ fun PresetsListItem(
           painter = painterResource(id = gameType.painter),
           contentDescription = null,
           modifier = Modifier
-          .size(30.dp)
-          .clip(CircleShape)
+            .size(30.dp)
+            .clip(CircleShape)
         )
     },
     trailingContent = {
