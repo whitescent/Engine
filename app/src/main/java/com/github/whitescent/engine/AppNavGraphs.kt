@@ -1,7 +1,7 @@
 package com.github.whitescent.engine
 
 import com.github.whitescent.engine.destinations.AppScaffoldDestination
-import com.github.whitescent.engine.destinations.PresetsEditorDestination
+import com.github.whitescent.engine.destinations.EditorDestination
 import com.ramcosta.composedestinations.spec.DestinationSpec
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 
@@ -17,9 +17,9 @@ object AppNavGraphs {
 
   val presets = object : NavGraphSpec {
     override val route = "presets"
-    override val startRoute = PresetsEditorDestination
+    override val startRoute = EditorDestination
     override val destinationsByRoute = listOf(
-      PresetsEditorDestination,
+      EditorDestination,
     ).associateBy { it.route }
   }
 

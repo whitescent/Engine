@@ -56,7 +56,10 @@ fun PresetsTopBar(
           }
           DropdownMenuItem(
             text = { Text(stringResource(R.string.ascending)) },
-            onClick = onSortingChanged,
+            onClick = {
+              onSortingChanged()
+              isOpen = false
+            },
             trailingIcon = {
               Icon(
                 imageVector =

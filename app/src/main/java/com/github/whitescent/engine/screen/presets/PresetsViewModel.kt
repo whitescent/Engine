@@ -95,7 +95,6 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
       }
       else -> presetsList
     }
-    presetsList = listOf()
     presetsList = newList
   }
 

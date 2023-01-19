@@ -56,7 +56,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Destination
 @Composable
-fun PresetsEditor(
+fun Editor(
   orientation: Int,
   presetsModel: PresetsModel,
   viewModel: EditorViewModel = hiltViewModel()
@@ -232,6 +232,7 @@ fun EditorContent(
         Text(
           text = "预设中没有组件，点击左上角的按钮添加新组件吧！",
           modifier = Modifier.align(Alignment.Center).alpha(0.5f),
+          color = AppTheme.colorScheme.onBackground
         )
       }
     }

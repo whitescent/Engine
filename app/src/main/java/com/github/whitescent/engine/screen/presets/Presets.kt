@@ -5,21 +5,16 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Construction
-import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material.icons.rounded.SportsEsports
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,6 +31,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -46,7 +42,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.whitescent.engine.R
 import com.github.whitescent.engine.AppTheme
 import com.github.whitescent.engine.data.model.PresetsModel
-import com.github.whitescent.engine.destinations.PresetsEditorDestination
+import com.github.whitescent.engine.destinations.EditorDestination
 import com.github.whitescent.engine.ui.component.CenterRow
 import com.github.whitescent.engine.ui.component.HeightSpacer
 import com.github.whitescent.engine.ui.component.WidthSpacer
@@ -75,7 +71,7 @@ fun PresetsRoot(
     )
     PresetsList(viewModel.presetsList) {
       navigator.navigate(
-        PresetsEditorDestination(
+        EditorDestination(
           orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE,
           presetsModel = it
         )
@@ -153,26 +149,29 @@ fun PresetsListItem(
   val time = Instant.fromEpochMilliseconds(presetsModel.createdAt).toLocalDateTime(TimeZone.UTC)
   val name = presetsModel.presetsName
   val gameType = presetsModel.gameType
-  ListItem(
-    headlineText = {
-     Column {
-       Text(
-         text = name,
-         style = AppTheme.typography.titleMedium,
-         color = AppTheme.colorScheme.onSecondaryContainer
-       )
-       HeightSpacer(value = 4.dp)
-     }
-    },
-    supportingText = {
-      Text(
-        text = "创建于 ${time.date}", // TODO 本地化
-        style = AppTheme.typography.labelLarge,
-        color = AppTheme.colorScheme.onSecondaryContainer,
-        modifier = Modifier.alpha(0.5f)
-      )
-    },
-    leadingContent = {
+  var isExpanded by remember { mutableStateOf(false) }
+
+  Column {
+    ListItem(
+      headlineText = {
+        Column {
+          Text(
+            text = name,
+            style = AppTheme.typography.titleMedium,
+            color = AppTheme.colorScheme.onSecondaryContainer
+          )
+          HeightSpacer(value = 4.dp)
+        }
+      },
+      supportingText = {
+        Text(
+          text = "创建于 ${time.date}", // TODO 本地化
+          style = AppTheme.typography.labelLarge,
+          color = AppTheme.colorScheme.onSecondaryContainer,
+          modifier = Modifier.alpha(0.5f)
+        )
+      },
+      leadingContent = {
         Image(
           painter = painterResource(id = gameType.painter),
           contentDescription = null,
@@ -180,16 +179,66 @@ fun PresetsListItem(
             .size(30.dp)
             .clip(CircleShape)
         )
-    },
-    trailingContent = {
-      IconButton(
-        onClick = { onClickEditor(presetsModel) }
-      ) {
-        Icon(Icons.Rounded.Edit, null)
+      },
+      trailingContent = {
+        IconButton(
+          onClick = { onClickEditor(presetsModel) }
+        ) {
+          Icon(Icons.Rounded.Edit, null)
+        }
+      },
+      tonalElevation = 2.dp,
+      modifier = Modifier.clickable {
+        isExpanded = !isExpanded
       }
-    },
-    tonalElevation = 2.dp
-  )
+    )
+    AnimatedVisibility(visible = isExpanded) {
+      CenterRow(modifier = Modifier.fillMaxWidth()) {
+        Box(
+          modifier = Modifier
+            .weight(1f)
+            .background(Color.Green)
+            .padding(20.dp),
+          contentAlignment = Alignment.Center
+        ) {
+          CenterRow {
+            Icon(
+              imageVector = Icons.Rounded.Edit,
+              contentDescription = null,
+              tint = Color.White
+            )
+            WidthSpacer(value = 6.dp)
+            Text(
+              text = "修改信息",
+              style = AppTheme.typography.bodyMedium,
+              color = Color.White
+            )
+          }
+        }
+        Box(
+          modifier = Modifier
+            .weight(1f)
+            .background(Color.Red)
+            .padding(20.dp),
+          contentAlignment = Alignment.Center
+        ) {
+          CenterRow {
+            Icon(
+              imageVector = Icons.Rounded.Delete,
+              contentDescription = null,
+              tint = Color.White
+            )
+            WidthSpacer(value = 6.dp)
+            Text(
+              text = "删除预设",
+              style = AppTheme.typography.bodyMedium,
+              color = Color.White
+            )
+          }
+        }
+      }
+    }
+  }
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
