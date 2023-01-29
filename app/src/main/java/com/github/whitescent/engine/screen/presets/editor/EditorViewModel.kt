@@ -66,6 +66,12 @@ class EditorViewModel @Inject constructor(
     }
   }
 
+  fun deleteWidget(widget: WidgetModel) {
+    widgetList = widgetList.toMutableList().also {
+      it.remove(widget)
+    }
+  }
+
   fun updateWidgetPos(index: Int, position: Position) {
     widgetList = widgetList.toMutableList().also {
       it[index] = widgetList[index].copy(position = position)

@@ -3,15 +3,9 @@ package com.github.whitescent.engine.screen.presets.editor
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -44,11 +38,7 @@ import com.github.whitescent.engine.data.model.WidgetType
 import com.github.whitescent.engine.screen.presets.widget.EngineButton
 import com.github.whitescent.engine.screen.presets.widget.EngineAxis
 import com.github.whitescent.engine.screen.presets.widget.AxisOrientation
-import com.github.whitescent.engine.ui.component.CenterRow
-import com.github.whitescent.engine.ui.component.EditorDrawer
-import com.github.whitescent.engine.ui.component.EditorDrawerState
-import com.github.whitescent.engine.ui.component.WidthSpacer
-import com.github.whitescent.engine.ui.component.rememberEditorDrawerState
+import com.github.whitescent.engine.ui.component.*
 import com.github.whitescent.engine.utils.LocalSystemUiController
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.launch
@@ -102,7 +92,8 @@ fun Editor(
     },
     updateWidgetPos = { index, position ->
       viewModel.updateWidgetPos(index, position)
-    }
+    },
+    deleteWidget = viewModel::deleteWidget
   )
 }
 
@@ -113,7 +104,8 @@ fun EditorContent(
   widgetList: List<WidgetModel>,
   onClickLabel: () -> Unit,
   onSelectWidget: (WidgetType) -> Unit,
-  updateWidgetPos: (Int, Position) -> Unit
+  updateWidgetPos: (Int, Position) -> Unit,
+  deleteWidget: (WidgetModel) -> Unit
 ) {
   EditorDrawer(
     drawerContent = { EditorDrawerContent(onSelectWidget) },
@@ -137,6 +129,7 @@ fun EditorContent(
           var scale by remember { mutableStateOf(it.position.scale) }
           var offsetX by remember { mutableStateOf(it.position.offsetX) }
           var offsetY by remember { mutableStateOf(it.position.offsetY) }
+          var openDialog by remember { mutableStateOf(false) }
           val selectedModifier = Modifier
             .graphicsLayer(
               scaleX = it.position.scale,
@@ -144,6 +137,15 @@ fun EditorContent(
               translationX = it.position.offsetX * it.position.scale,
               translationY = it.position.offsetY * it.position.scale
             )
+            .pointerInput(Unit) {
+              if (it.widgetType == WidgetType.Axis) {
+                detectTapGestures(
+                  onDoubleTap = {
+                    openDialog = true
+                  }
+                )
+              }
+            }
             .pointerInput(Unit) {
               detectTransformGestures(
                 onGesture = { _, pan, zoom, _ ->
@@ -161,6 +163,15 @@ fun EditorContent(
                 }
               )
             }
+          if (openDialog) {
+            DeleteDialog(
+              onDismissRequest = { openDialog = false },
+              onConfirmed = {
+                deleteWidget(it)
+                openDialog = false
+              }
+            )
+          }
           when (it.widgetType) {
             WidgetType.Axis -> {
               when (selected) {
@@ -205,7 +216,8 @@ fun EditorContent(
                       .align(Alignment.Center)
                       .then(selectedModifier)
                       .onEditingBorder(),
-                    shape = shape
+                    shape = shape,
+                    onDoubleClick = { openDialog = true }
                   )
                 }
                 else -> {
@@ -231,12 +243,54 @@ fun EditorContent(
       } else {
         Text(
           text = "预设中没有组件，点击左上角的按钮添加新组件吧！",
-          modifier = Modifier.align(Alignment.Center).alpha(0.5f),
+          modifier = Modifier
+            .align(Alignment.Center)
+            .alpha(0.5f),
           color = AppTheme.colorScheme.onBackground
         )
       }
     }
   }
+}
+
+@Composable
+fun DeleteDialog(
+  onDismissRequest: () -> Unit,
+  onConfirmed: () -> Unit
+) {
+  AlertDialog(
+    onDismissRequest = onDismissRequest,
+    title = {
+      CenterRow {
+        Icon(Icons.Rounded.Construction, null, modifier = Modifier.alpha(0.5f))
+        WidthSpacer(value = 6.dp)
+        Text(
+          text = "删除组件",
+          style = AppTheme.typography.headlineMedium
+        )
+      }
+    },
+    text = {
+      Text(
+        text = "你确认删除这个组件吗？",
+        style = AppTheme.typography.headlineMedium
+      )
+    },
+    dismissButton = {
+      TextButton(
+        onClick = onDismissRequest
+      ) {
+        Text(stringResource(id = R.string.cancel))
+      }
+    },
+    confirmButton = {
+      TextButton(
+        onClick = { onConfirmed() }
+      ) {
+        Text("确认")
+      }
+    }
+  )
 }
 
 @Composable

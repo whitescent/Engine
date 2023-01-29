@@ -96,7 +96,7 @@ fun EngineAxis(
   }
 }
 
-fun DrawScope.drawAxisIndicator(offsetY: Float) {
+private fun DrawScope.drawAxisIndicator(offsetY: Float) {
   val sliderSize = size
   val axisIndicatorHeight = (sliderSize.height * 0.09f).dp
   val axisIndicatorWidth = (sliderSize.width * 0.6f).dp
