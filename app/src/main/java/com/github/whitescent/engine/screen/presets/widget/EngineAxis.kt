@@ -98,7 +98,7 @@ fun EngineAxis(
 
 private fun DrawScope.drawAxisIndicator(offsetY: Float) {
   val sliderSize = size
-  val axisIndicatorHeight = (sliderSize.height * 0.09f).dp
+  val axisIndicatorHeight = (sliderSize.height * 0.06f).dp
   val axisIndicatorWidth = (sliderSize.width * 0.6f).dp
   drawRoundRect(
     color = Color(0xffD9D9D9),
