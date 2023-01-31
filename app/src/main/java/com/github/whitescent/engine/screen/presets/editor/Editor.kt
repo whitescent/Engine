@@ -166,15 +166,6 @@ fun EditorContent(
                 }
               )
             }
-          if (openDialog) {
-            DeleteDialog(
-              onDismissRequest = { openDialog = false },
-              onConfirmed = {
-                deleteWidget(it)
-                openDialog = false
-              }
-            )
-          }
           when (it.widgetType) {
             WidgetType.Axis -> {
               when (selected) {
@@ -241,6 +232,15 @@ fun EditorContent(
                 }
               }
             }
+          }
+          if (openDialog) {
+            DeleteDialog(
+              onDismissRequest = { openDialog = false },
+              onConfirmed = {
+                deleteWidget(it)
+                openDialog = false
+              }
+            )
           }
         }
       } else {

@@ -35,12 +35,12 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
 
   init {
     // get all presets
-    if (mmkv.containsKey("presets_list")) {
-      presetsList = mmkv.decodeParcelable("presets_list", PresetsListModel::class.java)!!.value
+    mmkv.decodeParcelable("presets_list", PresetsListModel::class.java)?.let {
+      presetsList = it.value
     }
     // get sort preference
-    if (mmkv.containsKey("sort_preference")) {
-      sort.value = mmkv.decodeParcelable("sort_preference", SortPreferenceModel::class.java)!!
+    mmkv.decodeParcelable("sort_preference", SortPreferenceModel::class.java)?.let {
+      sort.value = it
     }
     viewModelScope.launch {
       inputText
@@ -112,6 +112,7 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
       presetsList = presetsList.toMutableList().also {
         it.add(PresetsModel(presetsName, gameCategory, currentMoment))
       }
+      updateSorting()
       mmkv.encode("presets_list", PresetsListModel(presetsList))
       dialogUi.value = PresetsDialogUiState() // reset uiState
     } catch (e: Exception) {
