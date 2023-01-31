@@ -49,9 +49,7 @@ import com.github.whitescent.engine.ui.component.WidthSpacer
 import com.google.accompanist.flowlayout.FlowRow
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.*
 
 @Composable
 fun PresetsRoot(
@@ -157,6 +155,8 @@ fun PresetsListItem(
   val gameType = presetsModel.gameType
   var isExpanded by remember { mutableStateOf(false) }
 
+  val timeString = "${time.date.month.number}-${time.date.dayOfMonth}"
+
   Column {
     ListItem(
       headlineText = {
@@ -171,7 +171,7 @@ fun PresetsListItem(
       },
       supportingText = {
         Text(
-          text = "创建于 ${time.date}", // TODO 本地化
+          text = stringResource(R.string.created_date, timeString),
           style = AppTheme.typography.labelLarge,
           color = AppTheme.colorScheme.onSecondaryContainer,
           modifier = Modifier.alpha(0.5f)
@@ -255,11 +255,11 @@ fun PresetsListItem(
 fun NewPresetsDialog(
   state: PresetsDialogUiState,
   onDismissRequest: () -> Unit,
-  onConfirmed: (GameItem) -> Unit,
+  onConfirmed: (GameCategory) -> Unit,
   onValueChange: (String) -> Unit
 ) {
   if (state.display) {
-    var selectedGameItem by remember { mutableStateOf(GameItem.Undefined) }
+    var selectedGameCategory by remember { mutableStateOf(GameCategory.Undefined) }
     AlertDialog(
       onDismissRequest = onDismissRequest,
       title = {
@@ -302,7 +302,7 @@ fun NewPresetsDialog(
             Icon(Icons.Rounded.SportsEsports, null, modifier = Modifier.alpha(0.5f))
             WidthSpacer(value = 6.dp)
             Text(
-              text = stringResource(id = R.string.game_type),
+              text = stringResource(id = R.string.game_category),
               style = AppTheme.typography.titleMedium
             )
           }
@@ -311,8 +311,8 @@ fun NewPresetsDialog(
             mainAxisSpacing = 20.dp,
             crossAxisSpacing = 6.dp
           ) {
-            GameItem.values().forEach { game ->
-              GameTypeItem(game, selectedGameItem) { selectedGameItem = game }
+            GameCategory.values().forEach { game ->
+              GameCategoryItem(game, selectedGameCategory) { selectedGameCategory = game }
             }
           }
         }
@@ -331,7 +331,7 @@ fun NewPresetsDialog(
       },
       confirmButton = {
         TextButton(
-          onClick = { onConfirmed(selectedGameItem) },
+          onClick = { onConfirmed(selectedGameCategory) },
           enabled = !state.isTextError && state.text.isNotEmpty()
         ) {
           Text(stringResource(id = R.string.add))
@@ -343,15 +343,15 @@ fun NewPresetsDialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GameTypeItem(
-  gameItem: GameItem,
-  selectedGameItem: GameItem,
-  onSelected: (GameItem) -> Unit,
+fun GameCategoryItem(
+  gameCategory: GameCategory,
+  selectedGameCategory: GameCategory,
+  onSelected: (GameCategory) -> Unit,
 ) {
   ListItem(
     leadingContent = {
       Image(
-        painter = painterResource(id = gameItem.painter),
+        painter = painterResource(id = gameCategory.painter),
         contentDescription = null,
         modifier = Modifier
           .size(35.dp)
@@ -360,18 +360,18 @@ fun GameTypeItem(
     },
     headlineText = { 
       Text(
-        text = stringResource(id = gameItem.gameName)
+        text = stringResource(id = gameCategory.gameName)
       )
     },
     trailingContent = {
       RadioButton(
-        selected = (selectedGameItem == gameItem),
-        onClick = { onSelected(gameItem) }
+        selected = (selectedGameCategory == gameCategory),
+        onClick = { onSelected(gameCategory) }
       )
     },
     modifier = Modifier.selectable(
-      selected = selectedGameItem == gameItem,
-      onClick = { onSelected(gameItem) },
+      selected = selectedGameCategory == gameCategory,
+      onClick = { onSelected(gameCategory) },
       role = Role.Tab
     )
   )

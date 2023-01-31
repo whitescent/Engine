@@ -10,10 +10,16 @@
     <string name="add_new_presets">添加新的预设</string>
     <string name="presets_name">预设名字</string>
     <string name="presets_name_exists">此预设名已存在</string>
-    <string name="game_type">游戏类别</string>
+    <string name="game_category">游戏类别</string>
+    <string name="date">创建日期</string>
     <string name="cancel">取消</string>
     <string name="add">添加</string>
     <string name="ascending">升序</string>
+    <string name="created_date">创建于 %1s</string>
+
+    <string name="null_widget">预设中没有组件，点击左上角的按钮添加新组件吧！</string>
+    <string name="buttons">按钮</string>
+    <string name="axis">轴</string>
 
     <string name="undefined_game">未分类的游戏</string>
     <string name="assetto_corsa">神力科莎</string>

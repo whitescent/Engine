@@ -18,7 +18,11 @@ fun PresetsTopBar(
   onSortingChanged: () -> Unit
 ) {
   var isOpen by remember { mutableStateOf(false) }
-  val radioGroup = listOf("名称", "游戏类别", "创建时间")
+  val sortingGroup = listOf(
+    stringResource(id = R.string.presets_name),
+    stringResource(id = R.string.game_category),
+    stringResource(id = R.string.date),
+  )
   TopAppBar(
     title = {
       Text(
@@ -37,7 +41,7 @@ fun PresetsTopBar(
           expanded = isOpen,
           onDismissRequest = { isOpen = false },
         ) {
-          radioGroup.forEachIndexed { index, name ->
+          sortingGroup.forEachIndexed { index, name ->
             DropdownMenuItem(
               text = { Text(name) },
               onClick = {

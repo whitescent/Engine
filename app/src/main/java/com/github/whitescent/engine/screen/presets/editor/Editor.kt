@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -40,6 +41,8 @@ import com.github.whitescent.engine.screen.presets.widget.EngineAxis
 import com.github.whitescent.engine.screen.presets.widget.AxisOrientation
 import com.github.whitescent.engine.ui.component.*
 import com.github.whitescent.engine.utils.LocalSystemUiController
+import com.google.accompanist.flowlayout.FlowMainAxisAlignment
+import com.google.accompanist.flowlayout.FlowRow
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.launch
 
@@ -84,7 +87,7 @@ fun Editor(
         drawerState.open()
       }
     },
-    onSelectWidget = {
+    addWidget = {
       viewModel.addNewWidget(it)
       scope.launch {
         drawerState.close()
@@ -103,12 +106,12 @@ fun EditorContent(
   drawerState: EditorDrawerState,
   widgetList: List<WidgetModel>,
   onClickLabel: () -> Unit,
-  onSelectWidget: (WidgetType) -> Unit,
+  addWidget: (WidgetType) -> Unit,
   updateWidgetPos: (Int, Position) -> Unit,
   deleteWidget: (WidgetModel) -> Unit
 ) {
   EditorDrawer(
-    drawerContent = { EditorDrawerContent(onSelectWidget) },
+    drawerContent = { EditorDrawerContent(addWidget) },
     drawerState = drawerState
   ) {
     var selected by remember { mutableStateOf(0) }
@@ -242,7 +245,7 @@ fun EditorContent(
         }
       } else {
         Text(
-          text = "预设中没有组件，点击左上角的按钮添加新组件吧！",
+          text = stringResource(id = R.string.null_widget),
           modifier = Modifier
             .align(Alignment.Center)
             .alpha(0.5f),
@@ -295,7 +298,7 @@ fun DeleteDialog(
 
 @Composable
 fun EditorDrawerContent(
-  onClickWidget: (WidgetType) -> Unit
+  addWidget: (WidgetType) -> Unit
 ) {
   Box(
     modifier = Modifier
@@ -325,53 +328,51 @@ fun EditorDrawerContent(
         }
       }
       item {
-        Box(
-          modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClickWidget(WidgetType.RoundButton) }
+        Column(
+          modifier = Modifier.fillMaxWidth()
         ) {
-          CenterRow(Modifier.padding(14.dp)) {
+          Text(
+            text = stringResource(id = R.string.buttons),
+            style = AppTheme.typography.titleLarge,
+            color = Color.Gray,
+            modifier = Modifier.padding(10.dp)
+          )
+          FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            mainAxisSpacing = 25.dp,
+            mainAxisAlignment = FlowMainAxisAlignment.Center
+          ) {
             EngineButton(
-              modifier = Modifier.size(65.dp)
-            )
-            Spacer(Modifier.weight(1f))
-            Text(
-              text = "圆形按钮",
-              style = AppTheme.typography.titleLarge,
-              color = AppTheme.colorScheme.onSecondaryContainer
-            )
-          }
-        }
-      }
-      item {
-        Box(
-          modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClickWidget(WidgetType.RectangularButton) }
-        ) {
-          CenterRow(Modifier.padding(14.dp)) {
+              modifier = Modifier
+                .size(65.dp)
+            ) {
+              addWidget(WidgetType.RoundButton)
+            }
             EngineButton(
-              modifier = Modifier.size(65.dp),
+              modifier = Modifier
+                .size(65.dp),
               shape = RectangleShape
-            )
-            Spacer(Modifier.weight(1f))
-            Text(
-              text = "矩形按钮",
-              style = AppTheme.typography.titleLarge,
-              color = AppTheme.colorScheme.onSecondaryContainer
-            )
+            ) {
+              addWidget(WidgetType.RectangularButton)
+            }
           }
         }
       }
       item {
-        Box(
-          modifier = Modifier
-            .fillMaxWidth()
-            .height(120.dp)
-            .clickable { onClickWidget(WidgetType.Axis) },
-          contentAlignment = Alignment.Center
-        ) {
-          CenterRow(Modifier.padding(horizontal = 14.dp)) {
+        Column {
+          Text(
+            text = stringResource(id = R.string.axis),
+            style = AppTheme.typography.titleLarge,
+            color = Color.Gray,
+            modifier = Modifier.padding(10.dp)
+          )
+          Box(
+            modifier = Modifier
+              .fillMaxWidth()
+              .height(120.dp)
+              .clickable { addWidget(WidgetType.Axis) },
+            contentAlignment = Alignment.Center
+          ) {
             EngineAxis(
               onValueChanged = {
 
@@ -380,12 +381,6 @@ fun EditorDrawerContent(
                 .width(50.dp)
                 .height(150.dp),
               orientation = AxisOrientation.Horizontal
-            )
-            Spacer(Modifier.weight(1f))
-            Text(
-              text = "轴",
-              style = AppTheme.typography.titleLarge,
-              color = AppTheme.colorScheme.onSecondaryContainer
             )
           }
         }

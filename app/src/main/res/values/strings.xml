@@ -6,12 +6,18 @@
 
     <string name="no_presets_file">You don\'t have any presets</string>
     <string name="add_new_presets">New presets</string>
-    <string name="presets_name">presets name</string>
+    <string name="presets_name">Presets Name</string>
     <string name="presets_name_exists">This presets name already exists</string>
-    <string name="game_type">Game Type</string>
+    <string name="game_category">Game Category</string>
+    <string name="date">Date</string>
     <string name="cancel">Cancel</string>
     <string name="add">Add</string>
     <string name="ascending">Ascending</string>
+    <string name="created_date">created on %1s</string>
+
+    <string name="null_widget">There is no widget in the preset, click the button to add a new widget</string>
+    <string name="buttons">Buttons</string>
+    <string name="axis">Axis</string>
 
     <string name="undefined_game">Undefined Game</string>
     <string name="assetto_corsa">Assetto Corsa</string>

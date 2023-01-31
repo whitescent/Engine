@@ -105,12 +105,12 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
     mmkv.encode("presets_list", PresetsListModel(presetsList))
   }
 
-  fun onConfirmed(gameItem: GameItem) {
+  fun onConfirmed(gameCategory: GameCategory) {
     try {
       val currentMoment = Clock.System.now().toEpochMilliseconds()
       val presetsName = dialogUi.value.text
       presetsList = presetsList.toMutableList().also {
-        it.add(PresetsModel(presetsName, gameItem, currentMoment))
+        it.add(PresetsModel(presetsName, gameCategory, currentMoment))
       }
       mmkv.encode("presets_list", PresetsListModel(presetsList))
       dialogUi.value = PresetsDialogUiState() // reset uiState
@@ -121,7 +121,7 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
 
 }
 
-enum class GameItem(
+enum class GameCategory(
   val painter: Int,
   @StringRes val gameName: Int
 ) {
