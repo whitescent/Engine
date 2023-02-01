@@ -56,7 +56,6 @@ fun Editor(
 ) {
   val activity = LocalContext.current as MainActivity
   val systemUiController = LocalSystemUiController.current
-  val steeringValue by viewModel.sensorFlow.collectAsStateWithLifecycle()
   val drawerState = rememberEditorDrawerState()
   val scope = rememberCoroutineScope()
 
@@ -68,12 +67,10 @@ fun Editor(
     val originalOrientation = activity.requestedOrientation
     activity.requestedOrientation = orientation
     systemUiController.isSystemBarsVisible = false
-    viewModel.startListeningSensor()
     viewModel.readWidgetList(presetsModel.presetsName)
     onDispose {
       activity.requestedOrientation = originalOrientation
       systemUiController.isSystemBarsVisible = true
-      viewModel.stopListeningSensor() // stop listening sensor.
       viewModel.saveWidgetList(presetsModel.presetsName)
     }
   }

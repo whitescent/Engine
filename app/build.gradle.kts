@@ -90,6 +90,9 @@ dependencies {
     // kotlinx datetime
     implementation(libs.kotlinx.datetime)
 
+    // ktor
+    implementation(libs.ktor.network)
+
     // navigation
     implementation(libs.androidx.navigation.compose)
 

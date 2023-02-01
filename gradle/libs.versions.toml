@@ -22,6 +22,7 @@ mmkv = "1.2.14"
 kotlin = "1.7.10"
 kotlinxDatetime = "0.4.0"
 ksp = "1.7.10-1.0.6"
+ktor = "2.2.2"
 
 agp = "7.3.0"
 hilt = "2.44"
@@ -68,6 +69,9 @@ mmkv = { module = "com.tencent:mmkv", version.ref = "mmkv" }
 
 # kotlinx datatime
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+
+# ktor
+ktor-network = { module = "io.ktor:ktor-network", version.ref = "ktor" }
 
 ## hilt
 com-google-dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
