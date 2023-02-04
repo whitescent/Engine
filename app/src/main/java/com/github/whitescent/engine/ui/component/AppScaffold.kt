@@ -53,8 +53,8 @@ fun AppScaffold(
       modifier = Modifier.padding(bottom = it.calculateBottomPadding())
     ) { page ->
       when(BottomBarItem.values()[page]) {
-        BottomBarItem.Connect -> Connection(navigator = navigator)
-        BottomBarItem.Config -> Presets(navigator = navigator)
+        BottomBarItem.Connection -> Connection(navigator = navigator)
+        BottomBarItem.Presets -> Presets(navigator = navigator)
         BottomBarItem.Settings -> Settings(navigator = navigator)
       }
     }

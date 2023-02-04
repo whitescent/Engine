@@ -13,24 +13,28 @@
     <string name="night_mode">Night mode</string>
     <string name="follow_system">Follow System</string>
     <string name="volume_button_enabled">Volume keys as buttons</string>
-    <string name="hide_presets_details">Hide details in presets</string>
+    <string name="hide_preset_details">Hide details in preset</string>
     <string name="need_selected_preset">Requires at least one preset to connect to the host</string>
 
     <string name="no_preset_files">You don\'t have any preset</string>
     <string name="add_new_preset">New preset</string>
-    <string name="presets_name">Presets Name</string>
-    <string name="presets_name_exists">This presets name already exists</string>
+    <string name="preset_name">Preset Name</string>
+    <string name="preset_name_exists">This preset name already exists</string>
     <string name="game_category">Game Category</string>
     <string name="date">Date</string>
-    <string name="cancel">Cancel</string>
     <string name="add">Add</string>
     <string name="ascending">Ascending</string>
+
+    <string name="delete_widget">Delete this widget</string>
+    <string name="no">no</string>
+    <string name="yes">yes</string>
+    <string name="Cancel">Cancel</string>
 
     <string name="null_widget">There is no widget in the preset, click the button to add a new widget</string>
     <string name="buttons">Buttons</string>
     <string name="axis">Axis</string>
 
-    <string name="undefined_game">Undefined Game</string>
+    <string name="uncategorized">Uncategorized</string>
     <string name="assetto_corsa">Assetto Corsa</string>
     <string name="f1_series">F1 Series</string>
     <string name="dirt_series">Dirt Series</string>

@@ -86,7 +86,7 @@ fun GeneralSettings(
   ListItem(
     headlineText = {
       Text(
-        text = stringResource(id = R.string.hide_presets_details),
+        text = stringResource(id = R.string.hide_preset_details),
         style = AppTheme.typography.titleMedium
       )
     },

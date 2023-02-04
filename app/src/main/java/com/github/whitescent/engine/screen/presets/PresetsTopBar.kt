@@ -19,7 +19,7 @@ fun PresetsTopBar(
 ) {
   var isOpen by remember { mutableStateOf(false) }
   val sortingGroup = listOf(
-    stringResource(id = R.string.presets_name),
+    stringResource(id = R.string.preset_name),
     stringResource(id = R.string.game_category),
     stringResource(id = R.string.date),
   )

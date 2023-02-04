@@ -303,7 +303,7 @@ fun NewPresetDialog(
           OutlinedTextField(
             value = state.text,
             onValueChange = onValueChange,
-            label = { Text(stringResource(id = R.string.presets_name)) },
+            label = { Text(stringResource(id = R.string.preset_name)) },
             colors = TextFieldDefaults.outlinedTextFieldColors(
               containerColor = AppTheme.colorScheme.surfaceVariant
             ),
@@ -316,7 +316,7 @@ fun NewPresetDialog(
             Column {
               HeightSpacer(value = 10.dp)
               Text(
-                text = stringResource(id = R.string.presets_name_exists),
+                text = stringResource(id = R.string.preset_name_exists),
                 style = AppTheme.typography.labelMedium,
                 color = AppTheme.colorScheme.error
               )
@@ -351,7 +351,7 @@ fun NewPresetDialog(
         TextButton(
           onClick = onDismissRequest
         ) {
-          Text(stringResource(id = R.string.cancel))
+          Text(stringResource(id = R.string.Cancel))
         }
       },
       confirmButton = {

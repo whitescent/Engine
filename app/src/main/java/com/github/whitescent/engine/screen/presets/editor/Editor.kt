@@ -262,29 +262,23 @@ fun DeleteWidgetDialog(
         Icon(Icons.Rounded.Construction, null, modifier = Modifier.alpha(0.5f))
         WidthSpacer(value = 6.dp)
         Text(
-          text = "删除组件",
+          text = stringResource(id = R.string.delete_widget),
           style = AppTheme.typography.headlineMedium
         )
       }
-    },
-    text = {
-      Text(
-        text = "你确认删除这个组件吗？",
-        style = AppTheme.typography.headlineMedium
-      )
     },
     dismissButton = {
       TextButton(
         onClick = onDismissRequest
       ) {
-        Text(stringResource(id = R.string.cancel))
+        Text(stringResource(id = R.string.no))
       }
     },
     confirmButton = {
       TextButton(
         onClick = { onConfirmed() }
       ) {
-        Text("确认")
+        Text(stringResource(id = R.string.yes))
       }
     }
   )
