@@ -94,7 +94,7 @@ fun PresetsRoot(
     ) {
       Icon(Icons.Rounded.Add, null)
       WidthSpacer(value = 4.dp)
-      Text(text = "创建新预设")
+      Text(text = stringResource(id = R.string.add_new_preset))
     }
   }
   NewPresetsDialog(
@@ -126,7 +126,7 @@ fun PresetsList(
               .alpha(0.5f))
             WidthSpacer(value = 6.dp)
             Text(
-              text = stringResource(id = R.string.no_presets_file),
+              text = stringResource(id = R.string.no_preset_files),
               style = AppTheme.typography.headlineSmall,
               modifier = Modifier.alpha(0.5f)
             )
@@ -289,7 +289,7 @@ fun NewPresetsDialog(
           Icon(Icons.Rounded.Construction, null, modifier = Modifier.alpha(0.5f))
           WidthSpacer(value = 6.dp)
           Text(
-            text = stringResource(id = R.string.add_new_presets),
+            text = stringResource(id = R.string.add_new_preset),
             style = AppTheme.typography.headlineMedium
           )
         }

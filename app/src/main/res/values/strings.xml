@@ -5,8 +5,19 @@
     <string name="presets">Presets</string>
     <string name="settings">Settings</string>
 
-    <string name="no_presets_file">You don\'t have any presets</string>
-    <string name="add_new_presets">New presets</string>
+    <string name="hostname">hostname</string>
+    <string name="connect">connect</string>
+    <string name="general">General</string>
+    <string name="other">Other</string>
+    <string name="licenses">Licenses</string>
+    <string name="night_mode">Night mode</string>
+    <string name="follow_system">Follow System</string>
+    <string name="volume_button_enabled">Volume keys as buttons</string>
+    <string name="hide_presets_details">Hide details in presets</string>
+    <string name="need_selected_preset">Requires at least one preset to connect to the host</string>
+
+    <string name="no_preset_files">You don\'t have any preset</string>
+    <string name="add_new_preset">New preset</string>
     <string name="presets_name">Presets Name</string>
     <string name="presets_name_exists">This presets name already exists</string>
     <string name="game_category">Game Category</string>
@@ -14,7 +25,6 @@
     <string name="cancel">Cancel</string>
     <string name="add">Add</string>
     <string name="ascending">Ascending</string>
-    <string name="created_date">created on %1s</string>
 
     <string name="null_widget">There is no widget in the preset, click the button to add a new widget</string>
     <string name="buttons">Buttons</string>
@@ -26,6 +36,6 @@
     <string name="dirt_series">Dirt Series</string>
     <string name="forza_series">Forza Series</string>
 
-    <string name="Add_widget">Add widget</string>
+    <string name="add_widget">Add widget</string>
 
 </resources>

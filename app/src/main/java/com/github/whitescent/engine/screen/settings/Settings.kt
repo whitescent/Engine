@@ -5,10 +5,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.DarkMode
-import androidx.compose.material.icons.rounded.Description
-import androidx.compose.material.icons.rounded.LightMode
-import androidx.compose.material.icons.rounded.Schedule
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -68,11 +65,11 @@ fun GeneralSettings(
   updateVolumeButtonValue: (Boolean) -> Unit,
   updateHidePresetDetailsValue: (Boolean) -> Unit
 ) {
-  PrimarySettingsText("常规")
+  PrimarySettingsText(stringResource(id = R.string.general))
   ListItem(
     headlineText = {
       Text(
-        text = "音量键视为按钮",
+        text = stringResource(id = R.string.volume_button_enabled),
         style = AppTheme.typography.titleMedium
       )
     },
@@ -82,7 +79,6 @@ fun GeneralSettings(
         onCheckedChange = { updateVolumeButtonValue(it) }
       )
     },
-    modifier = Modifier.clickable { },
     leadingContent = {
       Icon(painterResource(id = R.drawable.gamepad), null, modifier = Modifier.size(24.dp))
     }
@@ -90,7 +86,7 @@ fun GeneralSettings(
   ListItem(
     headlineText = {
       Text(
-        text = "隐藏预设列表中的详细信息",
+        text = stringResource(id = R.string.hide_presets_details),
         style = AppTheme.typography.titleMedium
       )
     },
@@ -100,21 +96,20 @@ fun GeneralSettings(
         onCheckedChange = { updateHidePresetDetailsValue(it) },
       )
     },
-    modifier = Modifier.clickable { },
     leadingContent = {
-      Icon(Icons.Rounded.Schedule, null, modifier = Modifier.size(24.dp))
+      Icon(Icons.Rounded.VisibilityOff, null, modifier = Modifier.size(24.dp))
     }
   )
   ListItem(
     headlineText = {
       Text(
-        text = "夜间模式",
+        text = stringResource(id = R.string.night_mode),
         style = AppTheme.typography.titleMedium
       )
     },
     supportingText = {
       Text(
-        text = "跟随系统",
+        text = stringResource(id = R.string.follow_system),
         style = AppTheme.typography.labelMedium
       )
     },
@@ -134,11 +129,11 @@ fun OtherSettings(
   navigate: () -> Unit
 ) {
   val uriHandler = LocalUriHandler.current
-  PrimarySettingsText("其他")
+  PrimarySettingsText(stringResource(id = R.string.other))
   ListItem(
     headlineText = {
       Text(
-        text = "Engine",
+        text = stringResource(id = R.string.app_name),
         style = AppTheme.typography.titleMedium
       )
     },
@@ -158,7 +153,7 @@ fun OtherSettings(
   ListItem(
     headlineText = {
       Text(
-        text = "开源许可",
+        text = stringResource(id = R.string.licenses),
         style = AppTheme.typography.titleMedium
       )
     },

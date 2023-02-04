@@ -20,9 +20,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.whitescent.engine.AppTheme
+import com.github.whitescent.engine.R
 import com.github.whitescent.engine.data.model.PresetsModel
 import com.github.whitescent.engine.destinations.ConsoleDestination
 import com.github.whitescent.engine.ui.component.CenterRow
@@ -46,9 +48,10 @@ fun Connection(
           contentAlignment = Alignment.Center
         ) {
           Text(
-            text = "需要有至少一个预设才能连接主机",
+            text = stringResource(id = R.string.need_selected_preset),
             style = AppTheme.typography.titleLarge,
-            color = Color.Gray
+            color = Color.Gray,
+            modifier = Modifier.padding(horizontal = 14.dp)
           )
         }
       }
@@ -81,7 +84,7 @@ fun Connection(
             ) {
               Icon(Icons.Rounded.Link, null)
               WidthSpacer(value = 4.dp)
-              Text(text = "连接")
+              Text(text = stringResource(id = R.string.connect))
             }
           }
         }
@@ -127,7 +130,7 @@ fun ConnectionPanel(
       value = state.hostname,
       onValueChange = { updateHostName(it) },
       label = {
-        Text(text = "主机名")
+        Text(text = stringResource(id = R.string.hostname))
       },
       modifier = Modifier.fillMaxWidth(),
       singleLine = true

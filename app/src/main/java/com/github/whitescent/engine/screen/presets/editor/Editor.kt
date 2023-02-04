@@ -27,8 +27,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.whitescent.engine.AppTheme
 import com.github.whitescent.engine.MainActivity
 import com.github.whitescent.engine.R
@@ -317,7 +315,7 @@ fun EditorDrawerContent(
           )
           WidthSpacer(value = 6.dp)
           Text(
-            text = stringResource(id = R.string.Add_widget),
+            text = stringResource(id = R.string.add_widget),
             style = AppTheme.typography.headlineMedium,
             color = AppTheme.colorScheme.onSecondaryContainer
           )
