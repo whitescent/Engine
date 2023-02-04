@@ -167,7 +167,7 @@ fun EditorContent(
                   EngineAxis(
                     onValueChanged = { },
                     modifier = Modifier
-                      .size(60.dp, 120.dp)
+                      .size(100.dp, 200.dp)
                       .align(Alignment.Center)
                       .then(selectedModifier)
                       .onEditingBorder(),
@@ -178,7 +178,7 @@ fun EditorContent(
                   EngineAxis(
                     onValueChanged = { },
                     modifier = Modifier
-                      .size(60.dp, 120.dp)
+                      .size(100.dp, 200.dp)
                       .align(Alignment.Center)
                       .graphicsLayer(
                         scaleX = it.position.scale,
@@ -368,7 +368,9 @@ fun EditorDrawerContent(
               modifier = Modifier
                 .width(50.dp)
                 .height(150.dp),
-              orientation = AxisOrientation.Horizontal
+              orientation = AxisOrientation.Horizontal,
+              enabledScroll = false,
+              initialValue = 150f
             )
           }
         }

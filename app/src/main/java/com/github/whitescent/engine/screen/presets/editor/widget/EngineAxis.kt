@@ -30,12 +30,13 @@ enum class AxisOrientation {
 @Composable
 fun EngineAxis(
   modifier: Modifier = Modifier,
+  initialValue: Float = 0f,
   orientation: AxisOrientation = AxisOrientation.Vertical,
   enabledScroll: Boolean = true,
   onPress: () -> Unit = { },
   onValueChanged: (Float) -> Unit
 ) {
-  var animateOffsetY by remember { mutableStateOf(0f) }
+  var animateOffsetY by remember { mutableStateOf(-initialValue) }
   var canvasHeight by remember { mutableStateOf(0f) }
   val gestureModifier = Modifier
     .pointerInput(Unit) {

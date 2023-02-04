@@ -127,7 +127,7 @@ fun Console(
           }
         },
         modifier = Modifier
-          .size(60.dp, 120.dp)
+          .size(100.dp, 200.dp)
           .align(Alignment.Center)
           .graphicsLayer(
             scaleX = it.position.scale,
