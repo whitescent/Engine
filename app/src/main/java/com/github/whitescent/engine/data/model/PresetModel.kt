@@ -11,8 +11,3 @@ data class PresetModel(
   val createdAt: Long,
   val widgetList: List<WidgetModel> = listOf()
 ) : Parcelable
-
-@Parcelize
-data class PresetListModel(
-  val value: List<PresetModel> = listOf()
-) : Parcelable

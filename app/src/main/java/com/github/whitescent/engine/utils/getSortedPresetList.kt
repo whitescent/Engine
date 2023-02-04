@@ -3,7 +3,7 @@ package com.github.whitescent.engine.utils
 import com.github.whitescent.engine.data.model.PresetModel
 import com.github.whitescent.engine.data.model.SortPreferenceModel
 
-fun sortPresetList(
+fun getSortedPresetList(
   list: List<PresetModel>,
   sortPreference: SortPreferenceModel?
 ): List<PresetModel> {

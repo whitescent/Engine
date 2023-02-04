@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.github.whitescent.engine.data.model.PresetListModel
 import com.github.whitescent.engine.data.model.PresetModel
 import com.github.whitescent.engine.data.model.SortPreferenceModel
-import com.github.whitescent.engine.utils.sortPresetList
+import com.github.whitescent.engine.utils.getSortedPresetList
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,7 +57,7 @@ class ConnectionViewModel @Inject constructor() : ViewModel() {
     savedList?.let {
       if (it.value.isNotEmpty()) {
         val preference = mmkv.decodeParcelable("sort_preference", SortPreferenceModel::class.java)
-        return sortPresetList(it.value, preference)
+        return getSortedPresetList(it.value, preference)
       }
     }
     return emptyList()

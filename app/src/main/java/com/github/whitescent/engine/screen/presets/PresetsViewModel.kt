@@ -10,7 +10,7 @@ import com.github.whitescent.engine.R
 import com.github.whitescent.engine.data.model.PresetListModel
 import com.github.whitescent.engine.data.model.PresetModel
 import com.github.whitescent.engine.data.model.SortPreferenceModel
-import com.github.whitescent.engine.utils.sortPresetList
+import com.github.whitescent.engine.utils.getSortedPresetList
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
@@ -60,7 +60,7 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
     }
     // get all presets
     mmkv.decodeParcelable("preset_list", PresetListModel::class.java)?.let {
-      presetList = sortPresetList(it.value, sort.value)
+      presetList = getSortedPresetList(it.value, sort.value)
     }
     _uiState.value = _uiState.value.copy(hideDetails = hideDetails)
   }
@@ -81,12 +81,12 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
   fun onClickSortCategory(index: Int) {
     sort.value = sort.value.copy(selectedSortCategory = index)
     mmkv.encode("sort_preference", sort.value)
-    presetList = sortPresetList(presetList, sort.value)
+    presetList = getSortedPresetList(presetList, sort.value)
   }
   fun onSortingChanged() {
     sort.value = sort.value.copy(isAscending = !sort.value.isAscending)
     mmkv.encode("sort_preference", sort.value)
-    presetList = sortPresetList(presetList, sort.value)
+    presetList = getSortedPresetList(presetList, sort.value)
   }
 
   fun deletePresets(presetModel: PresetModel) {
@@ -103,7 +103,7 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
       presetList = presetList.toMutableList().also {
         it.add(PresetModel(presetName, gameCategory, currentMoment))
       }
-      presetList = sortPresetList(presetList, sort.value)
+      presetList = getSortedPresetList(presetList, sort.value)
       mmkv.encode("preset_list", PresetListModel(presetList))
       // reset uiState
       _uiState.value = _uiState.value.copy(openDialog = false, text = "", isTextError = false)
