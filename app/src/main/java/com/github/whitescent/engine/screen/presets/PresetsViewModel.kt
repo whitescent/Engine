@@ -10,6 +10,7 @@ import com.github.whitescent.engine.R
 import com.github.whitescent.engine.data.model.PresetsListModel
 import com.github.whitescent.engine.data.model.PresetsModel
 import com.github.whitescent.engine.data.model.SortPreferenceModel
+import com.github.whitescent.engine.utils.sortPresetList
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
@@ -26,76 +27,66 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
 
   var presetsList by mutableStateOf<List<PresetsModel>>(listOf())
 
-  private val dialogUi = MutableStateFlow(PresetsDialogUiState())
+  private val _uiState = MutableStateFlow(PresetsUiState())
   private val inputText = MutableStateFlow("")
-  val dialogUiState = dialogUi.asStateFlow()
+  val uiState = _uiState.asStateFlow()
 
   private val sort = MutableStateFlow(SortPreferenceModel())
   val sortPreference = sort.asStateFlow()
 
   init {
-    // get all presets
-    mmkv.decodeParcelable("presets_list", PresetsListModel::class.java)?.let {
-      presetsList = it.value
-    }
-    // get sort preference
-    mmkv.decodeParcelable("sort_preference", SortPreferenceModel::class.java)?.let {
-      sort.value = it
-    }
+    getLatestMMKVValue()
     viewModelScope.launch {
       inputText
         .debounce(500)
         .filterNot(String::isEmpty)
         .collectLatest { input ->
+          if (input.length > 50) _uiState.value = _uiState.value.copy(isTextError = true)
           presetsList
             .find {
               it.presetsName == input
             }?.let {
-              dialogUi.value = dialogUi.value.copy(isTextError = true)
+              _uiState.value = _uiState.value.copy(isTextError = true)
             }
         }
     }
   }
 
+  fun getLatestMMKVValue() {
+    val hideDetails = mmkv.decodeBool("hide_preset_details")
+    // get sort preference
+    mmkv.decodeParcelable("sort_preference", SortPreferenceModel::class.java)?.let {
+      sort.value = it
+    }
+    // get all presets
+    mmkv.decodeParcelable("presets_list", PresetsListModel::class.java)?.let {
+      presetsList = sortPresetList(it.value, sort.value)
+    }
+    _uiState.value = _uiState.value.copy(hideDetails = hideDetails)
+  }
+
   fun onClickFab() {
-    dialogUi.value = PresetsDialogUiState(display = true)
+    _uiState.value = PresetsUiState(openDialog = true)
   }
 
   fun onDismissRequest() {
-    dialogUi.value = PresetsDialogUiState()
+    _uiState.value = PresetsUiState()
   }
 
   fun onValueChange(text: String) {
     inputText.update { text }
-    dialogUi.value = PresetsDialogUiState(true, text, false)
+    _uiState.value = PresetsUiState(true, text, false)
   }
 
   fun onClickSortCategory(index: Int) {
     sort.value = sort.value.copy(selectedSortCategory = index)
     mmkv.encode("sort_preference", sort.value)
+    presetsList = sortPresetList(presetsList, sort.value)
   }
   fun onSortingChanged() {
     sort.value = sort.value.copy(isAscending = !sort.value.isAscending)
     mmkv.encode("sort_preference", sort.value)
-  }
-
-  fun updateSorting() {
-    val newList = when (sort.value.selectedSortCategory) {
-      0 -> {
-        if(sort.value.isAscending) presetsList.sortedBy { it.presetsName }
-        else presetsList.sortedByDescending { it.presetsName }
-      }
-      1 -> {
-        if(sort.value.isAscending) presetsList.sortedBy { it.gameType }
-        else presetsList.sortedByDescending { it.gameType }
-      }
-      2 -> {
-        if(sort.value.isAscending) presetsList.sortedBy { it.createdAt }
-        else presetsList.sortedByDescending { it.createdAt }
-      }
-      else -> presetsList
-    }
-    presetsList = newList
+    presetsList = sortPresetList(presetsList, sort.value)
   }
 
   fun deletePresets(presetsModel: PresetsModel) {
@@ -108,13 +99,13 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
   fun onConfirmed(gameCategory: GameCategory) {
     try {
       val currentMoment = Clock.System.now().toEpochMilliseconds()
-      val presetsName = dialogUi.value.text
+      val presetsName = _uiState.value.text
       presetsList = presetsList.toMutableList().also {
         it.add(PresetsModel(presetsName, gameCategory, currentMoment))
       }
-      updateSorting()
+      presetsList = sortPresetList(presetsList, sort.value)
       mmkv.encode("presets_list", PresetsListModel(presetsList))
-      dialogUi.value = PresetsDialogUiState() // reset uiState
+      _uiState.value = PresetsUiState() // reset uiState
     } catch (e: Exception) {
       e.printStackTrace()
     }
@@ -133,8 +124,9 @@ enum class GameCategory(
   Dirt(R.drawable.dirt, R.string.dirt_series)
 }
 
-data class PresetsDialogUiState(
-  val display: Boolean = false,
+data class PresetsUiState(
+  val openDialog: Boolean = false,
   val text: String = "",
-  val isTextError: Boolean = false
+  val isTextError: Boolean = false,
+  val hideDetails: Boolean = false
 )

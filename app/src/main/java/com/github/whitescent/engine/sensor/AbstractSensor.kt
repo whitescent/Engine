@@ -2,13 +2,12 @@ package com.github.whitescent.engine.sensor
 
 abstract class AbstractSensor {
 
-    protected var onSensorValuesChanged: ((Float) -> Unit)? = null
+  protected var onSensorValuesChanged: ((Float) -> Unit)? = null
+  abstract fun startListening()
+  abstract fun stopListening()
 
-    abstract fun startListening()
-    abstract fun stopListening()
-
-    fun setOnSensorValuesChangedListener(listener: (Float) -> Unit) {
-        onSensorValuesChanged = listener
-    }
+  fun setOnSensorValuesChangedListener(listener: (Float) -> Unit) {
+    onSensorValuesChanged = listener
+  }
 
 }

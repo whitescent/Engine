@@ -77,7 +77,7 @@ class SensorImpl(
         (((Math.PI / 2) - _orientation[1]) / Math.PI).toFloat()
       }
       else -> 0.5F
-    }
+    }.coerceIn(0.0F, 1.0F)
     onSensorValuesChanged?.invoke(steering)
   }
 

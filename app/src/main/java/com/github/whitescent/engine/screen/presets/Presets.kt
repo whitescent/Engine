@@ -37,6 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.whitescent.engine.R
@@ -56,7 +57,7 @@ fun PresetsRoot(
   viewModel: PresetsViewModel = hiltViewModel(),
   navigator: DestinationsNavigator
 ) {
-  val dialogState by viewModel.dialogUiState.collectAsState()
+  val state by viewModel.uiState.collectAsState()
   val sortPreference by viewModel.sortPreference.collectAsState()
 
   Column(
@@ -68,6 +69,7 @@ fun PresetsRoot(
       onSortingChanged = viewModel::onSortingChanged
     )
     PresetsList(
+      hideDetails = state.hideDetails,
       presetsList = viewModel.presetsList,
       onClickEditor = {
         navigator.navigate(
@@ -84,29 +86,32 @@ fun PresetsRoot(
     modifier = Modifier.fillMaxSize(),
     contentAlignment = Alignment.BottomEnd
   ) {
-    FloatingActionButton(
+    ExtendedFloatingActionButton(
       onClick = viewModel::onClickFab,
       modifier = Modifier
         .align(Alignment.BottomEnd)
         .padding(16.dp)
     ) {
       Icon(Icons.Rounded.Add, null)
+      WidthSpacer(value = 4.dp)
+      Text(text = "创建新预设")
     }
   }
   NewPresetsDialog(
-    state = dialogState,
+    state = state,
     onDismissRequest = viewModel::onDismissRequest,
     onConfirmed = viewModel::onConfirmed,
     onValueChange = viewModel::onValueChange
   )
-  LaunchedEffect(sortPreference) {
-    viewModel.updateSorting()
+  LaunchedEffect(Unit) {
+    viewModel.getLatestMMKVValue()
   }
 }
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun PresetsList(
+  hideDetails: Boolean,
   presetsList: List<PresetsModel>,
   onClickEditor: (PresetsModel) -> Unit,
   deletePresets: (PresetsModel) -> Unit
@@ -134,7 +139,7 @@ fun PresetsList(
         ) {
           items(presetsList) { presets ->
             key(presets.createdAt) {
-              PresetsListItem(presets, onClickEditor, deletePresets)
+              PresetsListItem(hideDetails, presets, onClickEditor, deletePresets)
             }
           }
         }
@@ -146,6 +151,7 @@ fun PresetsList(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PresetsListItem(
+  hideDetails: Boolean,
   presetsModel: PresetsModel,
   onClickEditor: (PresetsModel) -> Unit,
   deletePresets: (PresetsModel) -> Unit
@@ -164,18 +170,34 @@ fun PresetsListItem(
           Text(
             text = name,
             style = AppTheme.typography.titleMedium,
-            color = AppTheme.colorScheme.onSecondaryContainer
+            color = AppTheme.colorScheme.onSecondaryContainer,
+            overflow = TextOverflow.Ellipsis
           )
           HeightSpacer(value = 4.dp)
         }
       },
       supportingText = {
-        Text(
-          text = stringResource(R.string.created_date, timeString),
-          style = AppTheme.typography.labelLarge,
-          color = AppTheme.colorScheme.onSecondaryContainer,
-          modifier = Modifier.alpha(0.5f)
-        )
+        if (!hideDetails) {
+          CenterRow {
+            Icon(Icons.Rounded.Widgets, null, modifier = Modifier.size(14.dp), tint = Color.Gray)
+            WidthSpacer(value = 2.dp)
+            Text(
+              text = presetsModel.widgetList.size.toString(),
+              style = AppTheme.typography.labelLarge,
+              color = AppTheme.colorScheme.onSecondaryContainer,
+              modifier = Modifier.alpha(0.5f)
+            )
+            WidthSpacer(value = 8.dp)
+            Icon(Icons.Rounded.Schedule, null, modifier = Modifier.size(14.dp), tint = Color.Gray)
+            WidthSpacer(value = 2.dp)
+            Text(
+              text = timeString,
+              style = AppTheme.typography.labelLarge,
+              color = AppTheme.colorScheme.onSecondaryContainer,
+              modifier = Modifier.alpha(0.5f)
+            )
+          }
+        }
       },
       leadingContent = {
         Image(
@@ -253,12 +275,12 @@ fun PresetsListItem(
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun NewPresetsDialog(
-  state: PresetsDialogUiState,
+  state: PresetsUiState,
   onDismissRequest: () -> Unit,
   onConfirmed: (GameCategory) -> Unit,
   onValueChange: (String) -> Unit
 ) {
-  if (state.display) {
+  if (state.openDialog) {
     var selectedGameCategory by remember { mutableStateOf(GameCategory.Undefined) }
     AlertDialog(
       onDismissRequest = onDismissRequest,
@@ -285,7 +307,8 @@ fun NewPresetsDialog(
             ),
             modifier = Modifier.focusRequester(focusRequester),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            isError = state.isTextError
+            isError = state.isTextError,
+            singleLine = true
           )
           AnimatedVisibility(state.isTextError) {
             Column {

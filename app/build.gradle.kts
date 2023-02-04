@@ -4,6 +4,7 @@ plugins {
     id("dagger.hilt.android.plugin")
     id("kotlin-kapt")
     id("kotlin-parcelize")
+    id("com.mikepenz.aboutlibraries.plugin")
     alias(libs.plugins.ksp)
 }
 
@@ -16,8 +17,7 @@ android {
         minSdk = 21
         targetSdk = 33
         versionCode = 1
-        versionName = "1.0"
-
+        versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -79,6 +79,10 @@ dependencies {
     implementation(libs.accompanist.systemUiController)
     implementation(libs.accompanist.pager)
     implementation(libs.accompanist.flowlayout)
+
+    // aboutLibraries
+    implementation(libs.aboutLibraries.core)
+    implementation(libs.aboutLibraries.compose)
 
     // compose destinations
     implementation(libs.compose.destinations.core)

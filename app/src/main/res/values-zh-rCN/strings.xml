@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Engine</string>
-    <string name="link">连接</string>
+    <string name="connection">连接</string>
+    <string name="connection_title">连接至电脑</string>
 
     <string name="presets">预设</string>
     <string name="settings">设置</string>

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Engine</string>
-    <string name="link">Connect</string>
+    <string name="connection">Connection</string>
+    <string name="connection_title">Connect to Computer</string>
     <string name="presets">Presets</string>
     <string name="settings">Settings</string>
 

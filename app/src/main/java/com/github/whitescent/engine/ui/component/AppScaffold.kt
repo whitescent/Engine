@@ -12,9 +12,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import com.github.whitescent.engine.screen.connect.Connect
+import com.github.whitescent.engine.screen.connection.Connection
 import com.github.whitescent.engine.screen.presets.PresetsRoot
-import com.github.whitescent.engine.screen.settings.SettingsRoot
+import com.github.whitescent.engine.screen.settings.Settings
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -53,9 +53,9 @@ fun AppScaffold(
       modifier = Modifier.padding(bottom = it.calculateBottomPadding())
     ) { page ->
       when(BottomBarItem.values()[page]) {
-        BottomBarItem.Connect -> Connect()
+        BottomBarItem.Connect -> Connection(navigator = navigator)
         BottomBarItem.Config -> PresetsRoot(navigator = navigator)
-        BottomBarItem.Settings -> SettingsRoot()
+        BottomBarItem.Settings -> Settings(navigator = navigator)
       }
     }
   }

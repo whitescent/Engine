@@ -1,4 +1,4 @@
-package com.github.whitescent.engine.screen.presets.widget
+package com.github.whitescent.engine.screen.presets.editor.widget
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -42,15 +42,24 @@ fun EngineAxis(
       detectTapGestures(
         onPress = {
           animateOffsetY = -canvasHeight+it.y
-          onValueChanged(animateOffsetY)
+          onValueChanged((abs(animateOffsetY) / canvasHeight).coerceIn(0f, 1f))
           onPress()
         },
+        onTap = {
+          animateOffsetY = 0f
+          onValueChanged(0f)
+        }
       )
     }
     .pointerInput(Unit) {
-      detectVerticalDragGestures { _, dragAmount ->
+      detectVerticalDragGestures(
+        onDragEnd = {
+          animateOffsetY = 0f
+          onValueChanged(0f)
+        }
+      ) { _, dragAmount ->
         animateOffsetY = -abs(animateOffsetY + dragAmount)
-        onValueChanged(animateOffsetY)
+        onValueChanged((abs(animateOffsetY) / canvasHeight).coerceIn(0f, 1f))
       }
     }
   Canvas(

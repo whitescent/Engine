@@ -36,9 +36,9 @@ import com.github.whitescent.engine.data.model.Position
 import com.github.whitescent.engine.data.model.PresetsModel
 import com.github.whitescent.engine.data.model.WidgetModel
 import com.github.whitescent.engine.data.model.WidgetType
-import com.github.whitescent.engine.screen.presets.widget.EngineButton
-import com.github.whitescent.engine.screen.presets.widget.EngineAxis
-import com.github.whitescent.engine.screen.presets.widget.AxisOrientation
+import com.github.whitescent.engine.screen.presets.editor.widget.EngineButton
+import com.github.whitescent.engine.screen.presets.editor.widget.EngineAxis
+import com.github.whitescent.engine.screen.presets.editor.widget.AxisOrientation
 import com.github.whitescent.engine.ui.component.*
 import com.github.whitescent.engine.utils.LocalSystemUiController
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
@@ -46,7 +46,6 @@ import com.google.accompanist.flowlayout.FlowRow
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Destination
 @Composable
 fun Editor(
@@ -209,7 +208,7 @@ fun EditorContent(
                       .onEditingBorder(),
                     shape = shape,
                     onDoubleClick = { openDialog = true }
-                  )
+                  ) { }
                 }
                 else -> {
                   EngineButton(

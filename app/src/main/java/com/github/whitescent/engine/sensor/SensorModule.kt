@@ -10,9 +10,9 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object SensorModule {
-    @Provides
-    @Singleton
-    fun provideSensor(app: Application) : AbstractSensor {
-        return SensorImpl(app)
-    }
+  @Provides
+  @Singleton
+  fun provideSensor(app: Application) : AbstractSensor {
+    return SensorImpl(app)
+  }
 }
