@@ -7,8 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.whitescent.engine.R
-import com.github.whitescent.engine.data.model.PresetsListModel
-import com.github.whitescent.engine.data.model.PresetsModel
+import com.github.whitescent.engine.data.model.PresetListModel
+import com.github.whitescent.engine.data.model.PresetModel
 import com.github.whitescent.engine.data.model.SortPreferenceModel
 import com.github.whitescent.engine.utils.sortPresetList
 import com.tencent.mmkv.MMKV
@@ -25,7 +25,7 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
 
   private val mmkv = MMKV.defaultMMKV()
 
-  var presetsList by mutableStateOf<List<PresetsModel>>(listOf())
+  var presetList by mutableStateOf<List<PresetModel>>(listOf())
 
   private val _uiState = MutableStateFlow(PresetsUiState())
   private val inputText = MutableStateFlow("")
@@ -42,9 +42,9 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
         .filterNot(String::isEmpty)
         .collectLatest { input ->
           if (input.length > 50) _uiState.value = _uiState.value.copy(isTextError = true)
-          presetsList
+          presetList
             .find {
-              it.presetsName == input
+              it.name == input
             }?.let {
               _uiState.value = _uiState.value.copy(isTextError = true)
             }
@@ -59,53 +59,54 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
       sort.value = it
     }
     // get all presets
-    mmkv.decodeParcelable("presets_list", PresetsListModel::class.java)?.let {
-      presetsList = sortPresetList(it.value, sort.value)
+    mmkv.decodeParcelable("preset_list", PresetListModel::class.java)?.let {
+      presetList = sortPresetList(it.value, sort.value)
     }
     _uiState.value = _uiState.value.copy(hideDetails = hideDetails)
   }
 
   fun onClickFab() {
-    _uiState.value = PresetsUiState(openDialog = true)
+    _uiState.value = _uiState.value.copy(openDialog = true)
   }
 
   fun onDismissRequest() {
-    _uiState.value = PresetsUiState()
+    _uiState.value = _uiState.value.copy(openDialog = false)
   }
 
   fun onValueChange(text: String) {
     inputText.update { text }
-    _uiState.value = PresetsUiState(true, text, false)
+    _uiState.value = _uiState.value.copy(text = text)
   }
 
   fun onClickSortCategory(index: Int) {
     sort.value = sort.value.copy(selectedSortCategory = index)
     mmkv.encode("sort_preference", sort.value)
-    presetsList = sortPresetList(presetsList, sort.value)
+    presetList = sortPresetList(presetList, sort.value)
   }
   fun onSortingChanged() {
     sort.value = sort.value.copy(isAscending = !sort.value.isAscending)
     mmkv.encode("sort_preference", sort.value)
-    presetsList = sortPresetList(presetsList, sort.value)
+    presetList = sortPresetList(presetList, sort.value)
   }
 
-  fun deletePresets(presetsModel: PresetsModel) {
-    presetsList = presetsList.toMutableList().also {
-      it.remove(presetsModel)
+  fun deletePresets(presetModel: PresetModel) {
+    presetList = presetList.toMutableList().also {
+      it.remove(presetModel)
     }
-    mmkv.encode("presets_list", PresetsListModel(presetsList))
+    mmkv.encode("preset_list", PresetListModel(presetList))
   }
 
   fun onConfirmed(gameCategory: GameCategory) {
     try {
       val currentMoment = Clock.System.now().toEpochMilliseconds()
-      val presetsName = _uiState.value.text
-      presetsList = presetsList.toMutableList().also {
-        it.add(PresetsModel(presetsName, gameCategory, currentMoment))
+      val presetName = _uiState.value.text
+      presetList = presetList.toMutableList().also {
+        it.add(PresetModel(presetName, gameCategory, currentMoment))
       }
-      presetsList = sortPresetList(presetsList, sort.value)
-      mmkv.encode("presets_list", PresetsListModel(presetsList))
-      _uiState.value = PresetsUiState() // reset uiState
+      presetList = sortPresetList(presetList, sort.value)
+      mmkv.encode("preset_list", PresetListModel(presetList))
+      // reset uiState
+      _uiState.value = _uiState.value.copy(openDialog = false, text = "", isTextError = false)
     } catch (e: Exception) {
       e.printStackTrace()
     }

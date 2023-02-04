@@ -1,17 +1,17 @@
 package com.github.whitescent.engine.utils
 
-import com.github.whitescent.engine.data.model.PresetsModel
+import com.github.whitescent.engine.data.model.PresetModel
 import com.github.whitescent.engine.data.model.SortPreferenceModel
 
 fun sortPresetList(
-  list: List<PresetsModel>,
+  list: List<PresetModel>,
   sortPreference: SortPreferenceModel?
-): List<PresetsModel> {
+): List<PresetModel> {
   val preference = sortPreference ?: SortPreferenceModel()
   return when (preference.selectedSortCategory) {
     0 -> {
-      if(preference.isAscending) list.sortedBy { it.presetsName }
-      else list.sortedByDescending { it.presetsName }
+      if(preference.isAscending) list.sortedBy { it.name }
+      else list.sortedByDescending { it.name }
     }
     1 -> {
       if(preference.isAscending) list.sortedBy { it.gameType }

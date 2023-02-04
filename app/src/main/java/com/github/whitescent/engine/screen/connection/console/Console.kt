@@ -2,7 +2,6 @@ package com.github.whitescent.engine.screen.connection.console
 
 import android.view.KeyEvent.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,7 +23,7 @@ import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.whitescent.engine.AppTheme
 import com.github.whitescent.engine.MainActivity
-import com.github.whitescent.engine.data.model.PresetsModel
+import com.github.whitescent.engine.data.model.PresetModel
 import com.github.whitescent.engine.data.model.WidgetType
 import com.github.whitescent.engine.screen.presets.editor.widget.EngineAxis
 import com.github.whitescent.engine.screen.presets.editor.widget.EngineButton
@@ -39,25 +38,23 @@ import kotlinx.coroutines.launch
 @Composable
 fun Console(
   orientation: Int,
-  presetsModel: PresetsModel,
+  presetModel: PresetModel,
   viewModel: ConsoleViewModel = hiltViewModel(),
   navigator: DestinationsNavigator
 ) {
+  val scope = rememberCoroutineScope()
+  val requester = remember { FocusRequester() }
   val activity = LocalContext.current as MainActivity
   val systemUiController = LocalSystemUiController.current
+
   val sensor by viewModel.sensorFlow.collectAsStateWithLifecycle()
   val state by viewModel.consoleUiState.collectAsState()
 
-  val scope = rememberCoroutineScope()
-
-  val widgetList = presetsModel.widgetList
+  val widgetList = presetModel.widgetList
   val axisList = widgetList.filter { it.widgetType == WidgetType.Axis }
   val buttonList = widgetList.filter {
     it.widgetType == WidgetType.RectangularButton || it.widgetType == WidgetType.RoundButton
   }
-
-
-  val requester = remember { FocusRequester() }
 
   systemUiController.systemBarsBehavior =
     WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE

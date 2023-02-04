@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.whitescent.engine.R
 import com.github.whitescent.engine.AppTheme
-import com.github.whitescent.engine.data.model.PresetsModel
+import com.github.whitescent.engine.data.model.PresetModel
 import com.github.whitescent.engine.destinations.EditorDestination
 import com.github.whitescent.engine.ui.component.CenterRow
 import com.github.whitescent.engine.ui.component.HeightSpacer
@@ -53,12 +53,14 @@ import kotlinx.coroutines.delay
 import kotlinx.datetime.*
 
 @Composable
-fun PresetsRoot(
+fun Presets(
   viewModel: PresetsViewModel = hiltViewModel(),
   navigator: DestinationsNavigator
 ) {
   val state by viewModel.uiState.collectAsState()
   val sortPreference by viewModel.sortPreference.collectAsState()
+
+  println("state $state")
 
   Column(
     modifier = Modifier.fillMaxSize()
@@ -70,12 +72,12 @@ fun PresetsRoot(
     )
     PresetsList(
       hideDetails = state.hideDetails,
-      presetsList = viewModel.presetsList,
+      presetList = viewModel.presetList,
       onClickEditor = {
         navigator.navigate(
           EditorDestination(
             orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE,
-            presetsModel = it
+            presetModel = it
           )
         )
       },
@@ -97,7 +99,7 @@ fun PresetsRoot(
       Text(text = stringResource(id = R.string.add_new_preset))
     }
   }
-  NewPresetsDialog(
+  NewPresetDialog(
     state = state,
     onDismissRequest = viewModel::onDismissRequest,
     onConfirmed = viewModel::onConfirmed,
@@ -112,11 +114,11 @@ fun PresetsRoot(
 @Composable
 fun PresetsList(
   hideDetails: Boolean,
-  presetsList: List<PresetsModel>,
-  onClickEditor: (PresetsModel) -> Unit,
-  deletePresets: (PresetsModel) -> Unit
+  presetList: List<PresetModel>,
+  onClickEditor: (PresetModel) -> Unit,
+  deletePresets: (PresetModel) -> Unit
 ) {
-  AnimatedContent(presetsList.size) {
+  AnimatedContent(presetList.size) {
     when(it) {
       0 -> {
         Box(Modifier.fillMaxSize(), Alignment.Center) {
@@ -137,7 +139,7 @@ fun PresetsList(
         LazyColumn(
           modifier = Modifier.fillMaxSize()
         ) {
-          items(presetsList) { presets ->
+          items(presetList) { presets ->
             key(presets.createdAt) {
               PresetsListItem(hideDetails, presets, onClickEditor, deletePresets)
             }
@@ -152,13 +154,13 @@ fun PresetsList(
 @Composable
 fun PresetsListItem(
   hideDetails: Boolean,
-  presetsModel: PresetsModel,
-  onClickEditor: (PresetsModel) -> Unit,
-  deletePresets: (PresetsModel) -> Unit
+  presetModel: PresetModel,
+  onClickEditor: (PresetModel) -> Unit,
+  deletePresets: (PresetModel) -> Unit
 ) {
-  val time = Instant.fromEpochMilliseconds(presetsModel.createdAt).toLocalDateTime(TimeZone.UTC)
-  val name = presetsModel.presetsName
-  val gameType = presetsModel.gameType
+  val time = Instant.fromEpochMilliseconds(presetModel.createdAt).toLocalDateTime(TimeZone.UTC)
+  val name = presetModel.name
+  val gameType = presetModel.gameType
   var isExpanded by remember { mutableStateOf(false) }
 
   val timeString = "${time.date.month.number}-${time.date.dayOfMonth}"
@@ -182,7 +184,7 @@ fun PresetsListItem(
             Icon(Icons.Rounded.Widgets, null, modifier = Modifier.size(14.dp), tint = Color.Gray)
             WidthSpacer(value = 2.dp)
             Text(
-              text = presetsModel.widgetList.size.toString(),
+              text = presetModel.widgetList.size.toString(),
               style = AppTheme.typography.labelLarge,
               color = AppTheme.colorScheme.onSecondaryContainer,
               modifier = Modifier.alpha(0.5f)
@@ -210,7 +212,7 @@ fun PresetsListItem(
       },
       trailingContent = {
         IconButton(
-          onClick = { onClickEditor(presetsModel) }
+          onClick = { onClickEditor(presetModel) }
         ) {
           Icon(Icons.Rounded.Edit, null)
         }
@@ -248,7 +250,7 @@ fun PresetsListItem(
             .weight(1f)
             .background(Color.Red)
             .clickable {
-              deletePresets(presetsModel)
+              deletePresets(presetModel)
             }
             .padding(20.dp),
           contentAlignment = Alignment.Center
@@ -274,7 +276,7 @@ fun PresetsListItem(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun NewPresetsDialog(
+fun NewPresetDialog(
   state: PresetsUiState,
   onDismissRequest: () -> Unit,
   onConfirmed: (GameCategory) -> Unit,

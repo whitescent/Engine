@@ -31,7 +31,7 @@ import com.github.whitescent.engine.AppTheme
 import com.github.whitescent.engine.MainActivity
 import com.github.whitescent.engine.R
 import com.github.whitescent.engine.data.model.Position
-import com.github.whitescent.engine.data.model.PresetsModel
+import com.github.whitescent.engine.data.model.PresetModel
 import com.github.whitescent.engine.data.model.WidgetModel
 import com.github.whitescent.engine.data.model.WidgetType
 import com.github.whitescent.engine.screen.presets.editor.widget.EngineButton
@@ -48,7 +48,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun Editor(
   orientation: Int,
-  presetsModel: PresetsModel,
+  presetModel: PresetModel,
   viewModel: EditorViewModel = hiltViewModel()
 ) {
   val activity = LocalContext.current as MainActivity
@@ -64,16 +64,16 @@ fun Editor(
     val originalOrientation = activity.requestedOrientation
     activity.requestedOrientation = orientation
     systemUiController.isSystemBarsVisible = false
-    viewModel.readWidgetList(presetsModel.presetsName)
+    viewModel.readWidgetList(presetModel.name)
     onDispose {
       activity.requestedOrientation = originalOrientation
       systemUiController.isSystemBarsVisible = true
-      viewModel.saveWidgetList(presetsModel.presetsName)
+      viewModel.saveWidgetList(presetModel.name)
     }
   }
 
   EditorContent(
-    presetsModel = presetsModel,
+    presetModel = presetModel,
     drawerState = drawerState,
     widgetList = viewModel.widgetList,
     onClickLabel = {
@@ -96,7 +96,7 @@ fun Editor(
 
 @Composable
 fun EditorContent(
-  presetsModel: PresetsModel,
+  presetModel: PresetModel,
   drawerState: EditorDrawerState,
   widgetList: List<WidgetModel>,
   onClickLabel: () -> Unit,
@@ -118,7 +118,7 @@ fun EditorContent(
         modifier = Modifier
           .align(Alignment.TopStart)
           .padding(10.dp),
-        presetsModel = presetsModel,
+        presetModel = presetModel,
         onClickLabel = onClickLabel
       )
       if (widgetList.isNotEmpty()) {
@@ -228,7 +228,7 @@ fun EditorContent(
             }
           }
           if (openDialog) {
-            DeleteDialog(
+            DeleteWidgetDialog(
               onDismissRequest = { openDialog = false },
               onConfirmed = {
                 deleteWidget(it)
@@ -251,7 +251,7 @@ fun EditorContent(
 }
 
 @Composable
-fun DeleteDialog(
+fun DeleteWidgetDialog(
   onDismissRequest: () -> Unit,
   onConfirmed: () -> Unit
 ) {
@@ -386,7 +386,7 @@ fun EditorDrawerContent(
 @Composable
 fun PresetsLabel(
   modifier: Modifier = Modifier,
-  presetsModel: PresetsModel,
+  presetModel: PresetModel,
   onClickLabel: () -> Unit
 ) {
   Box(
@@ -397,7 +397,7 @@ fun PresetsLabel(
   ) {
     CenterRow(Modifier.padding(horizontal = 18.dp, vertical = 4.dp)) {
       Image(
-        painter = painterResource(id = presetsModel.gameType.painter),
+        painter = painterResource(id = presetModel.gameType.painter),
         contentDescription = null,
         modifier = Modifier
           .size(24.dp)
@@ -405,7 +405,7 @@ fun PresetsLabel(
       )
       WidthSpacer(value = 6.dp)
       Text(
-        text = presetsModel.presetsName,
+        text = presetModel.name,
         style = AppTheme.typography.labelMedium,
         modifier = Modifier.alpha(0.5f),
         color = AppTheme.colorScheme.onSecondaryContainer

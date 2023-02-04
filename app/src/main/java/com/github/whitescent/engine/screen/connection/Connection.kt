@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.whitescent.engine.AppTheme
 import com.github.whitescent.engine.R
-import com.github.whitescent.engine.data.model.PresetsModel
+import com.github.whitescent.engine.data.model.PresetModel
 import com.github.whitescent.engine.destinations.ConsoleDestination
 import com.github.whitescent.engine.ui.component.CenterRow
 import com.github.whitescent.engine.ui.component.HeightSpacer
@@ -66,7 +66,7 @@ fun Connection(
           ) {
             ConnectionPanel(
               state = state,
-              updatePresets = viewModel::updateSelectedPreset,
+              updateSelectedPreset = viewModel::updateSelectedPreset,
               updateHostName = viewModel::updateHostName
             )
             ExtendedFloatingActionButton(
@@ -74,7 +74,7 @@ fun Connection(
                 navigator.navigate(
                   ConsoleDestination(
                     orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE,
-                    presetsModel = state.selectedPreset!!
+                    presetModel = state.selectedPreset!!
                   )
                 )
               },
@@ -114,7 +114,7 @@ fun Connection(
 @Composable
 fun ConnectionPanel(
   state: ConnectionUiState,
-  updatePresets: (PresetsModel) -> Unit,
+  updateSelectedPreset: (PresetModel) -> Unit,
   updateHostName: (String) -> Unit
 ) {
 
@@ -163,7 +163,7 @@ fun ConnectionPanel(
             )
             WidthSpacer(value = 6.dp)
             Text(
-              text = selectedPreset.presetsName,
+              text = selectedPreset.name,
               style = AppTheme.typography.titleSmall,
               color = AppTheme.colorScheme.onSecondaryContainer
             )
@@ -176,8 +176,8 @@ fun ConnectionPanel(
             Divider(thickness = 0.5.dp)
             PresetsSelector(
               list = state.presets,
-              updatePresets = {
-                updatePresets(it)
+              updatePreset = {
+                updateSelectedPreset(it)
                 showPresets = false
               }
             )
@@ -190,8 +190,8 @@ fun ConnectionPanel(
 
 @Composable
 fun PresetsSelector(
-  list: List<PresetsModel>,
-  updatePresets: (PresetsModel) -> Unit
+  list: List<PresetModel>,
+  updatePreset: (PresetModel) -> Unit
 ) {
   LazyColumn(
     modifier = Modifier
@@ -202,8 +202,8 @@ fun PresetsSelector(
     items(list) { presets ->
       Column {
         SelectorListItem(
-          presets = presets,
-          onClick = { updatePresets(it) }
+          preset = presets,
+          onClick = { updatePreset(it) }
         )
         Divider(thickness = 0.5.dp)
       }
@@ -212,21 +212,21 @@ fun PresetsSelector(
 }
 @Composable
 fun SelectorListItem(
-  presets: PresetsModel,
-  onClick: (PresetsModel) -> Unit
+  preset: PresetModel,
+  onClick: (PresetModel) -> Unit
 ) {
   Box(
     modifier = Modifier
       .fillMaxWidth()
       .clickable {
-        onClick(presets)
+        onClick(preset)
       }
   ) {
     CenterRow(
       modifier = Modifier.padding(12.dp)
     ) {
       Image(
-        painter = painterResource(id = presets.gameType.painter),
+        painter = painterResource(id = preset.gameType.painter),
         contentDescription = null,
         modifier = Modifier
           .size(25.dp)
@@ -234,7 +234,7 @@ fun SelectorListItem(
       )
       WidthSpacer(value = 6.dp)
       Text(
-        text = presets.presetsName,
+        text = preset.name,
         style = AppTheme.typography.titleSmall,
         color = AppTheme.colorScheme.onSecondaryContainer
       )
