@@ -15,8 +15,10 @@ allowing you to play various racing games more comfortably than if you only had 
 ## Features:
 
 * Mapping available data to virtual joystick data
-* Designed using Material 3 guidelines
+* Designed using [Material 3 guidelines](https://m3.material.io/)
 * The Screens and UI elements are built entirely using [Jetpack Compose](https://developer.android.com/jetpack/compose)
+* Easy-to-use widget editor
+* Several different presets can be set for widgets
 * Light and dark color themes supported
 * Ability to map the phone's volume keys as buttons to the game (e.g. you can manipulate the volume keys to upshift and downshift your car)
 * Language support for:
