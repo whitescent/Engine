@@ -20,6 +20,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
+import com.github.whitescent.engine.AppTheme
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -38,6 +39,7 @@ fun EngineAxis(
 ) {
   var animateOffsetY by remember { mutableStateOf(-initialValue) }
   var canvasHeight by remember { mutableStateOf(0f) }
+  val color = AppTheme.colorScheme.primary
   val gestureModifier = Modifier
     .pointerInput(Unit) {
       detectTapGestures(
@@ -91,7 +93,7 @@ fun EngineAxis(
     canvasHeight = canvasSize.height
     if (abs(animateOffsetY) >= canvasSize.height) animateOffsetY = -canvasSize.height
     drawRoundRect(
-      color = Color(0xFF4959A6),
+      color = color,
       size = Size(canvasSize.width, -abs(animateOffsetY)),
       topLeft = Offset(0f, size.height),
       cornerRadius = CornerRadius(10.dp.toPx())

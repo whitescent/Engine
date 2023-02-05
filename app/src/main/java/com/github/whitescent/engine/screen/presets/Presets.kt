@@ -60,8 +60,6 @@ fun Presets(
   val state by viewModel.uiState.collectAsState()
   val sortPreference by viewModel.sortPreference.collectAsState()
 
-  println("state $state")
-
   Column(
     modifier = Modifier.fillMaxSize()
   ) {

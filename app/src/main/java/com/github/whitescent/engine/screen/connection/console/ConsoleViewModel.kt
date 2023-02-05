@@ -11,7 +11,6 @@ import io.ktor.network.sockets.*
 import io.ktor.utils.io.core.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -43,39 +42,40 @@ class ConsoleViewModel @Inject constructor(
     viewModelScope.launch(Dispatchers.IO) {
       val hostname = mmkv.decodeString("hostname")!!
       val socket = aSocket(selectorManager).udp().connect(InetSocketAddress(hostname, port))
-      combine(
-        axes,
-        buttons,
-        transform = ::CombinedPacket
-      ).collect { combinedPacket ->
-        try {
-          val packet = BytePacketBuilder()
-          combinedPacket.axes.let {
-            packet.writeFloat(it.axisX)
-            packet.writeFloat(it.axisY)
-            packet.writeFloat(it.axisZ)
-            packet.writeFloat(it.axisRx)
-            packet.writeFloat(it.axisRy)
-            packet.writeFloat(it.axisRz)
-            packet.writeFloat(it.axisSl0)
-            packet.writeFloat(it.axisSl1)
-          }
-          val buttonsSize = buttons.value.size.toShort()
-          packet.writeShort(buttonsSize)
-          for (index in 0 until buttonsSize) {
-            packet.writeShort(buttons.value[index])
-          }
-          socket.outgoing.send(Datagram(packet.build(), InetSocketAddress(hostname, port)))
-        } catch (e: Exception) {
-          e.printStackTrace()
-          _consoleUiState.value = _consoleUiState.value.copy(error = true)
-          withContext(Dispatchers.IO) {
-            socket.close()
-            selectorManager.close()
+      try {
+        withContext(Dispatchers.IO) {
+          combine(
+            axes,
+            buttons,
+            transform = ::CombinedPacket
+          ).collect { combinedPacket ->
+            val packet = BytePacketBuilder()
+            combinedPacket.axes.let {
+              packet.writeFloat(it.axisX)
+              packet.writeFloat(it.axisY)
+              packet.writeFloat(it.axisZ)
+              packet.writeFloat(it.axisRx)
+              packet.writeFloat(it.axisRy)
+              packet.writeFloat(it.axisRz)
+              packet.writeFloat(it.axisSl0)
+              packet.writeFloat(it.axisSl1)
+            }
+            val buttonsSize = buttons.value.size.toShort()
+            packet.writeShort(buttonsSize)
+            for (index in 0 until buttonsSize) {
+              packet.writeShort(buttons.value[index])
+            }
+            socket.outgoing.send(Datagram(packet.build(), InetSocketAddress(hostname, port)))
           }
         }
+      } catch (e: Exception) {
+        _consoleUiState.value = _consoleUiState.value.copy(error = true)
+        socket.close()
+        selectorManager.close()
+        e.printStackTrace()
       }
     }
+
   }
 
   fun startListeningSensor() = sensor.startListening()

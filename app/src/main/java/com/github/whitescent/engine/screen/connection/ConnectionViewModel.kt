@@ -70,12 +70,14 @@ class ConnectionViewModel @Inject constructor() : ViewModel() {
     _uiState.value = _uiState.value.copy(navigateToConsole = false, errorMessage = null)
   }
   fun updateHostName(name: String) {
-    _uiState.value = _uiState.value.copy(hostname = name)
-    mmkv.encode("hostname", name)
+    val hostname = name.replace(hostPattern.toRegex(), "")
+    _uiState.value = _uiState.value.copy(hostname = hostname)
+    mmkv.encode("hostname", hostname)
   }
 }
 
 const val port = 12345
+private const val hostPattern = "[^\\d.]"
 data class ConnectionUiState(
   val hostname: String = "",
   val selectedPreset: PresetModel? = null,

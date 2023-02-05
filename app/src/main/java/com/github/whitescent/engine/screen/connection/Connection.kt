@@ -10,9 +10,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ExpandMore
-import androidx.compose.material.icons.rounded.Link
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.whitescent.engine.AppTheme
@@ -66,31 +67,34 @@ fun Connection(
           ) {
             ConnectionPanel(
               state = state,
+              navigator = navigator,
               updateSelectedPreset = viewModel::updateSelectedPreset,
               updateHostName = viewModel::updateHostName
             )
-            ExtendedFloatingActionButton(
-              onClick = {
-                navigator.navigate(
-                  ConsoleDestination(
-                    orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE,
-                    presetModel = state.selectedPreset!!
-                  )
-                )
-              },
-              modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
-            ) {
-              Icon(Icons.Rounded.Link, null)
-              WidthSpacer(value = 4.dp)
-              Text(text = stringResource(id = R.string.connect))
-            }
+//            if (state.hostname.isNotEmpty()) {
+//              ExtendedFloatingActionButton(
+//                onClick = {
+//                  navigator.navigate(
+//                    ConsoleDestination(
+//                      orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE,
+//                      presetModel = state.selectedPreset!!
+//                    )
+//                  )
+//                },
+//                modifier = Modifier
+//                  .align(Alignment.BottomEnd)
+//                  .padding(16.dp)
+//              ) {
+//                Icon(Icons.Rounded.Link, null)
+//                WidthSpacer(value = 4.dp)
+//                Text(text = stringResource(id = R.string.connect))
+//              }
+//            }
           }
         }
         Box(
           modifier = Modifier.fillMaxSize(),
-          contentAlignment = Alignment.BottomCenter
+          contentAlignment = Alignment.BottomCenter,
         ) {
           SnackbarHost(hostState = snackState)
         }
@@ -114,27 +118,28 @@ fun Connection(
 @Composable
 fun ConnectionPanel(
   state: ConnectionUiState,
+  navigator: DestinationsNavigator,
   updateSelectedPreset: (PresetModel) -> Unit,
   updateHostName: (String) -> Unit
 ) {
-
   var showPresets by remember { mutableStateOf(false) }
-
   Column(
     modifier = Modifier
       .fillMaxWidth()
-      .padding(horizontal = 25.dp),
-    horizontalAlignment = Alignment.CenterHorizontally
+      .padding(horizontal = 20.dp),
   ) {
-    OutlinedTextField(
-      value = state.hostname,
-      onValueChange = { updateHostName(it) },
-      label = {
-        Text(text = stringResource(id = R.string.hostname))
-      },
-      modifier = Modifier.fillMaxWidth(),
-      singleLine = true
-    )
+    CenterRow {
+      OutlinedTextField(
+        value = state.hostname,
+        onValueChange = { updateHostName(it) },
+        label = {
+          Text(text = stringResource(id = R.string.hostname))
+        },
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth(),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+      )
+    }
     HeightSpacer(value = 16.dp)
     state.selectedPreset?.let { selectedPreset ->
       Column {
@@ -174,7 +179,7 @@ fun ConnectionPanel(
         AnimatedVisibility(visible = showPresets) {
           Column {
             Divider(thickness = 0.5.dp)
-            PresetsSelector(
+            PresetListSelector(
               list = state.presets,
               updatePreset = {
                 updateSelectedPreset(it)
@@ -183,13 +188,31 @@ fun ConnectionPanel(
             )
           }
         }
+        HeightSpacer(value = 16.dp)
+        Button(
+          onClick = {
+            navigator.navigate(
+              ConsoleDestination(
+                orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE,
+                presetModel = state.selectedPreset
+              )
+            )
+          },
+          modifier = Modifier.fillMaxWidth(),
+          enabled = state.hostname.isNotEmpty()
+        ) {
+          Text(
+            text = stringResource(id = R.string.connect),
+            style = AppTheme.typography.bodyLarge
+          )
+        }
       }
     }
   }
 }
 
 @Composable
-fun PresetsSelector(
+fun PresetListSelector(
   list: List<PresetModel>,
   updatePreset: (PresetModel) -> Unit
 ) {
