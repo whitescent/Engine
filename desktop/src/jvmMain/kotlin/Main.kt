@@ -13,11 +13,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import network.MySocket
 import ui.component.AppTopBar
-import ui.component.WidthSpacer
 import utils.LocalMyWindowState
 import utils.MyWindowState
 import utils.Vjoy
 import utils.rememberMyWindowState
+fun main() = application {
+  val state = rememberMyWindowState()
+  if (!state.isClosed) {
+    Window(
+      onCloseRequest = { state.isClosed = true },
+      state = state,
+      resizable = false,
+      undecorated = true,
+      transparent = true
+    ) {
+      App(state)
+    }
+  }
+}
 
 @Composable
 @Preview
@@ -52,21 +65,6 @@ fun WindowScope.App(
   }
   LaunchedEffect(Unit) {
     socket.init(vjoy)
-  }
-}
-
-fun main() = application {
-  val state = rememberMyWindowState()
-  if (!state.isClosed) {
-    Window(
-      onCloseRequest = { state.isClosed = true },
-      state = state,
-      resizable = false,
-      undecorated = true,
-      transparent = true
-    ) {
-      App(state)
-    }
   }
 }
 
