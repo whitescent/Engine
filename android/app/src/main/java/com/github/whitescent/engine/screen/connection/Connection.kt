@@ -40,7 +40,6 @@ fun Connection(
   navigator: DestinationsNavigator
 ) {
   val state by viewModel.uiState.collectAsState()
-  val snackState = remember { SnackbarHostState() }
   AnimatedContent(state.selectedPreset) {
     when (it) {
       null -> {
@@ -72,12 +71,6 @@ fun Connection(
               updateHostName = viewModel::updateHostName
             )
           }
-        }
-        Box(
-          modifier = Modifier.fillMaxSize(),
-          contentAlignment = Alignment.BottomCenter,
-        ) {
-          SnackbarHost(hostState = snackState)
         }
       }
     }
