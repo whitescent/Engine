@@ -6,6 +6,7 @@
     <string name="settings">Settings</string>
 
     <string name="hostname">hostname</string>
+    <string name="invalid_id_address">Invalid ip address</string>
     <string name="connect">connect</string>
     <string name="general">General</string>
     <string name="other">Other</string>

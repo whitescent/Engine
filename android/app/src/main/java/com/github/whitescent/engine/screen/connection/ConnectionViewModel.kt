@@ -4,26 +4,46 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.whitescent.engine.data.model.PresetListModel
 import com.github.whitescent.engine.data.model.PresetModel
 import com.github.whitescent.engine.data.model.SortPreferenceModel
 import com.github.whitescent.engine.utils.getSortedPresetList
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(FlowPreview::class)
 @HiltViewModel
 class ConnectionViewModel @Inject constructor() : ViewModel() {
 
   private val mmkv = MMKV.defaultMMKV()
 
   private val _uiState = MutableStateFlow(ConnectionUiState())
+  private val inputText = MutableStateFlow("")
   val uiState = _uiState.asStateFlow()
 
   private var presetList by mutableStateOf<List<PresetModel>>(listOf())
   private var selectedPreset by mutableStateOf<PresetModel?>(null)
+
+  init {
+    viewModelScope.launch {
+      inputText
+        .debounce(500)
+        .filterNot(String::isEmpty)
+        .collect { input ->
+          val isValid = input.matches(hostPattern)
+          if (isValid) {
+            _uiState.value = _uiState.value.copy(hostnameError = false)
+            mmkv.encode("hostname", input)
+          }
+          else _uiState.value = _uiState.value.copy(hostnameError = true)
+        }
+    }
+  }
 
   fun initUiState() {
     val hostname = mmkv.decodeString("hostname") // get saved hostname if it existed
@@ -67,21 +87,21 @@ class ConnectionViewModel @Inject constructor() : ViewModel() {
     mmkv.encode("selected_preset", presetModel)
   }
   fun resetUiState() {
-    _uiState.value = _uiState.value.copy(navigateToConsole = false, errorMessage = null)
+    _uiState.value = _uiState.value.copy(navigateToConsole = false)
   }
   fun updateHostName(name: String) {
-    val hostname = name.replace(hostPattern.toRegex(), "")
-    _uiState.value = _uiState.value.copy(hostname = hostname)
-    mmkv.encode("hostname", hostname)
+    inputText.update { name }
+    _uiState.value = _uiState.value.copy(hostname = name)
   }
 }
 
 const val port = 12345
-private const val hostPattern = "[^\\d.]"
+private val hostPattern =
+  "^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$".toRegex()
 data class ConnectionUiState(
   val hostname: String = "",
+  val hostnameError: Boolean = false,
   val selectedPreset: PresetModel? = null,
   val presets: List<PresetModel> = listOf(),
-  val errorMessage: String? = null,
   val navigateToConsole: Boolean = false
 )

@@ -71,25 +71,6 @@ fun Connection(
               updateSelectedPreset = viewModel::updateSelectedPreset,
               updateHostName = viewModel::updateHostName
             )
-//            if (state.hostname.isNotEmpty()) {
-//              ExtendedFloatingActionButton(
-//                onClick = {
-//                  navigator.navigate(
-//                    ConsoleDestination(
-//                      orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE,
-//                      presetModel = state.selectedPreset!!
-//                    )
-//                  )
-//                },
-//                modifier = Modifier
-//                  .align(Alignment.BottomEnd)
-//                  .padding(16.dp)
-//              ) {
-//                Icon(Icons.Rounded.Link, null)
-//                WidthSpacer(value = 4.dp)
-//                Text(text = stringResource(id = R.string.connect))
-//              }
-//            }
           }
         }
         Box(
@@ -105,11 +86,6 @@ fun Connection(
     viewModel.initUiState()
     onDispose {
       viewModel.resetUiState()
-    }
-  }
-  LaunchedEffect(state.errorMessage) {
-    state.errorMessage?.let {
-      snackState.showSnackbar(it, actionLabel = "确认")
     }
   }
 }
@@ -128,7 +104,7 @@ fun ConnectionPanel(
       .fillMaxWidth()
       .padding(horizontal = 20.dp),
   ) {
-    CenterRow {
+    Column {
       OutlinedTextField(
         value = state.hostname,
         onValueChange = { updateHostName(it) },
@@ -137,8 +113,19 @@ fun ConnectionPanel(
         },
         singleLine = true,
         modifier = Modifier.fillMaxWidth(),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+        isError = state.hostnameError
       )
+      AnimatedVisibility(state.hostnameError) {
+        Column {
+          HeightSpacer(value = 10.dp)
+          Text(
+            text = stringResource(id = R.string.invalid_id_address),
+            color = AppTheme.colorScheme.error,
+            style = AppTheme.typography.labelMedium
+          )
+        }
+      }
     }
     HeightSpacer(value = 16.dp)
     state.selectedPreset?.let { selectedPreset ->
@@ -199,7 +186,7 @@ fun ConnectionPanel(
             )
           },
           modifier = Modifier.fillMaxWidth(),
-          enabled = state.hostname.isNotEmpty()
+          enabled = state.hostname.isNotEmpty() && !state.hostnameError
         ) {
           Text(
             text = stringResource(id = R.string.connect),

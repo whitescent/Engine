@@ -5,6 +5,7 @@
     <string name="connection_title">连接至电脑</string>
 
     <string name="hostname">主机名</string>
+    <string name="invalid_id_address">无效的 IP 地址</string>
     <string name="connect">连接</string>
     <string name="general">常规</string>
     <string name="other">其他</string>
