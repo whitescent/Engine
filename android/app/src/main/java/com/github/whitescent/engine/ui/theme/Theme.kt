@@ -8,12 +8,17 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
+import com.github.whitescent.engine.utils.NightModeType
+import com.github.whitescent.engine.utils.ThemeManager
+
+val LocalThemeManager = compositionLocalOf {
+  ThemeManager()
+}
 
 private val DarkColorScheme = darkColorScheme(
   primary = Purple80,
@@ -27,19 +32,25 @@ private val LightColorScheme = lightColorScheme(
   tertiary = Pink40
 )
 
+
 @Composable
 fun EngineTheme(
   darkTheme: Boolean = isSystemInDarkTheme(),
   dynamicColor: Boolean = true,
   content: @Composable () -> Unit
 ) {
-
+  val themeManager = ThemeManager()
   val colorScheme = when {
     dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
       val context = LocalContext.current
-      if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+      when(themeManager.nightMode) {
+        NightModeType.NIGHT -> dynamicDarkColorScheme(context)
+        NightModeType.LIGHT -> dynamicLightColorScheme(context)
+        NightModeType.FOLLOW_SYSTEM -> {
+          if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        }
+      }
     }
-
     darkTheme -> DarkColorScheme
     else -> LightColorScheme
   }
@@ -50,10 +61,13 @@ fun EngineTheme(
       ViewCompat.getWindowInsetsController(view)?.isAppearanceLightStatusBars = darkTheme
     }
   }
-
-  MaterialTheme(
-    colorScheme = colorScheme,
-    typography = Typography,
-    content = content
-  )
+  CompositionLocalProvider(
+    LocalThemeManager provides themeManager
+  ) {
+    MaterialTheme(
+      colorScheme = colorScheme,
+      typography = Typography,
+      content = content
+    )
+  }
 }

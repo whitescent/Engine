@@ -1,7 +1,7 @@
 package com.github.whitescent.engine.data.model
 
 import android.os.Parcelable
-import com.github.whitescent.engine.screen.presets.GameCategory
+import com.github.whitescent.engine.utils.GameCategory
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

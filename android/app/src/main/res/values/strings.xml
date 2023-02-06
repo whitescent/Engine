@@ -12,6 +12,8 @@
     <string name="other">Other</string>
     <string name="licenses">Licenses</string>
     <string name="night_mode">Night mode</string>
+    <string name="off">off</string>
+    <string name="on">on</string>
     <string name="follow_system">Follow System</string>
     <string name="volume_button_enabled">Volume keys as buttons</string>
     <string name="hide_preset_details">Hide details in preset</string>

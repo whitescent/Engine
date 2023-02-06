@@ -11,6 +11,8 @@
     <string name="other">其他</string>
     <string name="licenses">开源许可</string>
     <string name="night_mode">夜间模式</string>
+    <string name="off">关闭</string>
+    <string name="on">开启</string>
     <string name="follow_system">跟随系统</string>
     <string name="volume_button_enabled">音量键视为按钮</string>
     <string name="hide_preset_details">隐藏预设列表中的详细信息</string>

@@ -10,7 +10,9 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import com.github.whitescent.engine.ui.theme.EngineTheme
+import com.github.whitescent.engine.ui.theme.LocalThemeManager
 import com.github.whitescent.engine.utils.LocalSystemUiController
+import com.github.whitescent.engine.utils.NightModeType
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,7 +25,12 @@ class MainActivity : ComponentActivity() {
     setContent {
       EngineTheme {
         val systemUiController = rememberSystemUiController()
-        val useDarkIcons = !isSystemInDarkTheme()
+        val themeManager = LocalThemeManager.current
+        val useDarkIcons = when (themeManager.nightMode) {
+          NightModeType.NIGHT -> false
+          NightModeType.LIGHT -> true
+          NightModeType.FOLLOW_SYSTEM -> !isSystemInDarkTheme()
+        }
         SideEffect {
           systemUiController.setSystemBarsColor(
             color = Color.Transparent,

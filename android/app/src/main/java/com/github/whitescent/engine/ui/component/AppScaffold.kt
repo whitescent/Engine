@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import com.github.whitescent.engine.screen.connection.Connection
 import com.github.whitescent.engine.screen.presets.Presets
 import com.github.whitescent.engine.screen.settings.Settings
+import com.github.whitescent.engine.utils.BottomBarItem
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState

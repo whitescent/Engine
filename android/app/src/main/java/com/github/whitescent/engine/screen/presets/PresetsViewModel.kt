@@ -1,15 +1,14 @@
 package com.github.whitescent.engine.screen.presets
 
-import androidx.annotation.StringRes
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.whitescent.engine.R
 import com.github.whitescent.engine.data.model.PresetListModel
 import com.github.whitescent.engine.data.model.PresetModel
 import com.github.whitescent.engine.data.model.SortPreferenceModel
+import com.github.whitescent.engine.utils.GameCategory
 import com.github.whitescent.engine.utils.getSortedPresetList
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -112,17 +111,6 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
     }
   }
 
-}
-
-enum class GameCategory(
-  val painter: Int,
-  @StringRes val gameName: Int
-) {
-  Undefined(R.drawable.other_presets, R.string.uncategorized),
-  AssettoCorsa(R.drawable.assetto_corsa, R.string.assetto_corsa),
-  Forza(R.drawable.forza, R.string.forza_series),
-  F1(R.drawable.f1, R.string.f1_series),
-  Dirt(R.drawable.dirt, R.string.dirt_series)
 }
 
 data class PresetsUiState(
