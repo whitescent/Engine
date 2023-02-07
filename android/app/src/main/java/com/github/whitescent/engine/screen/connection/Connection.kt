@@ -1,7 +1,6 @@
 package com.github.whitescent.engine.screen.connection
 
 import android.content.pm.ActivityInfo
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.*
@@ -12,7 +11,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Construction
 import androidx.compose.material.icons.rounded.ExpandMore
+import androidx.compose.material.icons.rounded.Lan
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -40,37 +41,36 @@ fun Connection(
   navigator: DestinationsNavigator
 ) {
   val state by viewModel.uiState.collectAsState()
-  AnimatedContent(state.selectedPreset) {
-    when (it) {
-      null -> {
+  when (state.selectedPreset) {
+    null -> {
+      Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+      ) {
+        Text(
+          text = stringResource(id = R.string.need_selected_preset),
+          style = AppTheme.typography.titleLarge,
+          color = Color.Gray,
+          modifier = Modifier.padding(horizontal = 14.dp)
+        )
+      }
+    }
+
+    else -> {
+      Column(
+        modifier = Modifier.fillMaxSize()
+      ) {
+        ConnectionTopBar()
         Box(
           modifier = Modifier.fillMaxSize(),
           contentAlignment = Alignment.Center
         ) {
-          Text(
-            text = stringResource(id = R.string.need_selected_preset),
-            style = AppTheme.typography.titleLarge,
-            color = Color.Gray,
-            modifier = Modifier.padding(horizontal = 14.dp)
+          ConnectionPanel(
+            state = state,
+            navigator = navigator,
+            updateSelectedPreset = viewModel::updateSelectedPreset,
+            updateHostName = viewModel::updateHostName
           )
-        }
-      }
-      else -> {
-        Column(
-          modifier = Modifier.fillMaxSize()
-        ) {
-          ConnectionTopBar()
-          Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-          ) {
-            ConnectionPanel(
-              state = state,
-              navigator = navigator,
-              updateSelectedPreset = viewModel::updateSelectedPreset,
-              updateHostName = viewModel::updateHostName
-            )
-          }
         }
       }
     }
@@ -98,6 +98,16 @@ fun ConnectionPanel(
       .padding(horizontal = 20.dp),
   ) {
     Column {
+      CenterRow {
+        Icon(Icons.Rounded.Lan, null, tint = AppTheme.colorScheme.primary)
+        WidthSpacer(value = 6.dp)
+        Text(
+          text = "主机名",
+          style = AppTheme.typography.titleMedium,
+          color = AppTheme.colorScheme.primary
+        )
+      }
+      HeightSpacer(value = 8.dp)
       OutlinedTextField(
         value = state.hostname,
         onValueChange = { updateHostName(it) },
@@ -120,17 +130,27 @@ fun ConnectionPanel(
         }
       }
     }
-    HeightSpacer(value = 16.dp)
+    HeightSpacer(value = 8.dp)
     state.selectedPreset?.let { selectedPreset ->
       Column {
         val shape = if (showPresets)
           RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)
         else RoundedCornerShape(8.dp)
+        CenterRow {
+          Icon(Icons.Rounded.Construction, null, tint = AppTheme.colorScheme.primary)
+          WidthSpacer(value = 6.dp)
+          Text(
+            text = "使用的预设",
+            style = AppTheme.typography.titleMedium,
+            color = AppTheme.colorScheme.primary
+          )
+        }
+        HeightSpacer(value = 8.dp)
         Box(
           modifier = Modifier
             .fillMaxWidth()
             .clip(shape)
-            .background(color = AppTheme.colorScheme.secondaryContainer)
+            .background(color = AppTheme.colorScheme.primary)
             .clickable {
               showPresets = !showPresets
             }
@@ -150,10 +170,10 @@ fun ConnectionPanel(
             Text(
               text = selectedPreset.name,
               style = AppTheme.typography.titleSmall,
-              color = AppTheme.colorScheme.onSecondaryContainer
+              color = AppTheme.colorScheme.onPrimary
             )
             Spacer(modifier = Modifier.weight(1f))
-            Icon(Icons.Rounded.ExpandMore, null)
+            Icon(Icons.Rounded.ExpandMore, null, tint = AppTheme.colorScheme.onPrimary)
           }
         }
         AnimatedVisibility(visible = showPresets) {
@@ -203,13 +223,10 @@ fun PresetListSelector(
       .background(color = AppTheme.colorScheme.primaryContainer)
   ) {
     items(list) { presets ->
-      Column {
-        SelectorListItem(
-          preset = presets,
-          onClick = { updatePreset(it) }
-        )
-        Divider(thickness = 0.5.dp)
-      }
+      SelectorListItem(
+        preset = presets,
+        onClick = { updatePreset(it) }
+      )
     }
   }
 }

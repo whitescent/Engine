@@ -69,11 +69,11 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
   }
 
   fun onClickFab() {
-    _uiState.value = _uiState.value.copy(openDialog = true)
+    _uiState.value = _uiState.value.copy(openNewPresetDialog = true)
   }
 
   fun onDismissRequest() {
-    _uiState.value = _uiState.value.copy(openDialog = false, text = "", isTextError = false)
+    _uiState.value = _uiState.value.copy(openNewPresetDialog = false, text = "", isTextError = false)
   }
 
   fun onValueChange(text: String) {
@@ -109,16 +109,25 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
       presetList = getSortedPresetList(presetList, sort.value)
       mmkv.encode("preset_list", PresetListModel(presetList))
       // reset uiState
-      _uiState.value = _uiState.value.copy(openDialog = false, text = "", isTextError = false)
+      _uiState.value = _uiState.value.copy(openNewPresetDialog = false, text = "", isTextError = false)
     } catch (e: Exception) {
       e.printStackTrace()
     }
   }
 
+  fun openHelpDialog() {
+    _uiState.value = _uiState.value.copy(openHelpDialog = true)
+  }
+
+  fun closeHelpDialog() {
+    _uiState.value = _uiState.value.copy(openHelpDialog = false)
+  }
+
 }
 
 data class PresetsUiState(
-  val openDialog: Boolean = false,
+  val openNewPresetDialog: Boolean = false,
+  val openHelpDialog: Boolean = false,
   val text: String = "",
   val isTextError: Boolean = false,
   val isTyping: Boolean = false,

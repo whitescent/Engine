@@ -21,6 +21,7 @@
 
     <string name="no_preset_files">You don\'t have any preset</string>
     <string name="add_new_preset">New preset</string>
+    <string name="delete_preset">Delete preset</string>
     <string name="preset_name">Preset Name</string>
     <string name="preset_name_exists">This preset name already exists</string>
     <string name="preset_name_too_long">Preset name is too long</string>
@@ -32,6 +33,12 @@
     <string name="delete_widget">Delete this widget</string>
     <string name="no">no</string>
     <string name="yes">yes</string>
+    <string name="Tips">Tips</string>
+    <string name="tips1">1. In the editor, double-clicking a selected widget allows you to choose whether to
+        delete it.</string>
+    <string name="tips2">2. The preset name cannot exceed 30 characters.</string>
+    <string name="tips3">3. Although there is no limit on the number of widgets that can be added in the editor, vJoy
+        only supports 128 buttons and 8 axes.</string>
     <string name="Cancel">Cancel</string>
 
     <string name="null_widget">There is no widget in the preset, click the button to add a new widget</string>

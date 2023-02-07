@@ -15,7 +15,8 @@ import com.github.whitescent.engine.data.model.SortPreferenceModel
 fun PresetsTopBar(
   preference: SortPreferenceModel,
   onClickSortCategory: (Int) -> Unit,
-  onSortingChanged: () -> Unit
+  onSortingChanged: () -> Unit,
+  openHelpDialog: () -> Unit
 ) {
   var isOpen by remember { mutableStateOf(false) }
   val sortingGroup = listOf(
@@ -76,7 +77,7 @@ fun PresetsTopBar(
         }
       }
       IconButton(
-        onClick = { /*TODO*/ }
+        onClick = openHelpDialog
       ) {
         Icon(Icons.Rounded.Help, null)
       }

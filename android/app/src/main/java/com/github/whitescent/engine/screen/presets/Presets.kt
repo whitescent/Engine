@@ -5,7 +5,6 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,7 +12,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
@@ -37,8 +35,13 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.whitescent.engine.R
@@ -68,12 +71,13 @@ fun Presets(
     PresetsTopBar(
       preference = sortPreference,
       onClickSortCategory = viewModel::onClickSortCategory,
-      onSortingChanged = viewModel::onSortingChanged
+      onSortingChanged = viewModel::onSortingChanged,
+      openHelpDialog = viewModel::openHelpDialog
     )
     PresetsList(
       hideDetails = state.hideDetails,
       presetList = viewModel.presetList,
-      onClickEditor = {
+      navigateToEditor = {
         navigator.navigate(
           EditorDestination(
             orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE,
@@ -105,6 +109,10 @@ fun Presets(
     onConfirmed = viewModel::onConfirmed,
     onValueChange = viewModel::onValueChange
   )
+  HelpDialog(
+    state = state,
+    onDismissRequest = viewModel::closeHelpDialog
+  )
   LaunchedEffect(Unit) {
     viewModel.getLatestMMKVValue()
   }
@@ -115,7 +123,7 @@ fun Presets(
 fun PresetsList(
   hideDetails: Boolean,
   presetList: List<PresetModel>,
-  onClickEditor: (PresetModel) -> Unit,
+  navigateToEditor: (PresetModel) -> Unit,
   deletePresets: (PresetModel) -> Unit
 ) {
   AnimatedContent(presetList.size) {
@@ -139,11 +147,10 @@ fun PresetsList(
         LazyColumn(
           modifier = Modifier
             .fillMaxSize()
-            .background(AppTheme.colorScheme.secondaryContainer)
         ) {
           items(presetList) {preset ->
             key(preset.createdAt) {
-              PresetsListItem(hideDetails, preset, onClickEditor, deletePresets)
+              PresetsListItem(hideDetails, preset, navigateToEditor, deletePresets)
             }
           }
         }
@@ -152,12 +159,12 @@ fun PresetsList(
   }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PresetsListItem(
   hideDetails: Boolean,
   presetModel: PresetModel,
-  onClickEditor: (PresetModel) -> Unit,
+  navigateToEditor: (PresetModel) -> Unit,
   deletePresets: (PresetModel) -> Unit
 ) {
   val time = Instant.fromEpochMilliseconds(presetModel.createdAt).toLocalDateTime(TimeZone.UTC)
@@ -165,6 +172,9 @@ fun PresetsListItem(
   val gameCategory = presetModel.gameCategory
 
   val timeString = "${time.date.month.number}-${time.date.dayOfMonth}"
+
+  var openMenu by remember { mutableStateOf(false) }
+
   CenterRow {
     ListItem(
       headlineText = {
@@ -185,6 +195,15 @@ fun PresetsListItem(
             WidthSpacer(value = 2.dp)
             Text(
               text = presetModel.widgetList.size.toString(),
+              style = AppTheme.typography.labelLarge,
+              color = AppTheme.colorScheme.onSecondaryContainer,
+              modifier = Modifier.alpha(0.5f)
+            )
+            WidthSpacer(value = 6.dp)
+            Icon(Icons.Rounded.Schedule, null, modifier = Modifier.size(14.dp), tint = Color.Gray)
+            WidthSpacer(value = 2.dp)
+            Text(
+              text = timeString,
               style = AppTheme.typography.labelLarge,
               color = AppTheme.colorScheme.onSecondaryContainer,
               modifier = Modifier.alpha(0.5f)
@@ -213,24 +232,25 @@ fun PresetsListItem(
         }
       },
       trailingContent = {
-        CenterRow {
-          Icon(Icons.Rounded.Schedule, null, modifier = Modifier.size(14.dp), tint = Color.Gray)
-          WidthSpacer(value = 2.dp)
-          Text(
-            text = timeString,
-            style = AppTheme.typography.labelLarge,
-            color = AppTheme.colorScheme.onSecondaryContainer,
-            modifier = Modifier.alpha(0.5f)
+        IconButton(
+          onClick = { openMenu = true }
+        ) {
+          Icon(Icons.Rounded.MoreHoriz, null)
+        }
+        DropdownMenu(
+          expanded = openMenu,
+          onDismissRequest = { openMenu = false }
+        ) {
+          DropdownMenuItem(
+            text = { Text(text = stringResource(id = R.string.delete_preset)) },
+            onClick = { deletePresets(presetModel) },
+            leadingIcon = {
+              Icon(Icons.Rounded.Delete, null)
+            }
           )
         }
       },
-      modifier = Modifier
-        .clickable {
-          onClickEditor(presetModel)
-        },
-      colors = ListItemDefaults.colors(
-        containerColor = AppTheme.colorScheme.secondaryContainer,
-      )
+      modifier = Modifier.clickable { navigateToEditor(presetModel) }
     )
   }
 }
@@ -243,7 +263,7 @@ fun NewPresetDialog(
   onConfirmed: (GameCategory) -> Unit,
   onValueChange: (String) -> Unit
 ) {
-  if (state.openDialog) {
+  if (state.openNewPresetDialog) {
     var selectedGameCategory by remember { mutableStateOf(GameCategory.Undefined) }
     AlertDialog(
       onDismissRequest = onDismissRequest,
@@ -338,6 +358,51 @@ fun NewPresetDialog(
         }
       }
     )
+  }
+}
+
+@Composable
+fun HelpDialog(
+  state: PresetsUiState,
+  onDismissRequest: () -> Unit
+) {
+  if (state.openHelpDialog) {
+    AlertDialog(
+      title = {
+        Text(
+          text = stringResource(id = R.string.Tips),
+          style = AppTheme.typography.headlineMedium
+        )
+      },
+      text = {
+        Text(
+          text = buildAnnotatedString {
+            H4Text(text = stringResource(id = R.string.tips1))
+            append("\n\n")
+            H4Text(text = stringResource(id = R.string.tips2))
+            append("\n\n")
+            H4Text(text = stringResource(id = R.string.tips3))
+          }
+        )
+      },
+      onDismissRequest = onDismissRequest,
+      confirmButton = {
+        TextButton(
+          onClick = onDismissRequest
+        ) {
+          Text(stringResource(id = R.string.yes))
+        }
+      }
+    )
+  }
+}
+
+@Composable
+fun AnnotatedString.Builder.H4Text(text: String) {
+  withStyle(
+    style = SpanStyle(fontSize = AppTheme.typography.titleMedium.fontSize, fontWeight = FontWeight.Medium)
+  ) {
+    append(text)
   }
 }
 
