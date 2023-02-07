@@ -142,7 +142,7 @@ fun GeneralSettings(
       },
       modifier = Modifier.clickable {
         openMenu = true
-      },
+      }
     )
     DropdownMenu(
       expanded = openMenu,

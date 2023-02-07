@@ -140,7 +140,7 @@ fun ConnectionPanel(
               .padding(12.dp)
           ) {
             Image(
-              painter = painterResource(id = selectedPreset.gameType.painter),
+              painter = painterResource(id = selectedPreset.gameCategory.painter),
               contentDescription = null,
               modifier = Modifier
                 .size(25.dp)
@@ -229,7 +229,7 @@ fun SelectorListItem(
       modifier = Modifier.padding(12.dp)
     ) {
       Image(
-        painter = painterResource(id = preset.gameType.painter),
+        painter = painterResource(id = preset.gameCategory.painter),
         contentDescription = null,
         modifier = Modifier
           .size(25.dp)

@@ -81,7 +81,7 @@ fun PresetsTopBar(
         Icon(Icons.Rounded.Help, null)
       }
     },
-    colors = TopAppBarDefaults.smallTopAppBarColors(
+    colors = TopAppBarDefaults.topAppBarColors(
       containerColor = AppTheme.colorScheme.primaryContainer
     )
   )

@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
@@ -48,6 +49,7 @@ import com.github.whitescent.engine.ui.component.CenterRow
 import com.github.whitescent.engine.ui.component.HeightSpacer
 import com.github.whitescent.engine.ui.component.WidthSpacer
 import com.github.whitescent.engine.utils.GameCategory
+import com.github.whitescent.engine.utils.TextErrorType
 import com.google.accompanist.flowlayout.FlowRow
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
@@ -135,11 +137,13 @@ fun PresetsList(
       }
       else -> {
         LazyColumn(
-          modifier = Modifier.fillMaxSize()
+          modifier = Modifier
+            .fillMaxSize()
+            .background(AppTheme.colorScheme.secondaryContainer)
         ) {
-          items(presetList) { presets ->
-            key(presets.createdAt) {
-              PresetsListItem(hideDetails, presets, onClickEditor, deletePresets)
+          items(presetList) {preset ->
+            key(preset.createdAt) {
+              PresetsListItem(hideDetails, preset, onClickEditor, deletePresets)
             }
           }
         }
@@ -148,7 +152,7 @@ fun PresetsList(
   }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun PresetsListItem(
   hideDetails: Boolean,
@@ -158,12 +162,10 @@ fun PresetsListItem(
 ) {
   val time = Instant.fromEpochMilliseconds(presetModel.createdAt).toLocalDateTime(TimeZone.UTC)
   val name = presetModel.name
-  val gameType = presetModel.gameType
-  var isExpanded by remember { mutableStateOf(false) }
+  val gameCategory = presetModel.gameCategory
 
   val timeString = "${time.date.month.number}-${time.date.dayOfMonth}"
-
-  Column {
+  CenterRow {
     ListItem(
       headlineText = {
         Column {
@@ -187,88 +189,49 @@ fun PresetsListItem(
               color = AppTheme.colorScheme.onSecondaryContainer,
               modifier = Modifier.alpha(0.5f)
             )
-            WidthSpacer(value = 8.dp)
-            Icon(Icons.Rounded.Schedule, null, modifier = Modifier.size(14.dp), tint = Color.Gray)
-            WidthSpacer(value = 2.dp)
-            Text(
-              text = timeString,
-              style = AppTheme.typography.labelLarge,
-              color = AppTheme.colorScheme.onSecondaryContainer,
-              modifier = Modifier.alpha(0.5f)
-            )
           }
         }
       },
       leadingContent = {
-        Image(
-          painter = painterResource(id = gameType.painter),
-          contentDescription = null,
-          modifier = Modifier
-            .size(30.dp)
-            .clip(CircleShape)
-        )
+        if (gameCategory != GameCategory.Undefined) {
+          Image(
+            painter = painterResource(id = gameCategory.painter),
+            contentDescription = null,
+            modifier = Modifier
+              .size(30.dp)
+              .clip(CircleShape)
+          )
+        } else {
+          Icon(
+            imageVector = Icons.Rounded.Description,
+            contentDescription = null,
+            modifier = Modifier
+              .size(30.dp)
+              .clip(CircleShape),
+            tint = AppTheme.colorScheme.onSurface
+          )
+        }
       },
       trailingContent = {
-        IconButton(
-          onClick = { onClickEditor(presetModel) }
-        ) {
-          Icon(Icons.Rounded.Edit, null)
+        CenterRow {
+          Icon(Icons.Rounded.Schedule, null, modifier = Modifier.size(14.dp), tint = Color.Gray)
+          WidthSpacer(value = 2.dp)
+          Text(
+            text = timeString,
+            style = AppTheme.typography.labelLarge,
+            color = AppTheme.colorScheme.onSecondaryContainer,
+            modifier = Modifier.alpha(0.5f)
+          )
         }
       },
-      tonalElevation = 2.dp,
-      modifier = Modifier.clickable {
-        isExpanded = !isExpanded
-      }
+      modifier = Modifier
+        .clickable {
+          onClickEditor(presetModel)
+        },
+      colors = ListItemDefaults.colors(
+        containerColor = AppTheme.colorScheme.secondaryContainer,
+      )
     )
-    AnimatedVisibility(visible = isExpanded) {
-      CenterRow(modifier = Modifier.fillMaxWidth()) {
-        Box(
-          modifier = Modifier
-            .weight(1f)
-            .background(Color.Green)
-            .padding(20.dp),
-          contentAlignment = Alignment.Center
-        ) {
-          CenterRow {
-            Icon(
-              imageVector = Icons.Rounded.Edit,
-              contentDescription = null,
-              tint = Color.White
-            )
-            WidthSpacer(value = 6.dp)
-            Text(
-              text = "修改信息",
-              style = AppTheme.typography.bodyMedium,
-              color = Color.White
-            )
-          }
-        }
-        Box(
-          modifier = Modifier
-            .weight(1f)
-            .background(Color.Red)
-            .clickable {
-              deletePresets(presetModel)
-            }
-            .padding(20.dp),
-          contentAlignment = Alignment.Center
-        ) {
-          CenterRow {
-            Icon(
-              imageVector = Icons.Rounded.Delete,
-              contentDescription = null,
-              tint = Color.White
-            )
-            WidthSpacer(value = 6.dp)
-            Text(
-              text = "删除预设",
-              style = AppTheme.typography.bodyMedium,
-              color = Color.White
-            )
-          }
-        }
-      }
-    }
   }
 }
 
@@ -310,14 +273,28 @@ fun NewPresetDialog(
             isError = state.isTextError,
             singleLine = true
           )
-          AnimatedVisibility(state.isTextError) {
+          AnimatedVisibility(!state.isTyping) {
             Column {
-              HeightSpacer(value = 10.dp)
-              Text(
-                text = stringResource(id = R.string.preset_name_exists),
-                style = AppTheme.typography.labelMedium,
-                color = AppTheme.colorScheme.error
-              )
+              if (state.isTextError) {
+                HeightSpacer(value = 10.dp)
+                when (state.error) {
+                  TextErrorType.NameExisted -> {
+                    Text(
+                      text = stringResource(id = R.string.preset_name_exists),
+                      style = AppTheme.typography.labelMedium,
+                      color = AppTheme.colorScheme.error
+                    )
+                  }
+                  TextErrorType.LengthLimited -> {
+                    Text(
+                      text = stringResource(id = R.string.preset_name_too_long),
+                      style = AppTheme.typography.labelMedium,
+                      color = AppTheme.colorScheme.error
+                    )
+                  }
+                  else -> Unit
+                }
+              }
             }
           }
           HeightSpacer(value = 12.dp)

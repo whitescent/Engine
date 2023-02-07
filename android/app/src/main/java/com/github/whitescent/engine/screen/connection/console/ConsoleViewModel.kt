@@ -75,7 +75,6 @@ class ConsoleViewModel @Inject constructor(
         e.printStackTrace()
       }
     }
-
   }
 
   fun startListeningSensor() = sensor.startListening()

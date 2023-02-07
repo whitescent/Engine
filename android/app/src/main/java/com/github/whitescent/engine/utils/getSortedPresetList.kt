@@ -14,8 +14,8 @@ fun getSortedPresetList(
       else list.sortedByDescending { it.name }
     }
     1 -> {
-      if(preference.isAscending) list.sortedBy { it.gameType }
-      else list.sortedByDescending { it.gameType }
+      if(preference.isAscending) list.sortedBy { it.gameCategory }
+      else list.sortedByDescending { it.gameCategory }
     }
     2 -> {
       if(preference.isAscending) list.sortedBy { it.createdAt }

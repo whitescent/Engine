@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.github.whitescent.engine.AppTheme
 import com.github.whitescent.engine.utils.BottomBarItem
 
 @Composable
@@ -17,9 +16,7 @@ fun BottomBar(
   selectedScreen: Int,
   onClick: (targetIndex: Int) -> Unit
 ) {
-  NavigationBar(
-    contentColor = AppTheme.colorScheme.primaryContainer
-  ) {
+  NavigationBar {
     BottomBarItem.values().forEachIndexed { index, screen ->
       NavigationBarItem(
         selected = selectedScreen == index,

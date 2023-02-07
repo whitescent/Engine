@@ -25,6 +25,7 @@
     <string name="add_new_preset">添加新的预设</string>
     <string name="preset_name">预设名字</string>
     <string name="preset_name_exists">此预设名已存在</string>
+    <string name="preset_name_too_long">预设名过长</string>
     <string name="game_category">游戏类别</string>
     <string name="date">创建日期</string>
     <string name="add">添加</string>

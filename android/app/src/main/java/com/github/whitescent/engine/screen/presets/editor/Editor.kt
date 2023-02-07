@@ -393,7 +393,7 @@ fun PresetsLabel(
   ) {
     CenterRow(Modifier.padding(horizontal = 18.dp, vertical = 4.dp)) {
       Image(
-        painter = painterResource(id = presetModel.gameType.painter),
+        painter = painterResource(id = presetModel.gameCategory.painter),
         contentDescription = null,
         modifier = Modifier
           .size(24.dp)

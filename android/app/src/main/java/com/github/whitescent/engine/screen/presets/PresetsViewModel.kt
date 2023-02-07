@@ -9,6 +9,7 @@ import com.github.whitescent.engine.data.model.PresetListModel
 import com.github.whitescent.engine.data.model.PresetModel
 import com.github.whitescent.engine.data.model.SortPreferenceModel
 import com.github.whitescent.engine.utils.GameCategory
+import com.github.whitescent.engine.utils.TextErrorType
 import com.github.whitescent.engine.utils.getSortedPresetList
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,16 +38,19 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
     getLatestMMKVValue()
     viewModelScope.launch {
       inputText
-        .debounce(500)
+        .debounce(450)
         .filterNot(String::isEmpty)
         .collectLatest { input ->
-          if (input.length > 50) _uiState.value = _uiState.value.copy(isTextError = true)
-          presetList
-            .find {
-              it.name == input
-            }?.let {
-              _uiState.value = _uiState.value.copy(isTextError = true)
-            }
+          if (input.length > 30)
+            _uiState.value = _uiState.value.copy(isTextError = true, error = TextErrorType.LengthLimited, isTyping = false)
+          else {
+            presetList
+              .find {
+                it.name == input
+              }?.let {
+                _uiState.value = _uiState.value.copy(isTextError = true, error = TextErrorType.NameExisted, isTyping = false)
+              }
+          }
         }
     }
   }
@@ -69,12 +73,12 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
   }
 
   fun onDismissRequest() {
-    _uiState.value = _uiState.value.copy(openDialog = false)
+    _uiState.value = _uiState.value.copy(openDialog = false, text = "", isTextError = false)
   }
 
   fun onValueChange(text: String) {
     inputText.update { text }
-    _uiState.value = _uiState.value.copy(text = text)
+    _uiState.value = _uiState.value.copy(text = text, isTyping = true, isTextError = false)
   }
 
   fun onClickSortCategory(index: Int) {
@@ -117,5 +121,7 @@ data class PresetsUiState(
   val openDialog: Boolean = false,
   val text: String = "",
   val isTextError: Boolean = false,
+  val isTyping: Boolean = false,
+  val error: TextErrorType? = null,
   val hideDetails: Boolean = false
 )
