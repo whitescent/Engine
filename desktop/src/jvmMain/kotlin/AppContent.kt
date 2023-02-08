@@ -90,7 +90,7 @@ fun AppContent(
           Icon(Icons.Rounded.SentimentDissatisfied, null)
           WidthSpacer(6.dp)
           Text(
-            text = "没有检测到 vJoy 驱动"
+            text = "vJoy driver not detected."
           )
         }
       }
