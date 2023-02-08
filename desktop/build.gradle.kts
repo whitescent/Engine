@@ -17,6 +17,11 @@ kotlin {
     withJava()
   }
   sourceSets {
+    commonMain {
+      dependencies {
+        implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+      }
+    }
     val jvmMain by getting {
       val ktor_version = "2.2.2"
       dependencies {
@@ -26,7 +31,6 @@ kotlin {
         implementation("io.ktor:ktor-network:$ktor_version")
         implementation(files("libs/jna-platform.jar"))
         implementation(files("libs/jna.jar"))
-        implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
       }
     }
     val jvmTest by getting
@@ -37,6 +41,12 @@ compose.desktop {
   application {
     mainClass = "MainKt"
     nativeDistributions {
+      modules("java.sql")
+      buildTypes.release {
+        proguard {
+          configurationFiles.from("compose-desktop.pro")
+        }
+      }
       targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
       packageName = "EngineServer"
       packageVersion = "1.0.0"
