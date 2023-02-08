@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.github.whitescent"
-version = "1.0-SNAPSHOT"
+version = "1.0.0"
 
 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 kotlin {
@@ -40,6 +40,8 @@ compose.desktop {
       targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
       packageName = "EngineServer"
       packageVersion = "1.0.0"
+      vendor = "WhiteScent dev"
+      copyright = "© 2023 WhiteScent. All rights reserved."
     }
   }
 }

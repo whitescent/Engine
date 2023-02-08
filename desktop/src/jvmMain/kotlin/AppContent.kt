@@ -39,7 +39,7 @@ fun AppContent(
           ) {
             Icon(Icons.Rounded.Handyman, null, tint = Color(0xFF0079D3))
             Text(
-              text = "vJoy 驱动正常"
+              text = "vJoy Enabled"
             )
           }
           CenterRow(
@@ -55,7 +55,7 @@ fun AppContent(
           ) {
             Icon(Icons.Rounded.Link, null, tint = Color(0xFF0079D3))
             Text(
-              text = "本地服务端已开启"
+              text = "Local server is up and running"
             )
           }
           AnimatedContent(socketUiState.receivedData) {
@@ -66,7 +66,7 @@ fun AppContent(
                 ) {
                   Icon(Icons.Rounded.Done, null, tint = Color(0xFF0079D3))
                   Text(
-                    text = "接收数据中..."
+                    text = "Receiving data..."
                   )
                 }
               }
@@ -76,7 +76,7 @@ fun AppContent(
                 ) {
                   Icon(Icons.Rounded.Close, null, tint = Color(0xFF0079D3))
                   Text(
-                    text = "没有接收到数据"
+                    text = "No data received"
                   )
                 }
               }
