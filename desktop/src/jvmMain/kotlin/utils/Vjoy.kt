@@ -8,7 +8,6 @@ import java.util.*
 class Vjoy {
 
   init {
-    System.setProperty("jna.library.path", "desktop/libs")
     if (vJoyEnabled) {
       println("vjoy enabled")
       println("Existing vJoy Devices: ${getNumberExistingVJD()}")

@@ -42,6 +42,7 @@ compose.desktop {
       packageVersion = "1.0.0"
       vendor = "WhiteScent dev"
       copyright = "© 2023 WhiteScent. All rights reserved."
+      appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))
     }
   }
 }
