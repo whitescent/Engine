@@ -6,8 +6,10 @@ pluginManagement {
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
   }
   plugins {
-    kotlin("multiplatform").version("1.7.10")
-    id("org.jetbrains.compose").version("1.2.0")
+    val kotlinVersion = extra["kotlin.version"] as String
+    val composeVersion = extra["compose.version"] as String
+    kotlin("multiplatform").version(kotlinVersion)
+    id("org.jetbrains.compose").version(composeVersion)
   }
 }
 
