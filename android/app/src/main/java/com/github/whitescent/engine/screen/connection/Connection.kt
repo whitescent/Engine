@@ -102,7 +102,7 @@ fun ConnectionPanel(
         Icon(Icons.Rounded.Lan, null, tint = AppTheme.colorScheme.primary)
         WidthSpacer(value = 6.dp)
         Text(
-          text = "主机名",
+          text = stringResource(id = R.string.hostname),
           style = AppTheme.typography.titleMedium,
           color = AppTheme.colorScheme.primary
         )
@@ -140,7 +140,7 @@ fun ConnectionPanel(
           Icon(Icons.Rounded.Construction, null, tint = AppTheme.colorScheme.primary)
           WidthSpacer(value = 6.dp)
           Text(
-            text = "使用的预设",
+            text = stringResource(id = R.string.preset_used),
             style = AppTheme.typography.titleMedium,
             color = AppTheme.colorScheme.primary
           )

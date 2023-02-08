@@ -28,8 +28,6 @@ class ConsoleViewModel @Inject constructor(
   private val _sensorFlow = MutableStateFlow(0f)
   val sensorFlow = _sensorFlow.asStateFlow()
 
-  private val selectorManager = SelectorManager(Dispatchers.IO)
-
   private val axes = MutableStateFlow(Axes())
   private val buttons = MutableStateFlow<List<Short>>(listOf())
 
@@ -41,9 +39,10 @@ class ConsoleViewModel @Inject constructor(
     }
     viewModelScope.launch(Dispatchers.IO) {
       val hostname = mmkv.decodeString("hostname")!!
+      val selectorManager = SelectorManager(Dispatchers.IO)
       val socket = aSocket(selectorManager).udp().connect(InetSocketAddress(hostname, port))
-      try {
-        withContext(Dispatchers.IO) {
+      launch(Dispatchers.IO) {
+        try {
           combine(
             axes,
             buttons,
@@ -67,12 +66,12 @@ class ConsoleViewModel @Inject constructor(
             }
             socket.outgoing.send(Datagram(packet.build(), InetSocketAddress(hostname, port)))
           }
+        } catch (e: Exception) {
+          _consoleUiState.value = _consoleUiState.value.copy(error = true)
+          socket.close()
+          selectorManager.close()
+          e.printStackTrace()
         }
-      } catch (e: Exception) {
-        _consoleUiState.value = _consoleUiState.value.copy(error = true)
-        socket.close()
-        selectorManager.close()
-        e.printStackTrace()
       }
     }
   }
