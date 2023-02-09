@@ -6,6 +6,7 @@
     <string name="settings">Settings</string>
 
     <string name="hostname">hostname</string>
+    <string name="Hostname">Hostname</string>
     <string name="invalid_id_address">Invalid ip address</string>
     <string name="connect">connect</string>
     <string name="general">General</string>
@@ -23,7 +24,7 @@
     <string name="add_new_preset">New preset</string>
     <string name="delete_preset">Delete preset</string>
     <string name="preset_name">Preset Name</string>
-    <string name="preset_used">Preset Used</string>
+    <string name="preset">Preset</string>
     <string name="preset_name_exists">This preset name already exists</string>
     <string name="preset_name_too_long">Preset name is too long</string>
     <string name="game_category">Game Category</string>

@@ -102,7 +102,7 @@ fun ConnectionPanel(
         Icon(Icons.Rounded.Lan, null, tint = AppTheme.colorScheme.primary)
         WidthSpacer(value = 6.dp)
         Text(
-          text = stringResource(id = R.string.hostname),
+          text = stringResource(id = R.string.Hostname),
           style = AppTheme.typography.titleMedium,
           color = AppTheme.colorScheme.primary
         )
@@ -140,7 +140,7 @@ fun ConnectionPanel(
           Icon(Icons.Rounded.Construction, null, tint = AppTheme.colorScheme.primary)
           WidthSpacer(value = 6.dp)
           Text(
-            text = stringResource(id = R.string.preset_used),
+            text = stringResource(id = R.string.preset),
             style = AppTheme.typography.titleMedium,
             color = AppTheme.colorScheme.primary
           )

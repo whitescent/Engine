@@ -5,6 +5,7 @@
     <string name="connection_title">连接至电脑</string>
 
     <string name="hostname">主机名</string>
+    <string name="Hostname">主机名</string>
     <string name="invalid_id_address">无效的 IP 地址</string>
     <string name="connect">连接</string>
     <string name="general">常规</string>
@@ -24,7 +25,7 @@
     <string name="no_preset_files">你还没有预设文件</string>
     <string name="add_new_preset">添加新的预设</string>
     <string name="preset_name">预设名字</string>
-    <string name="preset_used">使用的预设</string>
+    <string name="preset">预设</string>
     <string name="preset_name_exists">此预设名已存在</string>
     <string name="preset_name_too_long">预设名过长</string>
     <string name="game_category">游戏类别</string>
