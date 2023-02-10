@@ -17,6 +17,7 @@
     <string name="on">on</string>
     <string name="follow_system">Follow System</string>
     <string name="volume_button_enabled">Volume keys as buttons</string>
+    <string name="Button_vibration_effect">Turn on button vibration effect</string>
     <string name="hide_preset_details">Hide details in preset</string>
     <string name="need_selected_preset">Requires at least one preset to connect to the host</string>
 

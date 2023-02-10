@@ -39,7 +39,8 @@ fun Settings(
       GeneralSettings(
         state = state,
         updateVolumeButtonValue = viewModel::updateVolumeButtonValue,
-        updateHidePresetDetailsValue = viewModel::updateHidePresetDetailsValue
+        updateHidePresetDetailsValue = viewModel::updateHidePresetDetailsValue,
+        updateButtonVibrationEffectValue = viewModel::updateButtonVibrationEffectValue
       )
     }
     item {
@@ -64,7 +65,8 @@ fun SettingsTopBar() {
 fun GeneralSettings(
   state: SettingsUiState,
   updateVolumeButtonValue: (Boolean) -> Unit,
-  updateHidePresetDetailsValue: (Boolean) -> Unit
+  updateHidePresetDetailsValue: (Boolean) -> Unit,
+  updateButtonVibrationEffectValue: (Boolean) -> Unit
 ) {
   var openMenu by remember { mutableStateOf(false) }
   val themeManager = LocalThemeManager.current
@@ -101,6 +103,23 @@ fun GeneralSettings(
     },
     leadingContent = {
       Icon(Icons.Rounded.VisibilityOff, null, modifier = Modifier.size(24.dp))
+    }
+  )
+  ListItem(
+    headlineText = {
+      Text(
+        text = stringResource(id = R.string.Button_vibration_effect),
+        style = AppTheme.typography.titleMedium
+      )
+    },
+    trailingContent = {
+      Switch(
+        checked = state.buttonVibration,
+        onCheckedChange = { updateButtonVibrationEffectValue(it) },
+      )
+    },
+    leadingContent = {
+      Icon(Icons.Rounded.Vibration, null, modifier = Modifier.size(24.dp))
     }
   )
   Column {

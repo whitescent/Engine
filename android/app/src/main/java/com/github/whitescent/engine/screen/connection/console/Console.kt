@@ -27,6 +27,7 @@ import com.github.whitescent.engine.data.model.WidgetType
 import com.github.whitescent.engine.screen.presets.editor.widget.EngineAxis
 import com.github.whitescent.engine.screen.presets.editor.widget.EngineButton
 import com.github.whitescent.engine.utils.LocalSystemUiController
+import com.github.whitescent.engine.utils.vibrate
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
@@ -42,7 +43,8 @@ fun Console(
 ) {
   val scope = rememberCoroutineScope()
   val requester = remember { FocusRequester() }
-  val activity = LocalContext.current as MainActivity
+  val context = LocalContext.current
+  val activity = context as MainActivity
   val systemUiController = LocalSystemUiController.current
 
   val sensor by viewModel.sensorFlow.collectAsStateWithLifecycle()
@@ -85,14 +87,14 @@ fun Console(
           KEYCODE_VOLUME_DOWN -> {
             scope.launch {
               viewModel.updateButton(1, 1)
-              delay(50)
+              delay(DELAY_TIME)
               viewModel.updateButton(1, 0)
             }
           }
           KEYCODE_VOLUME_UP -> {
             scope.launch {
               viewModel.updateButton(0, 1)
-              delay(50)
+              delay(DELAY_TIME)
               viewModel.updateButton(0, 0)
             }
           }
@@ -152,14 +154,17 @@ fun Console(
           ),
         shape = shape
       ) {
+        if (state.buttonVibration) {
+          context.vibrate(VIBRATE_TIME)
+        }
         scope.launch {
           if (state.volumeButtonEnabled) {
             viewModel.updateButton((index + 2).toShort(), 1)
-            delay(50)
+            delay(DELAY_TIME)
             viewModel.updateButton((index + 2).toShort(), 0)
           } else {
             viewModel.updateButton(index.toShort(), 1)
-            delay(50)
+            delay(DELAY_TIME)
             viewModel.updateButton(index.toShort(), 0)
           }
         }
@@ -172,3 +177,6 @@ fun Console(
   }
 
 }
+
+private const val DELAY_TIME: Long = 150
+private const val VIBRATE_TIME: Long = 20

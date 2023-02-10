@@ -16,6 +16,7 @@
     <string name="on">开启</string>
     <string name="follow_system">跟随系统</string>
     <string name="volume_button_enabled">音量键视为按钮</string>
+    <string name="Button_vibration_effect">开启按钮震动效果</string>
     <string name="hide_preset_details">隐藏预设列表中的详细信息</string>
     <string name="need_selected_preset">需要至少一个预设才能连接主机</string>
 

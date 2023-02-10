@@ -33,9 +33,14 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
     mmkv.encode("hide_preset_details", value)
   }
 
+  fun updateButtonVibrationEffectValue(value: Boolean) {
+    _uiState.value = _uiState.value.copy(buttonVibration = value)
+    mmkv.encode("button_vibration_effect", value)
+  }
 }
 
 data class SettingsUiState(
   val volumeButtonEnabled: Boolean = false,
-  val hideDetails: Boolean = false
+  val hideDetails: Boolean = false,
+  val buttonVibration: Boolean = false
 )

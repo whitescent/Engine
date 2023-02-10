@@ -32,7 +32,11 @@ class ConsoleViewModel @Inject constructor(
 
   init {
     val volumeButtonEnabled = mmkv.decodeBool("volume_button_enabled")
-    _consoleUiState.value = _consoleUiState.value.copy(volumeButtonEnabled = volumeButtonEnabled)
+    val buttonVibration = mmkv.decodeBool("button_vibration_effect")
+    _consoleUiState.value = _consoleUiState.value.copy(
+      volumeButtonEnabled = volumeButtonEnabled,
+      buttonVibration = buttonVibration
+    )
     sensor.setOnSensorValuesChangedListener {
       _sensorFlow.value = it
     }
@@ -106,6 +110,7 @@ class ConsoleViewModel @Inject constructor(
 
 data class ConsoleUiState(
   val volumeButtonEnabled: Boolean = false,
+  val buttonVibration: Boolean = false,
   val error: Boolean = false
 )
 
