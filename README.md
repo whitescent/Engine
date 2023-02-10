@@ -18,7 +18,7 @@ allowing you to play various racing games more comfortably than if you only had 
 <img src="https://user-images.githubusercontent.com/31311826/216760600-ac764121-a296-4ad7-892b-8319823e7d4e.png" width=20% height=20%>
 </p>
 
-## Features:
+## 💦 Features:
 
 * Mapping available data to virtual joystick data
 * Designed using [Material 3 guidelines](https://m3.material.io/)
@@ -30,7 +30,15 @@ allowing you to play various racing games more comfortably than if you only had 
 * Language support for:
   * Chinese
   * English
+  
+## 🚀 Usage:
 
-## License
+1. Download the latest apk and msi files in the [releases](https://github.com/whitescent/Engine/releases).
+2. Install [vJoy driver](https://github.com/jshafer817/vJoy/releases/tag/v2.1.9.1) in your computer. 
+3. Find your computer's IPv4 address using the `ipconfig` command.
+4. Create a new preset in the Android app, then enter the obtained IPv4 address in the connection interface.
+5. Enjoy!
+
+## 📄 License
 
 GNU GPL v3.0 © [Engine](https://github.com/whitescent/Engine)
