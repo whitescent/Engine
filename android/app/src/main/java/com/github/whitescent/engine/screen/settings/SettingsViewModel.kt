@@ -17,9 +17,11 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
   init {
     val volumeButtonEnabled = mmkv.decodeBool("volume_button_enabled")
     val hideDetails = mmkv.decodeBool("hide_preset_details")
+    val buttonVibration = mmkv.decodeBool("button_vibration_effect")
     _uiState.value = SettingsUiState(
       volumeButtonEnabled = volumeButtonEnabled,
-      hideDetails = hideDetails
+      hideDetails = hideDetails,
+      buttonVibration = buttonVibration
     )
   }
 
