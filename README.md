@@ -1,14 +1,12 @@
 # Engine
 [![License - GPLv3.0](https://img.shields.io/badge/License-GPLv3.0-2ea44f)](https://choosealicense.com/licenses/gpl-3.0/#)
 
-![Frame 3](https://user-images.githubusercontent.com/31311826/218238250-cfc8c32a-b96e-45a9-8a73-8c5ac0b4c293.png)
+![Frame 3](https://user-images.githubusercontent.com/31311826/218239687-d6f85bbb-2eef-410e-bd41-472cb7e178b7.png)
 
 
 ## 🤔 What's this?
 
-[Engine](https://github.com/whitescent/Engine) is an app that maps your phone to a virtual joystick, 
-reads sensor data and allows you to customize the number of buttons and axes, 
-allowing you to play various racing games more comfortably than if you only had a keyboard and mouse, such as Assetto Corsa, F1 202x, Euro Truck Simulator 2, etc.
+[Engine](https://github.com/whitescent/Engine) is a software that allows you to use your phone as a virtual joystick, allowing you to play racing games like [Assetto Corsa](https://store.steampowered.com/app/244210/_Assetto_Corsa/) and [Euro Truck Simulator 2](https://store.steampowered.com/app/227300/Euro_Truck_Simulator_2/) more comfortably without a steering wheel.
 
 ## 💦 Features:
 
@@ -30,6 +28,13 @@ allowing you to play various racing games more comfortably than if you only had 
 3. Find your computer's IPv4 address using the `ipconfig` command.
 4. Create a new preset in the Android app, then enter the obtained IPv4 address in the connection interface.
 5. Enjoy!
+
+## 🛠 Open Source Libraries
+
+* [100% Jetpack Compose based](https://developer.android.com/jetpack/compose) + [Compose Multiplatform](https://github.com/JetBrains/compose-jb)
+* [compose-destinations](https://github.com/raamcosta/compose-destinations)
+* [Accompanist](https://github.com/google/accompanist)
+* ...
 
 ## 📄 License
 
