@@ -1,22 +1,12 @@
 # Engine
+[![License - GPLv3.0](https://img.shields.io/badge/License-GPLv3.0-2ea44f)](https://choosealicense.com/licenses/gpl-3.0/#)
 
-## Description:
+![Frame 3](https://user-images.githubusercontent.com/31311826/218239687-d6f85bbb-2eef-410e-bd41-472cb7e178b7.png)
 
-[Engine](https://github.com/whitescent/Engine) is an app that maps your phone to a virtual joystick, 
-reads sensor data and allows you to customize the number of buttons and axes, 
-allowing you to play various racing games more comfortably than if you only had a keyboard and mouse, such as Assetto Corsa, F1 202x, Euro Truck Simulator 2, etc.
 
-## Screenshots:
+## 🤔 What's this?
 
-<p float="left">
-<img src="https://user-images.githubusercontent.com/31311826/216759508-26b14b75-36e4-44f6-8167-74974418899b.png" width=50% height=50%>
-<img src="https://user-images.githubusercontent.com/31311826/216759509-ddd6510f-593a-4db0-8a30-2d24b5ffb558.png" width=50% height=50%>
-</p>
-
-<p float="right">
-<img src="https://user-images.githubusercontent.com/31311826/216760599-d97b6d75-9af8-4e17-b95b-e408efeab8a2.png" width=20% height=20%>
-<img src="https://user-images.githubusercontent.com/31311826/216760600-ac764121-a296-4ad7-892b-8319823e7d4e.png" width=20% height=20%>
-</p>
+[Engine](https://github.com/whitescent/Engine) is a software that allows you to use your phone as a virtual joystick, allowing you to play racing games like [Assetto Corsa](https://store.steampowered.com/app/244210/_Assetto_Corsa/) and [Euro Truck Simulator 2](https://store.steampowered.com/app/227300/Euro_Truck_Simulator_2/) more comfortably without a steering wheel.
 
 ## 💦 Features:
 
@@ -38,6 +28,13 @@ allowing you to play various racing games more comfortably than if you only had 
 3. Find your computer's IPv4 address using the `ipconfig` command.
 4. Create a new preset in the Android app, then enter the obtained IPv4 address in the connection interface.
 5. Enjoy!
+
+## 🛠 Open Source Libraries
+
+* [100% Jetpack Compose based](https://developer.android.com/jetpack/compose) + [Compose Multiplatform](https://github.com/JetBrains/compose-jb)
+* [compose-destinations](https://github.com/raamcosta/compose-destinations)
+* [Accompanist](https://github.com/google/accompanist)
+* ...
 
 ## 📄 License
 
