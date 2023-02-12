@@ -74,7 +74,7 @@ fun Presets(
       onSortingChanged = viewModel::onSortingChanged,
       openHelpDialog = viewModel::openHelpDialog
     )
-    PresetsList(
+    PresetList(
       hideDetails = state.hideDetails,
       presetList = viewModel.presetList,
       navigateToEditor = {
@@ -85,7 +85,7 @@ fun Presets(
           )
         )
       },
-      deletePresets = viewModel::deletePresets
+      deletePreset = viewModel::deletePreset
     )
   }
   Box(
@@ -114,17 +114,17 @@ fun Presets(
     onDismissRequest = viewModel::closeHelpDialog
   )
   LaunchedEffect(Unit) {
-    viewModel.getLatestMMKVValue()
+    viewModel.getLatestPresetList()
   }
 }
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun PresetsList(
+fun PresetList(
   hideDetails: Boolean,
   presetList: List<PresetModel>,
   navigateToEditor: (PresetModel) -> Unit,
-  deletePresets: (PresetModel) -> Unit
+  deletePreset: (PresetModel) -> Unit
 ) {
   AnimatedContent(presetList.size) {
     when(it) {
@@ -150,7 +150,7 @@ fun PresetsList(
         ) {
           items(presetList) {preset ->
             key(preset.createdAt) {
-              PresetsListItem(hideDetails, preset, navigateToEditor, deletePresets)
+              PresetListItem(hideDetails, preset, navigateToEditor, deletePreset)
             }
           }
         }
@@ -161,11 +161,11 @@ fun PresetsList(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PresetsListItem(
+fun PresetListItem(
   hideDetails: Boolean,
   presetModel: PresetModel,
   navigateToEditor: (PresetModel) -> Unit,
-  deletePresets: (PresetModel) -> Unit
+  deletePreset: (PresetModel) -> Unit
 ) {
   val time = Instant.fromEpochMilliseconds(presetModel.createdAt).toLocalDateTime(TimeZone.UTC)
   val name = presetModel.name
@@ -243,7 +243,7 @@ fun PresetsListItem(
         ) {
           DropdownMenuItem(
             text = { Text(text = stringResource(id = R.string.delete_preset)) },
-            onClick = { deletePresets(presetModel) },
+            onClick = { deletePreset(presetModel) },
             leadingIcon = {
               Icon(Icons.Rounded.Delete, null)
             }

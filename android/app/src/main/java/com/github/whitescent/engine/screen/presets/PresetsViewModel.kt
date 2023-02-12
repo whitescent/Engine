@@ -35,7 +35,7 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
   val sortPreference = sort.asStateFlow()
 
   init {
-    getLatestMMKVValue()
+    getLatestPresetList()
     viewModelScope.launch {
       inputText
         .debounce(450)
@@ -55,7 +55,7 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
     }
   }
 
-  fun getLatestMMKVValue() {
+  fun getLatestPresetList() {
     val hideDetails = mmkv.decodeBool("hide_preset_details")
     // get sort preference
     mmkv.decodeParcelable("sort_preference", SortPreferenceModel::class.java)?.let {
@@ -92,7 +92,7 @@ class PresetsViewModel @Inject constructor() : ViewModel() {
     presetList = getSortedPresetList(presetList, sort.value)
   }
 
-  fun deletePresets(presetModel: PresetModel) {
+  fun deletePreset(presetModel: PresetModel) {
     presetList = presetList.toMutableList().also {
       it.remove(presetModel)
     }

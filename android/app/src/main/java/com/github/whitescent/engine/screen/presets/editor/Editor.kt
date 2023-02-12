@@ -114,7 +114,7 @@ fun EditorContent(
         .fillMaxSize()
         .background(AppTheme.colorScheme.background)
     ) {
-      PresetsLabel(
+      PresetLabel(
         modifier = Modifier
           .align(Alignment.TopStart)
           .padding(10.dp),
@@ -380,7 +380,7 @@ fun EditorDrawerContent(
 }
 
 @Composable
-fun PresetsLabel(
+fun PresetLabel(
   modifier: Modifier = Modifier,
   presetModel: PresetModel,
   onClickLabel: () -> Unit
