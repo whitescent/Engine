@@ -34,7 +34,7 @@
 * [100% Jetpack Compose based](https://developer.android.com/jetpack/compose) + [Compose Multiplatform](https://github.com/JetBrains/compose-jb)
 * [compose-destinations](https://github.com/raamcosta/compose-destinations)
 * [Accompanist](https://github.com/google/accompanist)
-* ...
+* [vJoy](https://github.com/jshafer817/vJoy)
 
 ## 📄 License
 
