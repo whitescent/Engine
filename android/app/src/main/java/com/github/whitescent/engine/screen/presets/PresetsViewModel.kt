@@ -3,7 +3,6 @@ package com.github.whitescent.engine.screen.presets
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.whitescent.engine.data.model.PresetModel
-import com.github.whitescent.engine.data.model.SortingPreferenceModel
 import com.github.whitescent.engine.data.repository.PresetsRepository
 import com.github.whitescent.engine.data.repository.UserDataRepository
 import com.github.whitescent.engine.utils.GameCategory
@@ -22,27 +21,17 @@ class PresetsViewModel @Inject constructor(
   private val presetsRepository: PresetsRepository
 ) : ViewModel() {
 
-  private val _hideDetails = userDataRepository.userData.map { it.hideDetails }
-  private val _inputText = MutableStateFlow("")
-  private val _inputTextManager = MutableStateFlow(InputTextManager())
+  private val hideDetails = userDataRepository.userData.map { it.hideDetails }
+  private val inputText = MutableStateFlow("")
+  private val inputTextManager = MutableStateFlow(InputTextManager())
 
   val presetList = presetsRepository.presetList
-    .stateIn(
-      scope = viewModelScope,
-      started = SharingStarted.Eagerly,
-      initialValue = listOf()
-    )
   val sortingPreference = presetsRepository.sortingPreference
-    .stateIn(
-      scope = viewModelScope,
-      started = SharingStarted.Eagerly,
-      initialValue = SortingPreferenceModel()
-    )
 
   val uiState: StateFlow<PresetsUiState> =
     combine(
-      _hideDetails,
-      _inputTextManager
+      hideDetails,
+      inputTextManager
     ) { hideDetails, inputTextManager ->
       PresetsUiState(
         hideDetails = hideDetails,
@@ -56,19 +45,19 @@ class PresetsViewModel @Inject constructor(
 
   init {
     viewModelScope.launch {
-      _inputText
+      inputText
         .debounce(450)
         .filterNot(String::isEmpty)
         .collectLatest { input ->
           if (input.length > 30)
-            _inputTextManager.value = _inputTextManager.value.copy(
+            inputTextManager.value = inputTextManager.value.copy(
               isTextError = true,
               error = TextErrorType.LengthLimited,
               isTyping = false
             )
           else {
             if (presetsRepository.isExistedInPresetList(input)) {
-              _inputTextManager.value = _inputTextManager.value.copy(
+              inputTextManager.value = inputTextManager.value.copy(
                 isTextError = true,
                 error = TextErrorType.NameExisted,
                 isTyping = false
@@ -79,8 +68,8 @@ class PresetsViewModel @Inject constructor(
     }
   }
   fun onValueChange(text: String) {
-    _inputText.update { text }
-    _inputTextManager.value = _inputTextManager.value.copy(text = text, isTyping = true, isTextError = false)
+    inputText.update { text }
+    inputTextManager.value = inputTextManager.value.copy(text = text, isTyping = true, isTextError = false)
   }
 
   fun onClickSortCategory(index: Int) =
@@ -94,7 +83,7 @@ class PresetsViewModel @Inject constructor(
 
   fun onConfirmed(gameCategory: GameCategory) {
     val currentMoment = Clock.System.now().toEpochMilliseconds()
-    val presetName = _inputText.value
+    val presetName = inputText.value
     presetsRepository.addPreset(
       presetName = presetName,
       gameCategory = gameCategory,
@@ -103,7 +92,7 @@ class PresetsViewModel @Inject constructor(
     resetInputTextManager()
   }
   fun resetInputTextManager() {
-    _inputTextManager.value = _inputTextManager.value.copy(text = "", isTyping = false, isTextError = false)
+    inputTextManager.value = inputTextManager.value.copy(text = "", isTyping = false, isTextError = false)
   }
 }
 

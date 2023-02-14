@@ -17,15 +17,7 @@ class EditorViewModel @Inject constructor(
   var widgetList by mutableStateOf<List<WidgetModel>>(listOf())
 
   fun readWidgetList(presetsName: String) {
-//    val presets = mmkv
-//      .decodeParcelable("preset_list", PresetListModel::class.java)!!.value
-//      .first {
-//        it.name == presetsName
-//      }
-//    widgetList = presets.widgetList.toMutableList()
-    widgetList = presetList.value.first {
-      it.name == presetsName
-    }.widgetList
+    widgetList = presetList.value.first { it.name == presetsName }.widgetList
   }
 
   fun saveWidgetList(presetsName: String) {
