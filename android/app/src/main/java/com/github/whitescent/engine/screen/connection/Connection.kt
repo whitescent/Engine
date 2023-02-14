@@ -2,7 +2,6 @@ package com.github.whitescent.engine.screen.connection
 
 import android.content.pm.ActivityInfo
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -34,13 +33,12 @@ import com.github.whitescent.engine.ui.component.HeightSpacer
 import com.github.whitescent.engine.ui.component.WidthSpacer
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Connection(
   viewModel: ConnectionViewModel = hiltViewModel(),
   navigator: DestinationsNavigator
 ) {
-  val state by viewModel.uiState.collectAsState()
+  val state by viewModel.connectionUiState.collectAsState()
   when (state.selectedPreset) {
     null -> {
       Box(
@@ -73,12 +71,6 @@ fun Connection(
           )
         }
       }
-    }
-  }
-  DisposableEffect(Unit) {
-    viewModel.initUiState()
-    onDispose {
-      viewModel.resetUiState()
     }
   }
 }
@@ -180,7 +172,7 @@ fun ConnectionPanel(
           Column {
             Divider(thickness = 0.5.dp)
             PresetListSelector(
-              list = state.presets,
+              list = state.presetList,
               updatePreset = {
                 updateSelectedPreset(it)
                 showPresets = false
@@ -194,7 +186,7 @@ fun ConnectionPanel(
             navigator.navigate(
               ConsoleDestination(
                 orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE,
-                presetModel = state.selectedPreset
+                presetModel = selectedPreset
               )
             )
           },

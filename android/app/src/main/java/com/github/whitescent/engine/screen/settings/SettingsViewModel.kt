@@ -1,47 +1,41 @@
 package com.github.whitescent.engine.screen.settings
 
 import androidx.lifecycle.ViewModel
-import com.tencent.mmkv.MMKV
+import androidx.lifecycle.viewModelScope
+import com.github.whitescent.engine.data.repository.UserDataRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingsViewModel @Inject constructor() : ViewModel() {
+class SettingsViewModel @Inject constructor(
+  private val userDataRepository: UserDataRepository
+) : ViewModel() {
 
-  private val mmkv = MMKV.defaultMMKV()
-  private val _uiState = MutableStateFlow(SettingsUiState())
-  val uiState = _uiState.asStateFlow()
-
-  init {
-    val volumeButtonEnabled = mmkv.decodeBool("volume_button_enabled")
-    val hideDetails = mmkv.decodeBool("hide_preset_details")
-    val buttonVibration = mmkv.decodeBool("button_vibration_effect")
-    _uiState.value = SettingsUiState(
-      volumeButtonEnabled = volumeButtonEnabled,
-      hideDetails = hideDetails,
-      buttonVibration = buttonVibration
+  val settingsUiState: StateFlow<UserEditableSettings> =
+    userDataRepository.userData.map {
+      UserEditableSettings(
+        volumeButtonEnabled = it.volumeButtonEnabled,
+        hideDetails = it.hideDetails,
+        buttonVibration = it.buttonVibration
+      )
+    }.stateIn(
+      scope = viewModelScope,
+      started = SharingStarted.Eagerly,
+      initialValue = UserEditableSettings()
     )
-  }
 
-  fun updateVolumeButtonValue(value: Boolean) {
-    _uiState.value = _uiState.value.copy(volumeButtonEnabled = value)
-    mmkv.encode("volume_button_enabled", value)
-  }
+  fun updateVolumeButtonValue(value: Boolean) =
+    userDataRepository.updateVolumeButtonValue(value)
 
-  fun updateHidePresetDetailsValue(value: Boolean) {
-    _uiState.value = _uiState.value.copy(hideDetails = value)
-    mmkv.encode("hide_preset_details", value)
-  }
+  fun updateHidePresetDetailsValue(value: Boolean) =
+    userDataRepository.updateHidePresetDetailsValue(value)
 
-  fun updateButtonVibrationEffectValue(value: Boolean) {
-    _uiState.value = _uiState.value.copy(buttonVibration = value)
-    mmkv.encode("button_vibration_effect", value)
-  }
+  fun updateButtonVibrationEffectValue(value: Boolean) =
+    userDataRepository.updateButtonVibrationEffectValue(value)
 }
 
-data class SettingsUiState(
+data class UserEditableSettings(
   val volumeButtonEnabled: Boolean = false,
   val hideDetails: Boolean = false,
   val buttonVibration: Boolean = false

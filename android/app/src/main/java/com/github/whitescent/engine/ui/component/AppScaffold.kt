@@ -13,8 +13,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import com.github.whitescent.engine.screen.connection.Connection
+import com.github.whitescent.engine.screen.presets.HelpDialog
+import com.github.whitescent.engine.screen.presets.NewPresetDialog
 import com.github.whitescent.engine.screen.presets.Presets
 import com.github.whitescent.engine.screen.settings.Settings
+import com.github.whitescent.engine.ui.rememberEngineAppDialogState
 import com.github.whitescent.engine.utils.BottomBarItem
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -33,6 +36,7 @@ fun AppScaffold(
 ) {
   val pagerState = rememberPagerState()
   val scope = rememberCoroutineScope()
+  val dialogState = rememberEngineAppDialogState()
   var selectedScreen by remember { mutableStateOf(0) }
 
   Scaffold(
@@ -55,9 +59,23 @@ fun AppScaffold(
     ) { page ->
       when(BottomBarItem.values()[page]) {
         BottomBarItem.Connection -> Connection(navigator = navigator)
-        BottomBarItem.Presets -> Presets(navigator = navigator)
+        BottomBarItem.Presets -> Presets(
+          navigator = navigator,
+          onFabClick = { dialogState.setShowNewPresetDialog(true) },
+          onHelpButtonClick = { dialogState.setShowHelpDialog(true) }
+        )
         BottomBarItem.Settings -> Settings(navigator = navigator)
       }
+    }
+    if (dialogState.shouldShowNewPresetDialog) {
+      NewPresetDialog(
+        onDismiss = { dialogState.setShowNewPresetDialog(false) }
+      )
+    }
+    if (dialogState.shouldShowHelpDialog) {
+      HelpDialog(
+        onDismiss = { dialogState.setShowHelpDialog(false) }
+      )
     }
   }
   LaunchedEffect(pagerState) {

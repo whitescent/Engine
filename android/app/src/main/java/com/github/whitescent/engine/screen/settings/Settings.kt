@@ -28,7 +28,7 @@ fun Settings(
   viewModel: SettingsViewModel = hiltViewModel(),
   navigator: DestinationsNavigator
 ) {
-  val state by viewModel.uiState.collectAsState()
+  val state by viewModel.settingsUiState.collectAsState()
   LazyColumn(
     modifier = Modifier.fillMaxSize()
   ) {
@@ -63,7 +63,7 @@ fun SettingsTopBar() {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun GeneralSettings(
-  state: SettingsUiState,
+  state: UserEditableSettings,
   updateVolumeButtonValue: (Boolean) -> Unit,
   updateHidePresetDetailsValue: (Boolean) -> Unit,
   updateButtonVibrationEffectValue: (Boolean) -> Unit

@@ -3,40 +3,43 @@ package com.github.whitescent.engine.screen.presets.editor
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import com.github.whitescent.engine.data.model.*
-import com.tencent.mmkv.MMKV
+import com.github.whitescent.engine.data.repository.PresetsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class EditorViewModel @Inject constructor() : ViewModel() {
+class EditorViewModel @Inject constructor(
+  private val presetsRepository: PresetsRepository
+) : ViewModel() {
 
-  private val mmkv = MMKV.defaultMMKV()
+  private val presetList = presetsRepository.presetList
 
   var widgetList by mutableStateOf<List<WidgetModel>>(listOf())
 
   fun readWidgetList(presetsName: String) {
-    val presets = mmkv
-      .decodeParcelable("preset_list", PresetListModel::class.java)!!.value
-      .first {
-        it.name == presetsName
-      }
-    widgetList = presets.widgetList.toMutableList()
+//    val presets = mmkv
+//      .decodeParcelable("preset_list", PresetListModel::class.java)!!.value
+//      .first {
+//        it.name == presetsName
+//      }
+//    widgetList = presets.widgetList.toMutableList()
+    widgetList = presetList.value.first {
+      it.name == presetsName
+    }.widgetList
   }
 
   fun saveWidgetList(presetsName: String) {
-    val newPreset = mmkv
-      .decodeParcelable("preset_list", PresetListModel::class.java)!!.value
+    val newPreset = presetList.value
       .first {
         it.name == presetsName
       }
       .copy(widgetList = widgetList)
-    val newPresetList = mmkv
-      .decodeParcelable("preset_list", PresetListModel::class.java)!!.value
+    val newPresetList = presetList.value
       .map {
         if (it.name == presetsName) newPreset
         else it
       }
-    mmkv.encode("preset_list", PresetListModel(newPresetList))
+    presetsRepository.updatePreset(PresetListModel(newPresetList))
   }
 
   fun addNewWidget(widgetType: WidgetType) {

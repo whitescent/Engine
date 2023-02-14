@@ -44,6 +44,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.whitescent.engine.R
 import com.github.whitescent.engine.AppTheme
 import com.github.whitescent.engine.data.model.PresetModel
@@ -61,22 +62,25 @@ import kotlinx.datetime.*
 @Composable
 fun Presets(
   viewModel: PresetsViewModel = hiltViewModel(),
+  onFabClick: () -> Unit,
+  onHelpButtonClick: () -> Unit,
   navigator: DestinationsNavigator
 ) {
   val state by viewModel.uiState.collectAsState()
-  val sortPreference by viewModel.sortPreference.collectAsState()
+  val sortingPreference by viewModel.sortingPreference.collectAsState()
+  val presetList by viewModel.presetList.collectAsState()
   Column(
     modifier = Modifier.fillMaxSize()
   ) {
     PresetsTopBar(
-      preference = sortPreference,
+      preference = sortingPreference,
       onClickSortCategory = viewModel::onClickSortCategory,
       onSortingChanged = viewModel::onSortingChanged,
-      openHelpDialog = viewModel::openHelpDialog
+      openHelpDialog = onHelpButtonClick
     )
     PresetList(
       hideDetails = state.hideDetails,
-      presetList = viewModel.presetList,
+      presetList = presetList,
       navigateToEditor = {
         navigator.navigate(
           EditorDestination(
@@ -93,7 +97,7 @@ fun Presets(
     contentAlignment = Alignment.BottomEnd
   ) {
     ExtendedFloatingActionButton(
-      onClick = viewModel::onClickFab,
+      onClick = onFabClick,
       modifier = Modifier
         .align(Alignment.BottomEnd)
         .padding(16.dp)
@@ -102,19 +106,6 @@ fun Presets(
       WidthSpacer(value = 4.dp)
       Text(text = stringResource(id = R.string.add_new_preset))
     }
-  }
-  NewPresetDialog(
-    state = state,
-    onDismissRequest = viewModel::onDismissRequest,
-    onConfirmed = viewModel::onConfirmed,
-    onValueChange = viewModel::onValueChange
-  )
-  HelpDialog(
-    state = state,
-    onDismissRequest = viewModel::closeHelpDialog
-  )
-  LaunchedEffect(Unit) {
-    viewModel.getLatestPresetList()
   }
 }
 
@@ -255,6 +246,23 @@ fun PresetListItem(
   }
 }
 
+@Composable
+fun NewPresetDialog(
+  onDismiss: () -> Unit,
+  viewModel: PresetsViewModel = hiltViewModel()
+) {
+  val state by viewModel.uiState.collectAsStateWithLifecycle()
+  NewPresetDialog(
+    state = state,
+    onDismissRequest = {
+      onDismiss()
+      viewModel.resetInputTextManager()
+    },
+    onConfirmed = viewModel::onConfirmed,
+    onValueChange = viewModel::onValueChange
+  )
+}
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun NewPresetDialog(
@@ -262,139 +270,136 @@ fun NewPresetDialog(
   onDismissRequest: () -> Unit,
   onConfirmed: (GameCategory) -> Unit,
   onValueChange: (String) -> Unit
-) {
-  if (state.openNewPresetDialog) {
-    var selectedGameCategory by remember { mutableStateOf(GameCategory.Undefined) }
-    AlertDialog(
-      onDismissRequest = onDismissRequest,
-      title = {
-        CenterRow {
-          Icon(Icons.Rounded.Construction, null, modifier = Modifier.alpha(0.5f))
-          WidthSpacer(value = 6.dp)
-          Text(
-            text = stringResource(id = R.string.add_new_preset),
-            style = AppTheme.typography.headlineMedium
-          )
-        }
-      },
-      text = {
-        val focusRequester = remember(state) { FocusRequester() }
-        val keyboard = LocalSoftwareKeyboardController.current
-        Column {
-          OutlinedTextField(
-            value = state.text,
-            onValueChange = onValueChange,
-            label = { Text(stringResource(id = R.string.preset_name)) },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-              containerColor = AppTheme.colorScheme.surfaceVariant
-            ),
-            modifier = Modifier.focusRequester(focusRequester),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            isError = state.isTextError,
-            singleLine = true
-          )
-          AnimatedVisibility(!state.isTyping) {
-            Column {
-              if (state.isTextError) {
-                HeightSpacer(value = 10.dp)
-                when (state.error) {
-                  TextErrorType.NameExisted -> {
-                    Text(
-                      text = stringResource(id = R.string.preset_name_exists),
-                      style = AppTheme.typography.labelMedium,
-                      color = AppTheme.colorScheme.error
-                    )
-                  }
-                  TextErrorType.LengthLimited -> {
-                    Text(
-                      text = stringResource(id = R.string.preset_name_too_long),
-                      style = AppTheme.typography.labelMedium,
-                      color = AppTheme.colorScheme.error
-                    )
-                  }
-                  else -> Unit
+)  {
+  var selectedGameCategory by remember { mutableStateOf(GameCategory.Undefined) }
+  AlertDialog(
+    onDismissRequest = onDismissRequest,
+    title = {
+      CenterRow {
+        Icon(Icons.Rounded.Construction, null, modifier = Modifier.alpha(0.5f))
+        WidthSpacer(value = 6.dp)
+        Text(
+          text = stringResource(id = R.string.add_new_preset),
+          style = AppTheme.typography.headlineMedium
+        )
+      }
+    },
+    text = {
+      val focusRequester = remember(state) { FocusRequester() }
+      val keyboard = LocalSoftwareKeyboardController.current
+      Column {
+        OutlinedTextField(
+          value = state.inputTextManager.text,
+          onValueChange = onValueChange,
+          label = { Text(stringResource(id = R.string.preset_name)) },
+          colors = TextFieldDefaults.outlinedTextFieldColors(
+            containerColor = AppTheme.colorScheme.surfaceVariant
+          ),
+          modifier = Modifier.focusRequester(focusRequester),
+          keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+          isError = state.inputTextManager.isTextError,
+          singleLine = true
+        )
+        AnimatedVisibility(!state.inputTextManager.isTyping) {
+          Column {
+            if (state.inputTextManager.isTextError) {
+              HeightSpacer(value = 10.dp)
+              when (state.inputTextManager.error) {
+                TextErrorType.NameExisted -> {
+                  Text(
+                    text = stringResource(id = R.string.preset_name_exists),
+                    style = AppTheme.typography.labelMedium,
+                    color = AppTheme.colorScheme.error
+                  )
                 }
+                TextErrorType.LengthLimited -> {
+                  Text(
+                    text = stringResource(id = R.string.preset_name_too_long),
+                    style = AppTheme.typography.labelMedium,
+                    color = AppTheme.colorScheme.error
+                  )
+                }
+                else -> Unit
               }
             }
           }
-          HeightSpacer(value = 12.dp)
-          CenterRow {
-            Icon(Icons.Rounded.SportsEsports, null, modifier = Modifier.alpha(0.5f))
-            WidthSpacer(value = 6.dp)
-            Text(
-              text = stringResource(id = R.string.game_category),
-              style = AppTheme.typography.titleMedium
-            )
-          }
-          HeightSpacer(value = 12.dp)
-          FlowRow(
-            mainAxisSpacing = 20.dp,
-            crossAxisSpacing = 6.dp
-          ) {
-            GameCategory.values().forEach { game ->
-              GameCategoryItem(game, selectedGameCategory) { selectedGameCategory = game }
-            }
-          }
         }
-        LaunchedEffect(Unit) {
-          focusRequester.requestFocus()
-          delay(100)
-          keyboard?.show()
+        HeightSpacer(value = 12.dp)
+        CenterRow {
+          Icon(Icons.Rounded.SportsEsports, null, modifier = Modifier.alpha(0.5f))
+          WidthSpacer(value = 6.dp)
+          Text(
+            text = stringResource(id = R.string.game_category),
+            style = AppTheme.typography.titleMedium
+          )
         }
-      },
-      dismissButton = {
-        TextButton(
-          onClick = onDismissRequest
+        HeightSpacer(value = 12.dp)
+        FlowRow(
+          mainAxisSpacing = 20.dp,
+          crossAxisSpacing = 6.dp
         ) {
-          Text(stringResource(id = R.string.Cancel))
-        }
-      },
-      confirmButton = {
-        TextButton(
-          onClick = { onConfirmed(selectedGameCategory) },
-          enabled = !state.isTextError && state.text.isNotEmpty()
-        ) {
-          Text(stringResource(id = R.string.add))
+          GameCategory.values().forEach { game ->
+            GameCategoryItem(game, selectedGameCategory) { selectedGameCategory = game }
+          }
         }
       }
-    )
-  }
+      LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+        delay(100)
+        keyboard?.show()
+      }
+    },
+    dismissButton = {
+      TextButton(
+        onClick = onDismissRequest
+      ) {
+        Text(stringResource(id = R.string.Cancel))
+      }
+    },
+    confirmButton = {
+      TextButton(
+        onClick = {
+          onConfirmed(selectedGameCategory)
+          onDismissRequest()
+        },
+        enabled = !state.inputTextManager.isTextError && state.inputTextManager.text.isNotEmpty()
+      ) {
+        Text(stringResource(id = R.string.add))
+      }
+    }
+  )
 }
-
 @Composable
 fun HelpDialog(
-  state: PresetsUiState,
-  onDismissRequest: () -> Unit
+  onDismiss: () -> Unit
 ) {
-  if (state.openHelpDialog) {
-    AlertDialog(
-      title = {
-        Text(
-          text = stringResource(id = R.string.Tips),
-          style = AppTheme.typography.headlineMedium
-        )
-      },
-      text = {
-        Text(
-          text = buildAnnotatedString {
-            H4Text(text = stringResource(id = R.string.tips1))
-            append("\n\n")
-            H4Text(text = stringResource(id = R.string.tips2))
-            append("\n\n")
-            H4Text(text = stringResource(id = R.string.tips3))
-          }
-        )
-      },
-      onDismissRequest = onDismissRequest,
-      confirmButton = {
-        TextButton(
-          onClick = onDismissRequest
-        ) {
-          Text(stringResource(id = R.string.yes))
+  AlertDialog(
+    title = {
+      Text(
+        text = stringResource(id = R.string.Tips),
+        style = AppTheme.typography.headlineMedium
+      )
+    },
+    text = {
+      Text(
+        text = buildAnnotatedString {
+          H4Text(text = stringResource(id = R.string.tips1))
+          append("\n\n")
+          H4Text(text = stringResource(id = R.string.tips2))
+          append("\n\n")
+          H4Text(text = stringResource(id = R.string.tips3))
         }
+      )
+    },
+    onDismissRequest = onDismiss,
+    confirmButton = {
+      TextButton(
+        onClick = onDismiss
+      ) {
+        Text(stringResource(id = R.string.yes))
       }
-    )
-  }
+    }
+  )
 }
 
 @Composable

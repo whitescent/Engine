@@ -8,12 +8,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.res.stringResource
 import com.github.whitescent.engine.AppTheme
 import com.github.whitescent.engine.R
-import com.github.whitescent.engine.data.model.SortPreferenceModel
+import com.github.whitescent.engine.data.model.SortingPreferenceModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PresetsTopBar(
-  preference: SortPreferenceModel,
+  preference: SortingPreferenceModel,
   onClickSortCategory: (Int) -> Unit,
   onSortingChanged: () -> Unit,
   openHelpDialog: () -> Unit

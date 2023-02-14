@@ -2,9 +2,9 @@ package com.github.whitescent.engine.screen.connection.console
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.whitescent.engine.data.repository.UserDataRepository
 import com.github.whitescent.engine.screen.connection.port
 import com.github.whitescent.engine.sensor.AbstractSensor
-import com.tencent.mmkv.MMKV
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
@@ -16,34 +16,43 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ConsoleViewModel @Inject constructor(
-  private val sensor: AbstractSensor
+  private val sensor: AbstractSensor,
+  userDataRepository: UserDataRepository
 ) : ViewModel() {
-
-  private val mmkv = MMKV.defaultMMKV()
-
-  private val _consoleUiState = MutableStateFlow(ConsoleUiState())
-  val consoleUiState = _consoleUiState.asStateFlow()
 
   private val _sensorFlow = MutableStateFlow(0f)
   val sensorFlow = _sensorFlow.asStateFlow()
+
+  private val connectionError = MutableStateFlow(false)
+
+  val consoleUiState =
+    combine(
+      connectionError,
+      userDataRepository.userData
+    ) { error, userData ->
+      ConsoleUiState(
+        hostname = userData.hostname,
+        volumeButtonEnabled = userData.volumeButtonEnabled,
+        buttonVibration = userData.buttonVibration,
+        error = error
+      )
+    }
+    .stateIn(
+      scope = viewModelScope,
+      started = SharingStarted.Eagerly,
+      initialValue = ConsoleUiState()
+    )
 
   private val axes = MutableStateFlow(Axes())
   private val buttons = MutableStateFlow<List<Short>>(listOf())
 
   init {
-    val volumeButtonEnabled = mmkv.decodeBool("volume_button_enabled")
-    val buttonVibration = mmkv.decodeBool("button_vibration_effect")
-    _consoleUiState.value = _consoleUiState.value.copy(
-      volumeButtonEnabled = volumeButtonEnabled,
-      buttonVibration = buttonVibration
-    )
     sensor.setOnSensorValuesChangedListener {
       _sensorFlow.value = it
     }
     viewModelScope.launch(Dispatchers.IO) {
-      val hostname = mmkv.decodeString("hostname")!!
       val selectorManager = SelectorManager(Dispatchers.IO)
-      val socket = aSocket(selectorManager).udp().connect(InetSocketAddress(hostname, port))
+      val socket = aSocket(selectorManager).udp().connect(InetSocketAddress(consoleUiState.value.hostname, port))
       try {
         combine(
           axes,
@@ -66,10 +75,10 @@ class ConsoleViewModel @Inject constructor(
           for (index in 0 until buttonsSize) {
             packet.writeShort(buttons.value[index])
           }
-          socket.outgoing.send(Datagram(packet.build(), InetSocketAddress(hostname, port)))
+          socket.outgoing.send(Datagram(packet.build(), InetSocketAddress(consoleUiState.value.hostname, port)))
         }
       } catch (e: Exception) {
-        _consoleUiState.value = _consoleUiState.value.copy(error = true)
+        connectionError.emit(true)
         socket.close()
         selectorManager.close()
         e.printStackTrace()
@@ -90,7 +99,7 @@ class ConsoleViewModel @Inject constructor(
   fun updateAxisSl1(value: Float) { axes.value = axes.value.copy(axisSl1 = value) }
 
   fun initButtons(value: Int) {
-    val count = if (_consoleUiState.value.volumeButtonEnabled) value + 2 else value
+    val count = if (consoleUiState.value.volumeButtonEnabled) value + 2 else value
     buttons.value = buttons.value.toMutableList().also {
       for(index in 0 until count) {
         it.add(0)
@@ -111,7 +120,8 @@ class ConsoleViewModel @Inject constructor(
 data class ConsoleUiState(
   val volumeButtonEnabled: Boolean = false,
   val buttonVibration: Boolean = false,
-  val error: Boolean = false
+  val error: Boolean = false,
+  val hostname: String = ""
 )
 
 data class CombinedPacket(

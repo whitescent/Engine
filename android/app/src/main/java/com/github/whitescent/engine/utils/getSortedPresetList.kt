@@ -1,13 +1,13 @@
 package com.github.whitescent.engine.utils
 
 import com.github.whitescent.engine.data.model.PresetModel
-import com.github.whitescent.engine.data.model.SortPreferenceModel
+import com.github.whitescent.engine.data.model.SortingPreferenceModel
 
 fun getSortedPresetList(
   list: List<PresetModel>,
-  sortPreference: SortPreferenceModel?
+  sortPreference: SortingPreferenceModel?
 ): List<PresetModel> {
-  val preference = sortPreference ?: SortPreferenceModel()
+  val preference = sortPreference ?: SortingPreferenceModel()
   return when (preference.selectedSortCategory) {
     0 -> {
       if(preference.isAscending) list.sortedBy { it.name }

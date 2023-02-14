@@ -37,7 +37,9 @@ class MainActivity : ComponentActivity() {
             darkIcons = useDarkIcons
           )
         }
-        CompositionLocalProvider(LocalSystemUiController provides systemUiController) {
+        CompositionLocalProvider(
+          LocalSystemUiController provides systemUiController
+        ) {
           DestinationsNavHost(navGraph = AppNavGraphs.root)
         }
       }

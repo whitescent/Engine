@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class SortPreferenceModel(
+data class SortingPreferenceModel(
   val selectedSortCategory: Int = 0,
   val isAscending: Boolean = false
 ) : Parcelable
