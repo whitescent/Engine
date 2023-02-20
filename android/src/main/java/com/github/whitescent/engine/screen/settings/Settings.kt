@@ -1,5 +1,10 @@
 package com.github.whitescent.engine.screen.settings
 
+import android.content.Context
+import android.net.Uri
+import androidx.annotation.ColorInt
+import androidx.browser.customtabs.CustomTabColorSchemeParams
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.animation.*
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -10,7 +15,8 @@ import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -197,7 +203,10 @@ fun GeneralSettings(
 fun OtherSettings(
   navigate: () -> Unit
 ) {
-  val uriHandler = LocalUriHandler.current
+
+  val context = LocalContext.current
+  val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
+
   PrimarySettingsText(stringResource(id = R.string.other))
   ListItem(
     headlineText = {
@@ -213,7 +222,11 @@ fun OtherSettings(
       )
     },
     modifier = Modifier.clickable {
-      uriHandler.openUri("https://github.com/whitescent/Engine")
+      launchCustomChromeTab(
+        context = context,
+        uri = Uri.parse("https://github.com/whitescent/Engine/releases"),
+        toolbarColor = backgroundColor
+      )
     },
     leadingContent = {
       Icon(painterResource(id = R.drawable.github), null)
@@ -247,3 +260,13 @@ fun PrimarySettingsText(text: String) =
       )
     }
   )
+
+fun launchCustomChromeTab(context: Context, uri: Uri, @ColorInt toolbarColor: Int) {
+  val customTabBarColor = CustomTabColorSchemeParams.Builder()
+    .setToolbarColor(toolbarColor).build()
+  val customTabsIntent = CustomTabsIntent.Builder()
+    .setDefaultColorSchemeParams(customTabBarColor)
+    .build()
+
+  customTabsIntent.launchUrl(context, uri)
+}

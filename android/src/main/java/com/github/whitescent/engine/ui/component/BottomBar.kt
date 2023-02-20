@@ -28,7 +28,8 @@ fun BottomBar(
             modifier = Modifier.size(24.dp)
           )
         },
-        label = { Text(stringResource(id = screen.label)) }
+        label = { Text(stringResource(id = screen.label)) },
+        alwaysShowLabel = false
       )
     }
   }
