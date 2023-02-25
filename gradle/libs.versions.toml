@@ -11,6 +11,7 @@ androidxNavigation = "2.5.2"
 androidxHilt = "1.0.0"
 androidxStartup = "1.1.1"
 androidxBrowser = "1.4.0"
+androidDesugar = "1.2.2"
 
 accompanist = "0.26.4-beta"
 aboutLibraries = "10.5.2"
@@ -35,6 +36,7 @@ junit = "4.13.2"
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
 androidx-startup-runtime = { module = "androidx.startup:startup-runtime", version.ref = "androidxStartup" }
 androidx-browser = { module = "androidx.browser:browser", version.ref = "androidxBrowser" }
+android-desugar = { module = "com.android.tools:desugar_jdk_libs", version.ref = "androidDesugar" }
 
 # compose
 androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }

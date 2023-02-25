@@ -16,8 +16,8 @@ android {
     applicationId = "com.github.whitescent.engine"
     minSdk = 21
     targetSdk = 33
-    versionCode = 1
-    versionName = "1.0.0"
+    versionCode = 2
+    versionName = "1.0.1"
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     vectorDrawables {
       useSupportLibrary = true
@@ -38,6 +38,9 @@ android {
   }
   composeOptions {
     kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
+  }
+  compileOptions {
+    isCoreLibraryDesugaringEnabled = true
   }
   buildFeatures {
     compose = true
@@ -66,6 +69,7 @@ dependencies {
   implementation(libs.androidx.lifecycle.runtime.compose)
   implementation(libs.androidx.lifecycle.viewmodel.compose)
   implementation(libs.androidx.browser)
+  coreLibraryDesugaring(libs.android.desugar)
 
   implementation(libs.androidx.compose.ui)
   implementation(libs.androidx.compose.ui.util)
