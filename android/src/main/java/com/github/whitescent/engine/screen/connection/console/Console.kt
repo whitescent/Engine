@@ -30,8 +30,6 @@ import com.github.whitescent.engine.utils.LocalSystemUiController
 import com.github.whitescent.engine.utils.vibrate
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Destination
 @Composable
@@ -41,7 +39,6 @@ fun Console(
   viewModel: ConsoleViewModel = hiltViewModel(),
   navigator: DestinationsNavigator
 ) {
-  val scope = rememberCoroutineScope()
   val requester = remember { FocusRequester() }
   val context = LocalContext.current
   val activity = context as MainActivity
@@ -82,23 +79,19 @@ fun Console(
 
   val enableVolumeButton = if (state.volumeButtonEnabled) {
     Modifier.onKeyEvent {
-      if (it.type == KeyEventType.KeyDown) {
-        when (it.nativeKeyEvent.keyCode) {
-          KEYCODE_VOLUME_DOWN -> {
-            scope.launch {
-              viewModel.updateButton(1, 1)
-              delay(DELAY_TIME)
-              viewModel.updateButton(1, 0)
-            }
+      when (it.type) {
+        KeyEventType.KeyUp -> { // onRelease
+          when (it.nativeKeyEvent.keyCode) {
+            KEYCODE_VOLUME_DOWN -> viewModel.updateButton(1, 0)
+            KEYCODE_VOLUME_UP -> viewModel.updateButton(0, 0)
           }
-          KEYCODE_VOLUME_UP -> {
-            scope.launch {
-              viewModel.updateButton(0, 1)
-              delay(DELAY_TIME)
-              viewModel.updateButton(0, 0)
-            }
+        }
+        KeyEventType.KeyDown -> { // onPress
+          when (it.nativeKeyEvent.keyCode) {
+            KEYCODE_VOLUME_DOWN -> viewModel.updateButton(1, 1)
+            KEYCODE_VOLUME_UP -> viewModel.updateButton(0, 1)
+            KEYCODE_BACK -> navigator.popBackStack()
           }
-          KEYCODE_BACK -> navigator.popBackStack()
         }
       }
       true
@@ -152,23 +145,22 @@ fun Console(
             translationX = it.position.offsetX * it.position.scale,
             translationY = it.position.offsetY * it.position.scale
           ),
-        shape = shape
-      ) {
-        if (state.buttonVibration) {
-          context.vibrate(VIBRATE_TIME)
-        }
-        scope.launch {
-          if (state.volumeButtonEnabled) {
-            viewModel.updateButton((index + 2).toShort(), 1)
-            delay(DELAY_TIME)
-            viewModel.updateButton((index + 2).toShort(), 0)
-          } else {
-            viewModel.updateButton(index.toShort(), 1)
-            delay(DELAY_TIME)
-            viewModel.updateButton(index.toShort(), 0)
+        shape = shape,
+        onPress = {
+          if (state.buttonVibration) context.vibrate(VIBRATE_TIME)
+          when (state.volumeButtonEnabled) {
+            true -> viewModel.updateButton((index + 2).toShort(), 1)
+            false -> viewModel.updateButton(index.toShort(), 1)
+          }
+        },
+        onTap = {
+          if (state.buttonVibration) context.vibrate(VIBRATE_TIME)
+          when (state.volumeButtonEnabled) {
+            true -> viewModel.updateButton((index + 2).toShort(), 0)
+            false -> viewModel.updateButton(index.toShort(), 0)
           }
         }
-      }
+      )
     }
   }
 
@@ -178,5 +170,4 @@ fun Console(
 
 }
 
-private const val DELAY_TIME: Long = 150
 private const val VIBRATE_TIME: Long = 20

@@ -205,7 +205,7 @@ fun EditorContent(
                       .then(selectedModifier)
                       .onEditingBorder(),
                     shape = shape,
-                    onDoubleClick = { openDialog = true }
+                    onDoubleTap = { openDialog = true }
                   ) { }
                 }
                 else -> {
