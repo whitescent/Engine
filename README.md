@@ -39,3 +39,9 @@
 ## 📄 License
 
 GNU GPL v3.0 © [Engine](https://github.com/whitescent/Engine)
+
+## ❤️ Acknowledgement
+
+> Special thanks to [JetBrains](https://www.jetbrains.com/?from=engine) for providing free licenses of IDEs such as [IntelliJ IDEA](https://www.jetbrains.com/idea/?from=engine) for open-source projects.
+
+[<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" width="200"/>](https://www.jetbrains.com/?from=engine)
