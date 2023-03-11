@@ -17,7 +17,7 @@ fun EngineButton(
   shape: Shape = CircleShape,
   onDoubleTap: (() -> Unit)? = null,
   onPress: (() -> Unit)? = null,
-  onTap: () -> Unit,
+  onTap: (() -> Unit)? = null
 ) {
   Box(
     modifier = modifier
@@ -26,7 +26,7 @@ fun EngineButton(
       .pointerInput(Unit) {
         detectTapGestures(
           onTap = {// Tap is onClick
-            onTap()
+            onTap?.invoke()
           },
           onPress = {
             onPress?.invoke()

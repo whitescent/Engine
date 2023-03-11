@@ -206,7 +206,7 @@ fun EditorContent(
                       .onEditingBorder(),
                     shape = shape,
                     onDoubleTap = { openDialog = true }
-                  ) { }
+                  )
                 }
                 else -> {
                   EngineButton(
@@ -219,10 +219,11 @@ fun EditorContent(
                         translationX = it.position.offsetX * it.position.scale,
                         translationY = it.position.offsetY * it.position.scale
                       ),
-                    shape = shape
-                  ) {
-                    selected = index
-                  }
+                    shape = shape,
+                    onPress = {
+                      selected = index
+                    }
+                  )
                 }
               }
             }
