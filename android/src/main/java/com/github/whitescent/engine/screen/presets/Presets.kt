@@ -54,7 +54,6 @@ import com.github.whitescent.engine.ui.component.HeightSpacer
 import com.github.whitescent.engine.ui.component.WidthSpacer
 import com.github.whitescent.engine.utils.GameCategory
 import com.github.whitescent.engine.utils.TextErrorType
-import com.google.accompanist.flowlayout.FlowRow
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
 import kotlinx.datetime.*
@@ -334,13 +333,8 @@ fun NewPresetDialog(
           )
         }
         HeightSpacer(value = 12.dp)
-        FlowRow(
-          mainAxisSpacing = 20.dp,
-          crossAxisSpacing = 6.dp
-        ) {
-          GameCategory.values().forEach { game ->
-            GameCategoryItem(game, selectedGameCategory) { selectedGameCategory = game }
-          }
+        GameCategory.values().forEach { game ->
+          GameCategoryItem(game, selectedGameCategory) { selectedGameCategory = game }
         }
       }
       LaunchedEffect(Unit) {

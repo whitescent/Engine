@@ -17,24 +17,37 @@ fun EngineButton(
   shape: Shape = CircleShape,
   onDoubleTap: (() -> Unit)? = null,
   onPress: (() -> Unit)? = null,
-  onTap: (() -> Unit)? = null
+  onTap: (() -> Unit)? = null,
 ) {
+  val tapGesture = when(onDoubleTap) {
+    null -> Modifier.pointerInput(Unit) {
+      detectTapGestures(
+        onTap = {
+          onTap?.invoke()
+        },
+        onPress = {
+          onPress?.invoke()
+        }
+      )
+    }
+    else -> Modifier.pointerInput(Unit) {
+      detectTapGestures(
+        onTap = {// Tap is onClick
+          onTap?.invoke()
+        },
+        onPress = {
+          onPress?.invoke()
+        },
+        onDoubleTap = {
+          onDoubleTap()
+        }
+      )
+    }
+  }
   Box(
     modifier = modifier
       .clip(shape)
       .background(AppTheme.colorScheme.primary)
-      .pointerInput(Unit) {
-        detectTapGestures(
-          onTap = {// Tap is onClick
-            onTap?.invoke()
-          },
-          onPress = {
-            onPress?.invoke()
-          },
-          onDoubleTap = {
-            onDoubleTap?.invoke()
-          }
-        )
-      }
+      .then(tapGesture)
   )
 }

@@ -11,5 +11,6 @@ enum class GameCategory(
   AssettoCorsa(R.drawable.assetto_corsa, R.string.assetto_corsa),
   Forza(R.drawable.forza, R.string.forza_series),
   F1(R.drawable.f1, R.string.f1_series),
-  Dirt(R.drawable.dirt, R.string.dirt_series)
+  Dirt(R.drawable.dirt, R.string.dirt_series),
+  BeamNGDrive(R.drawable.beamng, R.string.beamng_drive)
 }
