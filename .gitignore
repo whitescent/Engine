@@ -10,6 +10,7 @@
 /.idea
 .DS_Store
 /build
+/android/release
 /captures
 .externalNativeBuild
 .cxx

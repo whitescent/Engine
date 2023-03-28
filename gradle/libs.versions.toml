@@ -16,15 +16,15 @@ androidDesugar = "1.2.2"
 accompanist = "0.26.4-beta"
 aboutLibraries = "10.5.2"
 
-compose = "1.4.0-alpha02"
-composeCompiler = "1.4.0"
-composeDestinations = "1.8.33-beta"
+compose = "1.4.0"
+composeCompiler = "1.4.4"
+composeDestinations = "1.8.38-beta"
 
 mmkv = "1.2.14"
 
-kotlin = "1.8.0"
+kotlin = "1.8.10"
 kotlinxDatetime = "0.4.0"
-ksp = "1.8.0-1.0.9"
+ksp = "1.8.10-1.0.9"
 ktor = "2.2.2"
 
 agp = "7.3.0"
