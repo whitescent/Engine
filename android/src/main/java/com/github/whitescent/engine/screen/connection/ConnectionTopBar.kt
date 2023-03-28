@@ -17,7 +17,7 @@ fun ConnectionTopBar() {
         style = AppTheme.typography.headlineMedium
       )
     },
-    colors = TopAppBarDefaults.smallTopAppBarColors(
+    colors = TopAppBarDefaults.topAppBarColors(
       containerColor = AppTheme.colorScheme.primaryContainer
     )
   )

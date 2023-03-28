@@ -1,6 +1,9 @@
 plugins {
-  kotlin("multiplatform") apply false
-  id("org.jetbrains.compose") apply false
+  alias(libs.plugins.android.application) apply false
+  alias(libs.plugins.multiplatform) apply false
+  alias(libs.plugins.jetbrains.compose) apply false
+  alias(libs.plugins.hilt) apply false
+  alias(libs.plugins.aboutLibraries) apply false
 }
 
 allprojects {
@@ -9,14 +12,5 @@ allprojects {
     mavenCentral()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     maven("https://plugins.gradle.org/m2/")
-  }
-}
-
-buildscript {
-  dependencies {
-    classpath(libs.android.gradle.plugin)
-    classpath(libs.kotlin.gradle.plugin)
-    classpath(libs.hilt.gradle.plugin)
-    classpath(libs.aboutLibraries.plugin)
   }
 }

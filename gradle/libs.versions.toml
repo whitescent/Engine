@@ -12,11 +12,13 @@ androidxHilt = "1.0.0"
 androidxStartup = "1.1.1"
 androidxBrowser = "1.4.0"
 androidDesugar = "1.2.2"
+androidGradlePlugin = "7.3.0"
 
 accompanist = "0.26.4-beta"
 aboutLibraries = "10.5.2"
 
 compose = "1.4.0"
+jetbrainsCompose = "1.3.1"
 composeCompiler = "1.4.4"
 composeDestinations = "1.8.38-beta"
 
@@ -27,7 +29,6 @@ kotlinxDatetime = "0.4.0"
 ksp = "1.8.10-1.0.9"
 ktor = "2.2.2"
 
-agp = "7.3.0"
 hilt = "2.44"
 junit = "4.13.2"
 
@@ -88,11 +89,6 @@ androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-com
 com-google-dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 
 ## plugin
-android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-hilt-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
-aboutLibraries-plugin = { module = "com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin", version.ref = "aboutLibraries" }
-
 compose-destinations-core = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "composeDestinations" }
 compose-destinations-ksp = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "composeDestinations" }
 
@@ -100,3 +96,8 @@ ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.re
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrainsCompose" }
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+aboutLibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutLibraries" }
