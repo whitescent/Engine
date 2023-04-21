@@ -41,7 +41,6 @@ compose.desktop {
   application {
     mainClass = "MainKt"
     nativeDistributions {
-      modules("java.sql")
       buildTypes.release {
         proguard {
           configurationFiles.from("compose-desktop.pro")
