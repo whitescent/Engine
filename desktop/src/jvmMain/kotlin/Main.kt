@@ -14,7 +14,6 @@ import androidx.compose.ui.window.*
 import network.MySocket
 import ui.component.AppTopBar
 import utils.LocalMyWindowState
-import utils.MyWindowState
 import utils.Vjoy
 import utils.rememberMyWindowState
 fun main() = application {
@@ -27,16 +26,16 @@ fun main() = application {
       undecorated = true,
       transparent = true
     ) {
-      App(state)
+      CompositionLocalProvider(LocalMyWindowState provides state) {
+        App()
+      }
     }
   }
 }
 
 @Composable
 @Preview
-fun WindowScope.App(
-  state: MyWindowState
-) {
+fun WindowScope.App() {
   val vjoy = Vjoy()
   val socket = MySocket()
   val socketUiState by socket.socketUiState.collectAsState()
@@ -49,8 +48,7 @@ fun WindowScope.App(
             style = FontStyle.Normal
           )
         )
-      ),
-      LocalMyWindowState provides state
+      )
     ) {
       Surface(
         modifier = Modifier.fillMaxSize().padding(5.dp).shadow(3.dp, RoundedCornerShape(8.dp)),

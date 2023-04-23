@@ -37,7 +37,7 @@ fun WindowScope.AppTopBar() = WindowDraggableArea {
     Spacer(Modifier.weight(1f))
     IconButton(
       onClick = {
-        state.isMinimized = true
+        state.isMinimized = !state.isMinimized
       }
     ) {
       Icon(Icons.Rounded.Minimize, null, tint = Color.White)
