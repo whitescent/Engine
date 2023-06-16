@@ -1,5 +1,6 @@
 package com.github.whitescent.engine.screen.settings
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import androidx.annotation.ColorInt
@@ -66,6 +67,7 @@ fun SettingsTopBar() {
     }
   )
 }
+@SuppressLint("UnusedContentLambdaTargetStateParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun GeneralSettings(
@@ -78,7 +80,7 @@ fun GeneralSettings(
   val themeManager = LocalThemeManager.current
   PrimarySettingsText(stringResource(id = R.string.general))
   ListItem(
-    headlineText = {
+    headlineContent = {
       Text(
         text = stringResource(id = R.string.volume_button_enabled),
         style = AppTheme.typography.titleMedium
@@ -95,7 +97,7 @@ fun GeneralSettings(
     }
   )
   ListItem(
-    headlineText = {
+    headlineContent = {
       Text(
         text = stringResource(id = R.string.hide_preset_details),
         style = AppTheme.typography.titleMedium
@@ -112,7 +114,7 @@ fun GeneralSettings(
     }
   )
   ListItem(
-    headlineText = {
+    headlineContent = {
       Text(
         text = stringResource(id = R.string.Button_vibration_effect),
         style = AppTheme.typography.titleMedium
@@ -130,13 +132,13 @@ fun GeneralSettings(
   )
   Column {
     ListItem(
-      headlineText = {
+      headlineContent = {
         Text(
           text = stringResource(id = R.string.night_mode),
           style = AppTheme.typography.titleMedium
         )
       },
-      supportingText = {
+      supportingContent = {
         Text(
           text = when (themeManager.nightMode) {
             NightModeType.LIGHT -> stringResource(id = R.string.off)
@@ -209,13 +211,13 @@ fun OtherSettings(
 
   PrimarySettingsText(stringResource(id = R.string.other))
   ListItem(
-    headlineText = {
+    headlineContent = {
       Text(
         text = stringResource(id = R.string.app_name),
         style = AppTheme.typography.titleMedium
       )
     },
-    supportingText = {
+    supportingContent = {
       Text(
         text = BuildConfig.VERSION_NAME,
         style = AppTheme.typography.labelMedium
@@ -233,7 +235,7 @@ fun OtherSettings(
     }
   )
   ListItem(
-    headlineText = {
+    headlineContent = {
       Text(
         text = stringResource(id = R.string.licenses),
         style = AppTheme.typography.titleMedium
@@ -248,11 +250,10 @@ fun OtherSettings(
   )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PrimarySettingsText(text: String) =
   ListItem(
-    headlineText = {
+    headlineContent = {
       Text(
         text = text,
         style = AppTheme.typography.bodyLarge,

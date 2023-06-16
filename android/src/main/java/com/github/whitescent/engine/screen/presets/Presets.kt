@@ -167,7 +167,7 @@ fun PresetListItem(
 
   CenterRow {
     ListItem(
-      headlineText = {
+      headlineContent = {
         Column {
           Text(
             text = name,
@@ -178,7 +178,7 @@ fun PresetListItem(
           HeightSpacer(value = 4.dp)
         }
       },
-      supportingText = {
+      supportingContent = {
         if (!hideDetails) {
           CenterRow {
             Icon(Icons.Rounded.Widgets, null, modifier = Modifier.size(14.dp), tint = Color.Gray)
@@ -291,8 +291,10 @@ fun NewPresetDialog(
           value = state.inputTextManager.text,
           onValueChange = onValueChange,
           label = { Text(stringResource(id = R.string.preset_name)) },
-          colors = TextFieldDefaults.outlinedTextFieldColors(
-            containerColor = AppTheme.colorScheme.surfaceVariant
+          colors = OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = AppTheme.colorScheme.surfaceVariant,
+            unfocusedContainerColor = AppTheme.colorScheme.surfaceVariant,
+            disabledContainerColor = AppTheme.colorScheme.surfaceVariant,
           ),
           modifier = Modifier.focusRequester(focusRequester),
           keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -422,7 +424,7 @@ fun GameCategoryItem(
           .clip(CircleShape)
       )
     },
-    headlineText = { 
+    headlineContent = {
       Text(
         text = stringResource(id = gameCategory.gameName)
       )

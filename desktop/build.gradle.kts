@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.github.whitescent"
-version = "1.0.0"
+version = "1.0.1"
 
 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 kotlin {
@@ -47,8 +47,11 @@ compose.desktop {
         }
       }
       targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+      windows {
+        iconFile.set(project.file("icon.ico"))
+      }
       packageName = "EngineServer"
-      packageVersion = "1.0.0"
+      packageVersion = "1.0.1"
       vendor = "WhiteScent dev"
       copyright = "© 2023 WhiteScent. All rights reserved."
       appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))
