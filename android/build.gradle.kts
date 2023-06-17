@@ -16,7 +16,7 @@ android {
     applicationId = "com.github.whitescent.engine"
     minSdk = 21
     targetSdk = 33
-    versionCode = 4
+    versionCode = 5
     versionName = "1.0.4"
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     vectorDrawables {
