@@ -131,7 +131,7 @@ fun Console(
       )
     }
     buttonList.forEachIndexed { index, it ->
-      val shape = when(it.widgetType) {
+      val shape = when (it.widgetType) {
         WidgetType.RectangularButton -> RectangleShape
         else -> CircleShape
       }
@@ -167,7 +167,6 @@ fun Console(
   LaunchedEffect(sensor) {
     viewModel.updateAxisX(sensor)
   }
-
 }
 
 private const val VIBRATE_TIME: Long = 20

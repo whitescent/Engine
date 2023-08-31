@@ -3,18 +3,40 @@ package com.github.whitescent.engine.screen.presets
 import android.content.pm.ActivityInfo
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.*
-import androidx.compose.material3.*
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Construction
+import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.Description
+import androidx.compose.material.icons.rounded.MoreHoriz
+import androidx.compose.material.icons.rounded.Schedule
+import androidx.compose.material.icons.rounded.SportsEsports
+import androidx.compose.material.icons.rounded.Widgets
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -24,7 +46,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
@@ -45,8 +66,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.github.whitescent.engine.R
 import com.github.whitescent.engine.AppTheme
+import com.github.whitescent.engine.R
 import com.github.whitescent.engine.data.model.PresetModel
 import com.github.whitescent.engine.destinations.EditorDestination
 import com.github.whitescent.engine.ui.component.CenterRow
@@ -108,7 +129,6 @@ fun Presets(
   }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun PresetList(
   hideDetails: Boolean,
@@ -117,7 +137,7 @@ fun PresetList(
   deletePreset: (PresetModel) -> Unit
 ) {
   AnimatedContent(presetList.size) {
-    when(it) {
+    when (it) {
       0 -> {
         Box(Modifier.fillMaxSize(), Alignment.Center) {
           CenterRow {
@@ -138,7 +158,7 @@ fun PresetList(
           modifier = Modifier
             .fillMaxSize()
         ) {
-          items(presetList) {preset ->
+          items(presetList) { preset ->
             key(preset.createdAt) {
               PresetListItem(hideDetails, preset, navigateToEditor, deletePreset)
             }
@@ -149,7 +169,6 @@ fun PresetList(
   }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PresetListItem(
   hideDetails: Boolean,
@@ -262,14 +281,13 @@ fun NewPresetDialog(
   )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun NewPresetDialog(
   state: PresetsUiState,
   onDismissRequest: () -> Unit,
   onConfirmed: (GameCategory) -> Unit,
   onValueChange: (String) -> Unit
-)  {
+) {
   var selectedGameCategory by remember { mutableStateOf(GameCategory.Undefined) }
   AlertDialog(
     onDismissRequest = onDismissRequest,
@@ -365,6 +383,7 @@ fun NewPresetDialog(
     }
   )
 }
+
 @Composable
 fun HelpDialog(
   onDismiss: () -> Unit

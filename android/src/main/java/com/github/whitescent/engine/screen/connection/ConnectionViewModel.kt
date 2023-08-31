@@ -7,7 +7,14 @@ import com.github.whitescent.engine.data.repository.PresetsRepository
 import com.github.whitescent.engine.data.repository.UserDataRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -66,8 +73,7 @@ class ConnectionViewModel @Inject constructor(
           if (isValid) {
             hostnameError.emit(false)
             userDataRepository.updateHostnameValue(input)
-          }
-          else hostnameError.emit(true)
+          } else hostnameError.emit(true)
         }
     }
   }
@@ -77,7 +83,6 @@ class ConnectionViewModel @Inject constructor(
     inputText.update { name }
     userDataRepository.updateHostnameValue(name)
   }
-
 }
 
 const val port = 12345

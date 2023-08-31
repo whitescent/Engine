@@ -6,11 +6,19 @@ import com.github.whitescent.engine.data.repository.UserDataRepository
 import com.github.whitescent.engine.screen.connection.port
 import com.github.whitescent.engine.sensor.AbstractSensor
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.ktor.network.selector.*
-import io.ktor.network.sockets.*
-import io.ktor.utils.io.core.*
+import io.ktor.network.selector.SelectorManager
+import io.ktor.network.sockets.Datagram
+import io.ktor.network.sockets.InetSocketAddress
+import io.ktor.network.sockets.aSocket
+import io.ktor.utils.io.core.BytePacketBuilder
+import io.ktor.utils.io.core.writeFloat
+import io.ktor.utils.io.core.writeShort
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,11 +45,11 @@ class ConsoleViewModel @Inject constructor(
         error = error
       )
     }
-    .stateIn(
-      scope = viewModelScope,
-      started = SharingStarted.Eagerly,
-      initialValue = ConsoleUiState()
-    )
+      .stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = ConsoleUiState()
+      )
 
   private val axes = MutableStateFlow(Axes())
   private val buttons = MutableStateFlow<List<Short>>(listOf())
@@ -52,7 +60,8 @@ class ConsoleViewModel @Inject constructor(
     }
     viewModelScope.launch(Dispatchers.IO) {
       val selectorManager = SelectorManager(Dispatchers.IO)
-      val socket = aSocket(selectorManager).udp().connect(InetSocketAddress(consoleUiState.value.hostname, port))
+      val socket = aSocket(selectorManager).udp()
+        .connect(InetSocketAddress(consoleUiState.value.hostname, port))
       try {
         combine(
           axes,
@@ -101,7 +110,7 @@ class ConsoleViewModel @Inject constructor(
   fun initButtons(value: Int) {
     val count = if (consoleUiState.value.volumeButtonEnabled) value + 2 else value
     buttons.value = buttons.value.toMutableList().also {
-      for(index in 0 until count) {
+      for (index in 0 until count) {
         it.add(0)
       }
     }

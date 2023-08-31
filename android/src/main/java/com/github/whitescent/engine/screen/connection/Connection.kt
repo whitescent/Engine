@@ -75,7 +75,6 @@ fun Connection(
   }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConnectionPanel(
   state: ConnectionUiState,
@@ -222,6 +221,7 @@ fun PresetListSelector(
     }
   }
 }
+
 @Composable
 fun SelectorListItem(
   preset: PresetModel,

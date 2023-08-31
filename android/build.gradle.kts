@@ -10,14 +10,14 @@ plugins {
 
 android {
   namespace = "com.github.whitescent.engine"
-  compileSdk = 33
+  compileSdk = 34
 
   defaultConfig {
     applicationId = "com.github.whitescent.engine"
     minSdk = 21
-    targetSdk = 33
-    versionCode = 5
-    versionName = "1.0.5"
+    targetSdk = 34
+    versionCode = 6
+    versionName = "1.0.6"
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     vectorDrawables {
       useSupportLibrary = true
@@ -40,6 +40,8 @@ android {
     kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
   }
   compileOptions {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
     isCoreLibraryDesugaringEnabled = true
   }
   buildFeatures {

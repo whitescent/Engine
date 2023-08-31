@@ -67,6 +67,7 @@ fun SettingsTopBar() {
     }
   )
 }
+
 @SuppressLint("UnusedContentLambdaTargetStateParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
@@ -153,7 +154,7 @@ fun GeneralSettings(
           targetState = themeManager.nightMode,
           transitionSpec = {
             slideInVertically { height -> height } + fadeIn() with
-              slideOutVertically { height -> - height } + fadeOut() using(SizeTransform(clip = false))
+              slideOutVertically { height -> -height } + fadeOut() using(SizeTransform(clip = false))
           }
         ) {
           when (themeManager.nightMode) {
@@ -200,12 +201,10 @@ fun GeneralSettings(
   }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OtherSettings(
   navigate: () -> Unit
 ) {
-
   val context = LocalContext.current
   val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
 

@@ -1,35 +1,35 @@
 [versions]
 
 androidxCore = "1.10.1"
-androidxComposeMaterial = "1.5.0-beta02"
-androidxComposeMaterial3 = "1.2.0-alpha02"
+androidxComposeMaterial = "1.5.0"
+androidxComposeMaterial3 = "1.2.0-alpha06"
 androidxLifecycle = "2.6.1"
 androidxActivity = "1.7.2"
 androidxTestExt = "1.1.5"
 androidxTestEspresso = "3.5.1"
-androidxNavigation = "2.6.0"
+androidxNavigation = "2.7.1"
 androidxHilt = "1.0.0"
 androidxStartup = "1.1.1"
-androidxBrowser = "1.5.0"
-androidDesugar = "1.2.2"
-androidGradlePlugin = "7.3.0"
+androidxBrowser = "1.6.0"
+androidDesugar = "2.0.3"
+androidGradlePlugin = "8.1.1"
 
-accompanist = "0.26.4-beta"
+accompanist = "0.30.1"
 aboutLibraries = "10.5.2"
 
-compose = "1.4.0"
-jetbrainsCompose = "1.4.0"
-composeCompiler = "1.4.4"
-composeDestinations = "1.8.38-beta"
+compose = "1.5.0"
+jetbrainsCompose = "1.5.0"
+composeCompiler = "1.5.0"
+composeDestinations = "1.9.52"
 
-mmkv = "1.2.14"
+mmkv = "1.2.15"
 
-kotlin = "1.8.10"
+kotlin = "1.9.0"
 kotlinxDatetime = "0.4.0"
-ksp = "1.8.10-1.0.9"
+ksp = "1.9.0-1.0.13"
 ktor = "2.2.2"
 
-hilt = "2.44"
+hilt = "2.46.1"
 junit = "4.13.2"
 
 [libraries]

@@ -2,9 +2,25 @@ package com.github.whitescent.engine.screen.presets
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.rounded.CheckBox
+import androidx.compose.material.icons.rounded.CheckBoxOutlineBlank
+import androidx.compose.material.icons.rounded.Help
+import androidx.compose.material.icons.rounded.RadioButtonChecked
+import androidx.compose.material.icons.rounded.RadioButtonUnchecked
+import androidx.compose.material.icons.rounded.Sort
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.github.whitescent.engine.AppTheme
 import com.github.whitescent.engine.R
@@ -51,9 +67,8 @@ fun PresetsTopBar(
               },
               trailingIcon = {
                 Icon(
-                  imageVector =
-                    if (preference.selectedSortCategory == index) Icons.Rounded.RadioButtonChecked
-                    else Icons.Rounded.RadioButtonUnchecked,
+                  imageVector = if (preference.selectedSortCategory == index) Icons.Rounded.RadioButtonChecked
+                  else Icons.Rounded.RadioButtonUnchecked,
                   contentDescription = null
                 )
               },
@@ -68,8 +83,8 @@ fun PresetsTopBar(
             trailingIcon = {
               Icon(
                 imageVector =
-                  if (preference.isAscending) Icons.Rounded.CheckBox
-                  else Icons.Rounded.CheckBoxOutlineBlank,
+                if (preference.isAscending) Icons.Rounded.CheckBox
+                else Icons.Rounded.CheckBoxOutlineBlank,
                 contentDescription = null
               )
             },
