@@ -4,7 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
@@ -19,20 +19,22 @@ fun EngineButton(
   onPress: (() -> Unit)? = null,
   onTap: (() -> Unit)? = null,
 ) {
-  val tapGesture = when(onDoubleTap) {
+  val tapGesture = when (onDoubleTap) {
     null -> Modifier.pointerInput(Unit) {
       detectTapGestures(
         onTap = {
+          println("onTap")
           onTap?.invoke()
         },
         onPress = {
+          println("onPress")
           onPress?.invoke()
         }
       )
     }
     else -> Modifier.pointerInput(Unit) {
       detectTapGestures(
-        onTap = {// Tap is onClick
+        onTap = { // Tap is onClick
           onTap?.invoke()
         },
         onPress = {

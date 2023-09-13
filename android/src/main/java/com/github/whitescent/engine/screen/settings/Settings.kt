@@ -6,26 +6,65 @@ import android.net.Uri
 import androidx.annotation.ColorInt
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.rounded.DarkMode
+import androidx.compose.material.icons.rounded.Description
+import androidx.compose.material.icons.rounded.Help
+import androidx.compose.material.icons.rounded.LightMode
+import androidx.compose.material.icons.rounded.Vibration
+import androidx.compose.material.icons.rounded.VisibilityOff
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.whitescent.engine.AppTheme
 import com.github.whitescent.engine.BuildConfig
 import com.github.whitescent.engine.R
 import com.github.whitescent.engine.destinations.AboutLibraryDestination
+import com.github.whitescent.engine.screen.presets.H4Text
 import com.github.whitescent.engine.ui.theme.LocalThemeManager
 import com.github.whitescent.engine.utils.NightModeType
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -153,8 +192,8 @@ fun GeneralSettings(
         AnimatedContent(
           targetState = themeManager.nightMode,
           transitionSpec = {
-            slideInVertically { height -> height } + fadeIn() with
-              slideOutVertically { height -> -height } + fadeOut() using(SizeTransform(clip = false))
+            (slideInVertically { height -> height } + fadeIn())
+              .togetherWith(slideOutVertically { height -> -height } + fadeOut()) using(SizeTransform(clip = false))
           }
         ) {
           when (themeManager.nightMode) {
@@ -201,12 +240,14 @@ fun GeneralSettings(
   }
 }
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalTextApi::class)
 @Composable
 fun OtherSettings(
   navigate: () -> Unit
 ) {
   val context = LocalContext.current
   val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
+  var openDialog by remember { mutableStateOf(false) }
 
   PrimarySettingsText(stringResource(id = R.string.other))
   ListItem(
@@ -225,12 +266,27 @@ fun OtherSettings(
     modifier = Modifier.clickable {
       launchCustomChromeTab(
         context = context,
-        uri = Uri.parse("https://github.com/whitescent/Engine/releases"),
+        uri = Uri.parse("https://github.com/whitescent/Engine"),
         toolbarColor = backgroundColor
       )
     },
     leadingContent = {
       Icon(painterResource(id = R.drawable.github), null)
+    }
+  )
+  ListItem(
+    headlineContent = {
+      Text(
+        text = stringResource(id = R.string.tutorial),
+        style = AppTheme.typography.titleMedium
+      )
+    },
+    modifier = Modifier
+      .clickable {
+        openDialog = true
+      },
+    leadingContent = {
+      Icon(Icons.Rounded.Help, null, modifier = Modifier.size(24.dp))
     }
   )
   ListItem(
@@ -247,6 +303,78 @@ fun OtherSettings(
       Icon(Icons.Rounded.Description, null, modifier = Modifier.size(24.dp))
     }
   )
+  if (openDialog) {
+    AlertDialog(
+      title = {
+        Text(
+          text = stringResource(id = R.string.tutorial),
+          style = AppTheme.typography.headlineMedium
+        )
+      },
+      text = {
+        val text = buildAnnotatedString {
+          H4Text(stringResource(id = R.string.help1))
+          append("\n\n")
+          H4Text(stringResource(id = R.string.help2))
+          append("\n\n")
+          H4Text(stringResource(id = R.string.help3))
+          append("\n\n")
+          pushStringAnnotation(
+            tag = "URL", annotation = "https://github.com/whitescent/Engine/releases"
+          )
+          withStyle(
+            SpanStyle(
+              color = Color(0xFF1B7CFF),
+              textDecoration = TextDecoration.Underline,
+              fontSize = 16.sp,
+              fontWeight = FontWeight.Bold
+            )
+          ) {
+            append("EngineServer")
+            append("\n\n")
+          }
+          pop()
+          H4Text(stringResource(id = R.string.help4))
+          append("\n\n")
+          pushStringAnnotation(
+            tag = "URL", annotation = "https://github.com/whitescent/Engine#-usage"
+          )
+          withStyle(
+            SpanStyle(
+              color = Color(0xFF1B7CFF),
+              textDecoration = TextDecoration.Underline,
+              fontSize = 16.sp,
+              fontWeight = FontWeight.Bold
+            )
+          ) {
+            H4Text(stringResource(id = R.string.help5))
+          }
+        }
+        ClickableText(
+          text = text,
+          onClick = { offset ->
+            text.getStringAnnotations(
+              tag = "URL", start = offset, end = offset
+            ).firstOrNull()?.let { annotation ->
+              launchCustomChromeTab(
+                context = context,
+                uri = Uri.parse(annotation.item),
+                toolbarColor = backgroundColor
+              )
+            }
+          }
+        )
+      },
+      onDismissRequest = { openDialog = false },
+      confirmButton = {
+        TextButton(
+          onClick = { openDialog = false },
+        ) {
+          Text(stringResource(id = R.string.yes))
+        }
+      },
+    )
+  }
 }
 
 @Composable

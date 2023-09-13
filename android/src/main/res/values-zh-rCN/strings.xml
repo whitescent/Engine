@@ -11,6 +11,7 @@
     <string name="general">常规</string>
     <string name="other">其他</string>
     <string name="licenses">开源许可</string>
+    <string name="tutorial">使用教程</string>
     <string name="night_mode">夜间模式</string>
     <string name="off">关闭</string>
     <string name="on">开启</string>
@@ -42,6 +43,11 @@
     <string name="tips1">1. 在编辑器中，双击已选中的组件，可以选择是否删除它。</string>
     <string name="tips2">2. 预设名字不能超过 30 个字符。</string>
     <string name="tips3">3. 尽管在编辑器中，没有限制添加组件的数量，但是 vJoy 仅支持 128 个按钮和 8 条轴</string>
+    <string name="help1">欢迎您使用 Engine！</string>
+    <string name="help2">这个 App 是 Engine 的客户端，您还需要在 PC 上下载 Engine 的服务端，才能正常地使用。</string>
+    <string name="help3">您可以在这里下载 Engine 的服务端</string>
+    <string name="help4">更多安装步骤请参考</string>
+    <string name="help5">使用方法</string>
     <string name="Cancel">取消</string>
 
     <string name="null_widget">预设中没有组件，点击左上角的按钮添加新组件吧！</string>

@@ -12,6 +12,7 @@
     <string name="general">General</string>
     <string name="other">Other</string>
     <string name="licenses">Licenses</string>
+    <string name="tutorial">Tutorial</string>
     <string name="night_mode">Night mode</string>
     <string name="off">off</string>
     <string name="on">on</string>
@@ -42,6 +43,11 @@
     <string name="tips2">2. The preset name cannot exceed 30 characters.</string>
     <string name="tips3">3. Although there is no limit on the number of widgets that can be added in the editor, vJoy
         only supports 128 buttons and 8 axes.</string>
+    <string name="help1">Welcome to the Engine!</string>
+    <string name="help2">This app is a client of the Engine, and you also need to download the Engine\'s server on your PC to use it properly</string>
+    <string name="help3">You can download the Engine server here</string>
+    <string name="help4">For more installation steps, please refer to</string>
+    <string name="help5">Usage</string>
     <string name="Cancel">Cancel</string>
 
     <string name="null_widget">There is no widget in the preset, click the button to add a new widget</string>
