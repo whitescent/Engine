@@ -8,7 +8,11 @@
 
 [Engine](https://github.com/whitescent/Engine) is a software that allows you to use your phone as a virtual joystick, allowing you to play racing games like [Assetto Corsa](https://store.steampowered.com/app/244210/_Assetto_Corsa/) and [Euro Truck Simulator 2](https://store.steampowered.com/app/227300/Euro_Truck_Simulator_2/) more comfortably without a steering wheel.
 
-https://github.com/whitescent/Engine/assets/31311826/3463fc60-e035-4106-8c01-355aec21a343
+
+
+https://github.com/whitescent/Engine/assets/31311826/b80ed056-afc3-4e85-929f-fef3ef9558d1
+
+
 
 ## 💦 Features:
 
